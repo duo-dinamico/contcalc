@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Jan 30 19:33:30 2020
-
+# odetojoy
 @author: sj
 """
 
@@ -11,9 +11,9 @@ import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 
 
-def demo():
+def main():
     root = tk.Tk()
-    root.title("ttk.Notebook")
+    root.title("Containment Size Calculation")
 
     nb = ttk.Notebook(root)
 
@@ -26,13 +26,18 @@ def demo():
     text = ScrolledText(page2)
     text.pack(expand=1, fill="both")
 
-    nb.add(page1, text='One')
-    nb.add(page2, text='Two')
+    # third page
+    page3 = ttk.Frame(nb)
+    
+    
+    nb.add(page1, text='General Data')
+    nb.add(page2, text='Calculation')
+    nb.add(page3, text='Lookup')
 
     nb.pack(expand=1, fill="both")
 
     root.mainloop()
 
 if __name__ == "__main__":
-    demo()
+    main()
 
