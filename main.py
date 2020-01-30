@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Jan 30 19:33:30 2020
-# odetojoy
+
 @author: sj
 """
 
@@ -13,7 +13,7 @@ from tkinter.scrolledtext import ScrolledText
 
 def main():
     root = tk.Tk()
-    root.title("Containment Size Calculation")
+    root.title("Containment Calculation Sheet")
 
     nb = ttk.Notebook(root)
 
@@ -25,14 +25,13 @@ def main():
     page2 = ttk.Frame(nb)
     text = ScrolledText(page2)
     text.pack(expand=1, fill="both")
-
+    
     # third page
     page3 = ttk.Frame(nb)
-    
-    
+
     nb.add(page1, text='General Data')
     nb.add(page2, text='Calculation')
-    nb.add(page3, text='Lookup')
+    nb.add(page3, text='Lookup Tables')
 
     nb.pack(expand=1, fill="both")
 
