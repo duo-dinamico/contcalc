@@ -9,7 +9,6 @@ Copyright 2020, The JJ duo
 
 # Here we'll have all the imports necessary for tkinter
 from tkinter import ttk
-from tkinter import *
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 
