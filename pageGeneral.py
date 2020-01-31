@@ -7,5 +7,6 @@ pageGeneral.py v0.1
 Copyright 2020, The JJ duo
 """
 
-def pageGeneral():
-    print('General')
+def pageG():
+    print('works')
+    L1 = tk.Label(pageGeneral, text="Job Title") .grid(row=0, column=0)
