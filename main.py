@@ -14,7 +14,7 @@ from tkinter.scrolledtext import ScrolledText
 
 # Here we'll import local mods
 from pageGeneral import *
-from pageCalculation import *
+import pageCalculation as pC
 from pageLookup import *
 
 
@@ -27,9 +27,10 @@ def main():
     # adding Frames as pages for the ttk.Notebook
     # first page, which would get widgets gridded into it
     pageGeneral = ttk.Frame(nb)
-    L1 = Label(pageGeneral, text="Job Title") .grid(row=0, column=0)
+    # text =
+    L1 = tk.Label(pageGeneral, text="Job Title") .grid(row=0, column=0)
     # L1.pack(expand=1, fill="both")
-    E1 = Entry(pageGeneral, bd =5) .grid(row=0, column=1)
+    E1 = tk.Entry(pageGeneral, bd =5) .grid(row=0, column=1)
     # E1.pack(expand=1, fill="both")
 
     # second page
