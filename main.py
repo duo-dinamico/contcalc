@@ -39,7 +39,7 @@ def main():
     # adding Frames as pages for the ttk.Notebook
     # first page, which would get widgets gridded into it
     pageGeneral = ttk.Frame(nb)
-    # text =
+
     # L1 = tk.Label(pageGeneral, text="Job Title") .grid(row=0, column=0)
     # L1.pack(expand=1, fill="both")
     # E1 = tk.Entry(pageGeneral, bd =5) .grid(row=0, column=1)
@@ -48,7 +48,7 @@ def main():
     # second page
     pageCalculation = ttk.Frame(nb)
     text = ScrolledText(pageCalculation)
-    text.pack(expand=1, fill="both")
+    text.pack(expand=True, fill="both")
 
     # third page
     pageLookup = ttk.Frame(nb)

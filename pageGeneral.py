@@ -8,5 +8,5 @@ Copyright 2020, The JJ duo
 """
 
 def pageG():
-    print('works')
-    L1 = tk.Label(pageGeneral, text="Job Title") .grid(row=0, column=0)
+    return [1, 2, 3]
+    return 5

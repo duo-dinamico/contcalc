@@ -1,0 +1,25 @@
+from tkinter import ttk
+import tkinter as tk
+import pageGeneral
+
+test = pageGeneral.pageG()
+
+mainWindow = tk.Tk()
+mainWindow.title('Containment Calculation Sheet')
+mainWindow.geometry('700x700')
+
+nb = ttk.Notebook(mainWindow)
+nb.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NESW')
+
+page1 = ttk.Frame(nb)
+nb.add(page1, text='General Information', sticky='NESW')
+
+L1 = tk.Label(page1, text=test) .grid(row=0, column=0)
+
+page2 = ttk.Frame(nb)
+nb.add(page2, text='Calculation', sticky='NESW')
+
+page3 = ttk.Frame(nb)
+nb.add(page3, text='LookUp Tables', sticky='NESW')
+
+mainWindow.mainloop()
