@@ -7,5 +7,5 @@ pageLookup.py v0.1
 Copyright 2020, The JJ duo
 """
 
-def pageLookup():
-    print('Lookup')
+def pageL():
+    return 'Lookup'

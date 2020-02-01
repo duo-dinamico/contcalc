@@ -7,5 +7,5 @@ pageCalculation.py v0.1
 Copyright 2020, The JJ duo
 """
 
-def pageCalculation():
-    print('Calculation')
+def pageC():
+    return 'Calculation'

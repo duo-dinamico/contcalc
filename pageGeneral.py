@@ -8,5 +8,4 @@ Copyright 2020, The JJ duo
 """
 
 def pageG():
-    return [1, 2, 3]
-    return 5
+    return 'General'
