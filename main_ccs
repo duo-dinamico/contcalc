@@ -1,30 +1,33 @@
 from tkinter import ttk
 import tkinter as tk
+from tkinter.scrolledtext import ScrolledText
+
 import pageGeneral
 import pageCalculation
 import pageLookup
 
-pageG = pageGeneral.pageG()
-pageC = pageCalculation.pageC()
-pageL = pageLookup.pageL()
+pageG = pageGeneral
+pageC = pageCalculation
+pageL = pageLookup
 
 mainWindow = tk.Tk()
 mainWindow.title('Containment Calculation Sheet')
-mainWindow.geometry('700x700')
+# mainWindow.geometry('700x700')
 
 nb = ttk.Notebook(mainWindow)
 nb.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NESW')
 
 page1 = ttk.Frame(nb)
 nb.add(page1, text='General Information', sticky='NESW')
-L1 = tk.Label(page1, text=pageG) .grid(row=0, column=0)
+L1 = tk.Label(page1, text=pageG.pageG()) .grid(row=0, column=0)
 
 page2 = ttk.Frame(nb)
 nb.add(page2, text='Calculation', sticky='NESW')
-L2 = tk.Label(page2, text=pageC) .grid(row=0, column=0)
+L2 = tk.Label(page2, text=pageC.pageC()) .grid(row=0, column=0)
 
 page3 = ttk.Frame(nb)
-nb.add(page3, text='LookUp Tables', sticky='NESW')
-L3 = tk.Label(page3, text=pageL) .grid(row=0, column=0)
+nb.add(page3, text='LookUp Tables')
+L3 = tk.Label(page3, text=pageL.pageL_Tray(), bg='white') .grid(row=0, column=0)
+L4 = tk.Label(page3, text=pageL.pageL_Ladder(), bg='white') .grid(row=0, column=1)
 
 mainWindow.mainloop()
