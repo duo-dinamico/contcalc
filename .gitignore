@@ -1,3 +1,6 @@
 teste.py
 __pycache__/
 test_ignore
+main_ccs.spec
+build/
+dist/

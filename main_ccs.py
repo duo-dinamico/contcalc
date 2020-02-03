@@ -33,7 +33,7 @@ nb.grid()
 
 # Page 1 for General information about the project
 # General page might not link to external module
-page1 = ttk.Frame(nb)
+page1 = ttk.Frame(nb, height=500, width=500)
 nb.add(page1, text='General Information')
 # L1 = tk.Label(page1, text=pageG.pageG()) .grid(row=0, column=0)
 gifLogo = tk.PhotoImage(file='ArupLogo.gif')
