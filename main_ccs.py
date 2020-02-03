@@ -45,7 +45,7 @@ logoLabel = tk.Label(page1, image=gifLogo).grid(row=0, columnspan=8, pady=20)
 jobTitleLabel1 = tk.Label(page1, text='Job Title').grid(row=1, column=0, columnspan=4, sticky='W', pady=10)
 jobTitleLabel2 = tk.Label(page1, text='Project Churchill', bg='white').grid(row=1, column=4, columnspan=4, sticky='E')
 
-jobNumberLabel1 = tk.Label(page1, text='Job Number').grid(row=2, column=0, sticky='W', pady=10)
+jobNumberLabel1 = tk.Label(page1, text='Job Number').grid(row=2, column=0, sticky='W', pady=10,)
 jobNumberLabel2 = tk.Label(page1, text='200000', bg='white').grid(row=2, column=1, sticky='E')
 refLabel1 = tk.Label(page1, text='Reference').grid(row=2, column=6, sticky='W', pady=10)
 refLabel2 = tk.Label(page1, text='A', bg='white').grid(row=2, column=7, sticky='E')
