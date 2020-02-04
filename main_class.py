@@ -74,9 +74,7 @@ class MainApplication:
         self.trayRefLabel = tk.Label(self.page2, text='Cable Tray Reference').grid(row=3, column=3)
         self.trayRefEntry = tk.Entry(self.page2, text='C1', bg='white').grid(row=3, column=4)
 
-        self.listHeader = ['Cable Ref.', 'Cable Type', 'No. of Integral', 'Cable CSA (mm)', 'No. of cables in parallel', 'CPC CSA (mm)', 'Total Diameter']
-        for i in range(0, 7):
-        	tk.Label(self.page2, text=self.listHeader[i], bg='white').grid(row=4, column=i, padx=5)
+
 
         # Page 3 for look up tables
         self.page3 = ttk.Frame(self.nb)
@@ -85,6 +83,13 @@ class MainApplication:
         self.L_Tray = tk.Label(self.page3, text=pageL.pageL_Tray(), bg='white').grid(row=0, column=5)
         self.L_Ladder = tk.Label(self.page3, text=pageL.pageL_Ladder(), bg='white').grid(row=0, column=6)
 
+
+    def get_list_header(self):
+        self.listHeader = ['Cable Ref.', 'Cable Type', 'No. of Integral', 'Cable CSA (mm)', 'No. of cables in parallel', 'CPC CSA (mm)', 'Total Diameter']
+        for i in range(0, 7):
+        	tk.Label(self.page2, text=self.listHeader[i], bg='white').grid(row=4, column=i, padx=5)
+
+    def config_window(self):
         # Configure rows and columns dinamically
         for i in range(int(self.page1.grid_size()[1])):
         	self.page1.rowconfigure(i, minsize=100, weight=1)
@@ -97,10 +102,11 @@ class MainApplication:
         	self.page2.columnconfigure(i, minsize=100, weight=1)
 
 
-
 def main():
     root = tk.Tk()
     app = MainApplication(root)
+    app.config_window()
+    app.get_list_header()
     root.mainloop()
 
 if __name__ == "__main__":
