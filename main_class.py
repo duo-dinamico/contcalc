@@ -60,8 +60,12 @@ class MainApplication:
         self.variableDrop1.set("Touching")
         self.installationDrop = tk.OptionMenu(self.page2, self.variableDrop1, "Touching", "Spaced", "Custom Spacing").grid(row=1, column=1)
 
+        self.button_set_drop1 = tk.Button(self.page2, text="Set", command=self.set_drop1).grid(row=1, column=2)
+
         self.customLabel = tk.Label(self.page2, text='Custom spacing').grid(row=1, column=3)
-        self.customEntry = tk.Entry(self.page2, text='0', bg='white').grid(row=1, column=4)
+        self.text_customEntry = tk.StringVar(parent)
+        self.customEntry = tk.Entry(self.page2, textvariable=self.text_customEntry, bg='white')
+        self.customEntry.grid(row=1, column=4)
 
         self.containmentLabel = tk.Label(self.page2, text='Containment type').grid(row=2, column=0)
         self.variableDrop2 = tk.StringVar(parent)
@@ -101,12 +105,19 @@ class MainApplication:
         for i in range(int(self.page2.grid_size()[0])):
         	self.page2.columnconfigure(i, minsize=100, weight=1)
 
+    def set_drop1(self):
+        # print(self.variableDrop1.get())
+        self.customEntry.delete(0, tk.END)
+        self.customEntry.insert(tk.END, self.variableDrop1.get())
+
+
 
 def main():
     root = tk.Tk()
     app = MainApplication(root)
     app.config_window()
     app.get_list_header()
+    #print(app.variableDrop1)
     root.mainloop()
 
 if __name__ == "__main__":
