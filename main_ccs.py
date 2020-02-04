@@ -7,20 +7,20 @@ main_ccs.py v0.2
 Copyright 2020, The JJ duo
 """
 # Import tkinter and tkinter modules
-from tkinter import ttk
-import tkinter as tk
-from tkinter.scrolledtext import ScrolledText
-from tkinter import PhotoImage
+# from tkinter import ttk
+# import tkinter as tk
+# from tkinter.scrolledtext import ScrolledText
+# from tkinter import PhotoImage
 
 # Import our own modules
-import pageGeneral
-import pageCalculation
-import pageLookup
+# import pageGeneral
+# import pageCalculation
+# import pageLookup
 
-# Assign variables to our modules
-pageG = pageGeneral
-pageC = pageCalculation
-pageL = pageLookup
+# # Assign variables to our modules
+# pageG = pageGeneral
+# pageC = pageCalculation
+# pageL = pageLookup
 
 # Initiate the main window for tkinter
 mainWindow = tk.Tk()
