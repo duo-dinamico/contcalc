@@ -4,3 +4,4 @@ test_ignore
 main_ccs.spec
 build/
 dist/
+.vscode/

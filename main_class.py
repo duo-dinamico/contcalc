@@ -53,7 +53,7 @@ class MainApplication:
         self.nb.add(self.page2, text='Calculation')
         self.variable = tk.StringVar(parent)
         self.variable.set("Touching")
-        titleLabel = tk.Label(self.page2, text='Sub-mains cable containment calculation').grid(row=0, column=0)
+        self.titleLabel = tk.Label(self.page2, text='Sub-mains cable containment calculation').grid(row=0, column=0)
 
         self.installationLabel = tk.Label(self.page2, text='Installation type').grid(row=1, column=0)
         self.variableDrop1 = tk.StringVar(parent)
@@ -73,7 +73,7 @@ class MainApplication:
         self.containmentDrop = tk.OptionMenu(self.page2, self.variableDrop2, "Cable Tray", "Ladder Rack").grid(row=2, column=1)
 
         self.spareLabel = tk.Label(self.page2, text='Spare Capacity').grid(row=3, column=0)
-        spareEntry = tk.Entry(self.page2, text='25%', bg='white').grid(row=3, column=1)
+        self.spareEntry = tk.Entry(self.page2, text='25%', bg='white').grid(row=3, column=1)
 
         self.trayRefLabel = tk.Label(self.page2, text='Cable Tray Reference').grid(row=3, column=3)
         self.trayRefEntry = tk.Entry(self.page2, text='C1', bg='white').grid(row=3, column=4)
