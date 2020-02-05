@@ -108,17 +108,24 @@ class MainApplication:
     def set_drop1(self):
         # print(self.variableDrop1.get())
         self.customEntry.delete(0, tk.END)
-        self.customEntry.insert(tk.END, self.variableDrop1.get())
+        if self.variableDrop1.get()=='Touching':
+            self.customEntry.grid_forget()
+        else:
+            self.customEntry.insert(tk.END, self.variableDrop1.get())
 
 
 
 def main():
     root = tk.Tk()
+
+
     app = MainApplication(root)
+
     app.config_window()
     app.get_list_header()
     #print(app.variableDrop1)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
