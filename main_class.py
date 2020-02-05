@@ -17,11 +17,13 @@ from tkinter import PhotoImage
 import pageGeneral
 import pageCalculation
 import pageLookup
+from pageLookup import ccsDatabase
 
 # Assign variables to our modules
 pageG = pageGeneral
 pageC = pageCalculation
 pageL = pageLookup
+
 
 class MainApplication:
     def __init__(self, parent):
@@ -66,12 +68,13 @@ class MainApplication:
         self.customLabel = tk.Label(self.page2, text='Custom spacing').grid(row=1, column=3)
         self.text_customEntry = tk.StringVar(parent)
         self.customEntry = tk.Entry(self.page2, textvariable=self.text_customEntry, bg='white')
-        self.customEntry.grid(row=1, column=4)
+        #self.customEntry.grid(row=1, column=4)
+
 
         self.containmentLabel = tk.Label(self.page2, text='Containment type').grid(row=2, column=0)
         self.variableDrop2 = tk.StringVar(parent)
         self.variableDrop2.set("Cable Tray")
-        self.containmentDrop = tk.OptionMenu(self.page2, self.variableDrop2, "Cable Tray", "Ladder Rack").grid(row=2, column=1)
+        self.containmentDrop = tk.OptionMenu(self.page2, self.variableDrop2, *db.get_cable_list()).grid(row=2, column=1)
 
         self.spareLabel = tk.Label(self.page2, text='Spare Capacity').grid(row=3, column=0)
         self.spareEntry = tk.Entry(self.page2, text='25%', bg='white').grid(row=3, column=1)
@@ -116,6 +119,8 @@ class MainApplication:
 
 
 def main():
+    global db
+    db = ccsDatabase('database.db')
     root = tk.Tk()
     app = MainApplication(root)
     app.config_window()
