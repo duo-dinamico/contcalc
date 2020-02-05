@@ -98,17 +98,45 @@ class MainApplication:
         for i in range(0, 7):
         	tk.Label(self.page2, text=self.listHeader[i], bg='white').grid(row=4, column=i, padx=5)
 
+
+    def create_lines(self):
+        self.vDrop3 = tk.StringVar()
+        self.vDrop3.set(db.get_cable_list()[0])
+        self.reference = tk.Entry(self.page2, bg='white').grid(row=5, column=0)
+        self.cable_type = tk.OptionMenu(self.page2, self.vDrop3, *db.get_cable_list())
+        self.cable_type.grid(row=5, column=1)
+        self.vDrop4 = tk.StringVar()
+        self.vDrop4.set(db.get_core_list()[0])
+        self.integral_number = tk.OptionMenu(self.page2, self.vDrop4, *db.get_core_list())
+        self.integral_number.grid(row=5, column=2)
+        self.vDrop5 = tk.StringVar()
+        self.vDrop5.set(db.get_csa_list()[0])
+        self.integral_number = tk.OptionMenu(self.page2, self.vDrop5, *db.get_csa_list())
+        self.integral_number.grid(row=5, column=3)
+        self.parallel = tk.Entry(self.page2, bg='white').grid(row=5, column=4)
+        self.cpc_csa = tk.Entry(self.page2, bg='white').grid(row=5, column=5)
+
+        self.list_of_cables = tk.Listbox(self.page2, width=150)
+        self.list_of_cables.grid(row=6, column=0, columnspan=6)
+
+        self.add_cable = tk.Button(self.page2, text='Add cable')
+        self.add_cable.grid(row=7, column=0)
+        self.remove_cable = tk.Button(self.page2, text='Remove cable')
+        self.remove_cable.grid(row=7, column=1)
+        self.update_cable = tk.Button(self.page2, text='Update cable')
+        self.update_cable.grid(row=7, column=2)
+
     def config_window(self):
         # Configure rows and columns dinamically
         for i in range(int(self.page1.grid_size()[1])):
-        	self.page1.rowconfigure(i, minsize=100, weight=1)
+        	self.page1.rowconfigure(i, minsize=50, weight=1)
         for i in range(int(self.page1.grid_size()[0])):
-        	self.page1.columnconfigure(i, minsize=100, weight=1)
+        	self.page1.columnconfigure(i, minsize=25, weight=1)
 
         for i in range(int(self.page2.grid_size()[1])):
         	self.page2.rowconfigure(i, minsize=50, weight=1)
         for i in range(int(self.page2.grid_size()[0])):
-        	self.page2.columnconfigure(i, minsize=100, weight=1)
+        	self.page2.columnconfigure(i, minsize=25, weight=1)
 
     def select_drop1(self, *args):
         self.customEntry.delete(0, tk.END)
@@ -126,6 +154,7 @@ def main():
     app = MainApplication(root)
     app.config_window()
     app.get_list_header()
+    app.create_lines()
     root.mainloop()
 
 

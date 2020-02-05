@@ -77,6 +77,21 @@ class ccsDatabase:
             return_list.append(li[0])
         return return_list
 
+    def get_core_list(self):
+        self.cur.execute('SELECT DISTINCT number_cores FROM cables')
+        rows = self.cur.fetchall()
+        return_list = []
+        for li in rows:
+            return_list.append(li[0])
+        return return_list
+
+    def get_csa_list(self):
+        self.cur.execute('SELECT DISTINCT csa FROM cables')
+        rows = self.cur.fetchall()
+        return_list = []
+        for li in rows:
+            return_list.append(li[0])
+        return return_list
 
     def __del__(self):
         self.conn.close()
