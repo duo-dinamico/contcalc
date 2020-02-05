@@ -5,3 +5,4 @@ main_ccs.spec
 build/
 dist/
 .vscode/
+.idea/
