@@ -74,7 +74,8 @@ class MainApplication:
         self.containmentLabel = tk.Label(self.page2, text='Containment type').grid(row=2, column=0)
         self.variableDrop2 = tk.StringVar(parent)
         self.variableDrop2.set("Cable Tray")
-        self.containmentDrop = tk.OptionMenu(self.page2, self.variableDrop2, *db.get_cable_list()).grid(row=2, column=1)
+        self.containmentDrop = tk.OptionMenu(self.page2, self.variableDrop2, *db.get_cable_list())
+        self.containmentDrop.grid(row=2, column=1)
 
         self.spareLabel = tk.Label(self.page2, text='Spare Capacity').grid(row=3, column=0)
         self.spareEntry = tk.Entry(self.page2, text='25%', bg='white').grid(row=3, column=1)
