@@ -102,7 +102,8 @@ class MainApplication:
     def create_lines(self):
         self.vDrop3 = tk.StringVar()
         self.vDrop3.set(db.get_cable_list()[0])
-        self.reference = tk.Entry(self.page2, bg='white').grid(row=5, column=0)
+        self.v = tk.StringVar()
+        self.reference = tk.Entry(self.page2, textvariable=self.v, bg='white').grid(row=5, column=0)
         self.cable_type = tk.OptionMenu(self.page2, self.vDrop3, *db.get_cable_list())
         self.cable_type.grid(row=5, column=1)
         self.vDrop4 = tk.StringVar()
@@ -119,12 +120,16 @@ class MainApplication:
         self.list_of_cables = tk.Listbox(self.page2, width=150)
         self.list_of_cables.grid(row=6, column=0, columnspan=6)
 
-        self.add_cable = tk.Button(self.page2, text='Add cable')
+        self.add_cable = tk.Button(self.page2, text='Add cable', command=self.add_cable)
         self.add_cable.grid(row=7, column=0)
         self.remove_cable = tk.Button(self.page2, text='Remove cable')
         self.remove_cable.grid(row=7, column=1)
         self.update_cable = tk.Button(self.page2, text='Update cable')
         self.update_cable.grid(row=7, column=2)
+
+    def add_cable(self):
+        self.list_of_cables.insert('end', self.v.get())
+
 
     def config_window(self):
         # Configure rows and columns dinamically
