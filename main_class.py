@@ -61,6 +61,11 @@ class MainApplication:
         self.titleLabel = tk.Label(self.page1, text='ESN Calc Sheet\nContainment sizing spreadsheet\nRevision 0.1 Feb20', justify='center', bg='white')
         self.titleLabel.grid(row=5, column=0, columnspan=5, sticky='NSWE')
 
+
+        # Para apagar
+        self.add_btn = tk.Button(self.page1, text='Criar Secção', width=12, command=self.add_sec)
+        self.add_btn.grid()
+
         # Page 2 for Calculation information
         self.page2 = ttk.Frame(self.nb)
         self.nb.add(self.page2, text='Calculation')
@@ -177,12 +182,39 @@ class MainApplication:
             self.customEntry.grid(row=1, column=4)
             self.customEntry.insert(tk.END, self.variableDrop1.get())
 
+    def add_tab(self, sec, title, text):
+        frame = ttk.Frame(self.nb)
+        self.nb.add(frame,text=title)
+        label = ttk.Label(frame,text=text)
+        label.grid()
+        label1 = ttk.Label(frame,text=sec.list_cables())
+        label1.grid()
+        self.nb.grid()
+
+    def add_sec(self):
+        sec = sectionClass('S1')
+        C1 = cableClass('ref', 'typ', '1', '2', '3', '4')
+        C2 = cableClass('C2', 'XLE', '5', '2', '2', '4')
+        sec.add_cable(C1)
+        sec.add_cable(C2)
+        self.add_tab(sec, sec.name, 'Aqui vai ser a secção '+sec.name)
+
+
 def main():
     root = tk.Tk()
     app = MainApplication(root)
     app.config_window()
     app.get_list_header()
     app.create_lines()
+
+    if True:
+        sec = sectionClass('S1')
+        C1 = cableClass('ref', 'typ', '1', '2', '3', '4')
+        C2 = cableClass('C2', 'XLE', '5', '2', '2', '4')
+        sec.add_cable(C1)
+        sec.add_cable(C2)
+        app.add_tab(sec, sec.name, 'Aqui vai ser a secção '+sec.name)
+
     root.mainloop()
 
 

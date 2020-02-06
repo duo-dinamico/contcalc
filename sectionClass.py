@@ -9,8 +9,9 @@ Copyright 2020, The JJ duo
 
 
 class sectionClass:
-    def __init__(self):
+    def __init__(self, name):
         self.cable_list = []
+        self.name = name
 
     def add_cable(self, cable):
         self.cable_list.append(cable)
@@ -19,8 +20,10 @@ class sectionClass:
         self.cable_list.remove(cable)
 
     def list_cables(self):
+        result_list = []
         for cable in self.cable_list:
-            print(cable.cable_ref)
+            result_list.append(cable.cable_ref)
+        return result_list
 
 
 class cableClass:
