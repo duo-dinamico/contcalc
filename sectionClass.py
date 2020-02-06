@@ -34,7 +34,7 @@ class cableClass:
         self.diam = self.cable_calc()
 
     def cable_calc(self):
-        result = self.integer_cables * self.csa
+        result = self.integral_cables * self.csa
         return result
 
     def get_list(self):
