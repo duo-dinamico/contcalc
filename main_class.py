@@ -24,6 +24,9 @@ from sectionClass import cableClass
 pageC = pageCalculation
 pageL = pageLookup
 
+# Global variables to be added here
+db = ccsDatabase('database.db')
+
 
 class MainApplication:
     def __init__(self, parent):
@@ -174,10 +177,7 @@ class MainApplication:
             self.customEntry.grid(row=1, column=4)
             self.customEntry.insert(tk.END, self.variableDrop1.get())
 
-
 def main():
-    global db
-    db = ccsDatabase('database.db')
     root = tk.Tk()
     app = MainApplication(root)
     app.config_window()
