@@ -56,6 +56,7 @@ class MainApplication:
 
         self.entry_col3 = ['C01', 'JJ']
         for i in range(0, len(self.entry_col3)):
+            self.entry_col3[i] = tk.StringVar()
             tk.Entry(self.page1, textvariable=self.entry_col3[i], bg='white').grid(row=i+2, column=3, sticky='E')
 
         self.titleLabel = tk.Label(self.page1, text='ESN Calc Sheet\nContainment sizing spreadsheet\nRevision 0.1 Feb20', justify='center', bg='white')
@@ -192,7 +193,7 @@ class MainApplication:
         self.nb.grid()
 
     def add_sec(self):
-        sec = sectionClass('S1')
+        sec = sectionClass(self.entry_col3[0].get())
         C1 = cableClass('ref', 'typ', '1', '2', '3', '4')
         C2 = cableClass('C2', 'XLE', '5', '2', '2', '4')
         sec.add_cable(C1)
@@ -207,7 +208,7 @@ def main():
     app.get_list_header()
     app.create_lines()
 
-    if True:
+    if False:
         sec = sectionClass('S1')
         C1 = cableClass('ref', 'typ', '1', '2', '3', '4')
         C2 = cableClass('C2', 'XLE', '5', '2', '2', '4')
