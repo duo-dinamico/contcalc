@@ -19,6 +19,7 @@ import pageLookup
 from pageLookup import ccsDatabase
 from sectionClass import sectionClass
 from sectionClass import cableClass
+from pageClass import calcPage
 
 # Assign variables to our modules
 pageC = pageCalculation
@@ -199,6 +200,9 @@ class MainApplication:
         sec.add_cable(C1)
         sec.add_cable(C2)
         self.add_tab(sec, sec.name, 'Aqui vai ser a secção '+sec.name)
+        pagina3 = calcPage(self, db)
+
+
 
 
 def main():
@@ -207,6 +211,8 @@ def main():
     app.config_window()
     app.get_list_header()
     app.create_lines()
+    # pagina = calcPage(app, db)
+    # pagina2 = calcPage(app, db)
 
     if False:
         sec = sectionClass('S1')
