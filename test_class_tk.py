@@ -42,25 +42,23 @@ class MyWindow(ttk.Frame):
         )
         if not filepath:
             return
-        # txt_edit.delete('1.0', tk.END)
         with open(filepath, 'rt') as input_file:
-            text = input_file.read()
-            txt_file.set(text)
+            for i, myline in zip(lst_entries, input_file):
+                i.set(myline)
         root.title(f'Containment Calculation Sheet - {filepath}')
 
 class Notebook(ttk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
-        self.nb = ttk.Notebook(parent)
+        self.nb = ttk.Notebook(parent, width=600, height=400)
         self.nb.grid(row=1, column=0)
 
     def add_tab(self):
-        self.tabControl = self.nb
         for title in upper_tabs:
-            self.tab = tk.Frame(self.tabControl)
-            self.tabControl.add(self.tab, text=title)
+            self.tab = tk.Frame(self.nb, width=600, height=400)
+            self.nb.add(self.tab, text=title)
             tabs[title] = self.tab
-            self.tabControl.grid(row=1, column=0, sticky='nswe')  
+            self.nb.grid(row=1, column=0, sticky='nswe')  
 
     def create_label(self, name, text, image, background, row, column, colspan, sticky):
         label = tk.Label(tabs[name], text=text, image=image, bg=background)
@@ -80,14 +78,6 @@ MyWindow(root)
 upper_tabs = ['General Info', 'Calculation', 'Lookup']
 tabs = {}
 gifLogo = tk.PhotoImage(file='ArupLogo.gif')
-events_list = []
-txt_file = tk.StringVar()
-
-# Keylogger (good to know i guess...)
-# def handle_events(event):
-#     print(event.char)
-
-# root.bind('<Key>', handle_events)
 
 # Notebook and Tabs
 nb = Notebook(root)
@@ -100,9 +90,13 @@ headers_col0 = ['Job Title: ', 'Job Number: ', 'Date: ']
 for i in range(0, len(headers_col0)):
     nb.create_label('General Info', headers_col0[i], '', None, i+3, 0, 1, 'W')
 
-entry_col1 = [txt_file, '200000', '2020/02/02']
-for i in range(0, len(entry_col1)):
-    nb.create_entry('General Info', entry_col1[i], 'white', i+3, 1, 1, 'E')
+sv_entry1 = tk.StringVar()
+sv_entry2 = tk.StringVar()
+sv_entry3 = tk.StringVar()
+
+lst_entries = [sv_entry1,sv_entry2,sv_entry3]
+for i in range(0, len(lst_entries)):
+    nb.create_entry('General Info', lst_entries[i], 'white', i+3, 1, 1, 'E')
 
 headers_col2 = ['Designer: ', 'Revision: ']
 for i in range(0, len(headers_col2)):
