@@ -10,6 +10,7 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
+from tkinter.filedialog import askopenfilename
 
 class MyWindow(ttk.Frame):
     def __init__(self, parent):
@@ -20,25 +21,32 @@ class MyWindow(ttk.Frame):
         
     def menu(self, parent):
         self.parent = parent
-        file_menu = ['Open', 'Save', '', 'Exit']
-        edit_menu = ['Cut', 'Copy', 'Paste']
         self.menu = tk.Menu(parent)
         self.filemenu = tk.Menu(self.menu, tearoff=0)
         self.editmenu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label='File', menu=self.filemenu)
         self.menu.add_cascade(label='Edit', menu=self.editmenu)
-        for item in file_menu:
-            if item == '':
-                self.filemenu.add_separator()
-            else:
-                self.filemenu.add_command(label=item, command=root.quit)
-        for item in edit_menu:
-            if item == '':
-                self.editmenu.add_separator()
-            else:
-                self.editmenu.add_command(label=item, command=root.quit)
+        self.filemenu.add_command(label='Open', command=self.open_file)
+        self.filemenu.add_command(label='Save', command=root.quit)
+        self.filemenu.add_separator()
+        self.filemenu.add_command(label='Exit', command=root.quit)
+        self.editmenu.add_command(label='Cut', command=root.quit)
+        self.editmenu.add_command(label='Copy', command=root.quit)
+        self.editmenu.add_command(label='Past', command=root.quit)
         self.parent.config(menu=self.menu)
-
+    
+    # Function to open file
+    def open_file(self):
+        filepath = askopenfilename(
+            filetypes=[('Text Files', '*.txt'), ('All files', '*.*')]
+        )
+        if not filepath:
+            return
+        # txt_edit.delete('1.0', tk.END)
+        with open(filepath, 'rt') as input_file:
+            text = input_file.read()
+            txt_file.set(text)
+        root.title(f'Containment Calculation Sheet - {filepath}')
 
 class Notebook(ttk.Frame):
     def __init__(self, parent):
@@ -72,6 +80,14 @@ MyWindow(root)
 upper_tabs = ['General Info', 'Calculation', 'Lookup']
 tabs = {}
 gifLogo = tk.PhotoImage(file='ArupLogo.gif')
+events_list = []
+txt_file = tk.StringVar()
+
+# Keylogger (good to know i guess...)
+# def handle_events(event):
+#     print(event.char)
+
+# root.bind('<Key>', handle_events)
 
 # Notebook and Tabs
 nb = Notebook(root)
@@ -84,7 +100,7 @@ headers_col0 = ['Job Title: ', 'Job Number: ', 'Date: ']
 for i in range(0, len(headers_col0)):
     nb.create_label('General Info', headers_col0[i], '', None, i+3, 0, 1, 'W')
 
-entry_col1 = ['Project Churchill', '200000', '2020/02/02']
+entry_col1 = [txt_file, '200000', '2020/02/02']
 for i in range(0, len(entry_col1)):
     nb.create_entry('General Info', entry_col1[i], 'white', i+3, 1, 1, 'E')
 
