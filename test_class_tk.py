@@ -11,8 +11,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
 from tkinter.filedialog import askopenfilename
-from mywindowClass import *
-from notebookClass import *
+from mywindowClass import MyWindow
+from notebookClass import Notebook
 
 root = tk.Tk()
 mw = MyWindow(root)
@@ -50,8 +50,10 @@ entry_col3 = ['JJ', 'P01']
 for i in range(0, len(entry_col3)):
     nb.create_entry('General Info', entry_col3[i], 'white', i+4, 3, 1, 'E')
 
-titleLabel = nb.create_label('General Info', 'ESN Calc Sheet\nContainment sizing spreadsheet\nRevision 0.1 Feb20', '', 'white', 6, 0, 5, 'NSEW')
+titleLabel = nb.create_label('General Info', 'ESN Calc Sheet\nContainment sizing spreadsheet\nRevision 0.1 Feb20', '', 'white', 7, 0, 5, 'NSEW')
 
 logoLabel2 = nb.create_label('Calculation', 'pagina 2', '', 'white', 3, 0, 1, 'W')
+
+nb.create_botao()
 
 root.mainloop()

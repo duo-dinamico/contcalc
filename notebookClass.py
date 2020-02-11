@@ -36,3 +36,13 @@ class Notebook(ttk.Frame):
         entry = tk.Entry(self.tabs[name], textvariable=text, bg=background)
         entry.grid(row=row, column=column, columnspan=colspan, sticky=sticky)
         return entry
+
+    def create_botao(self):
+        self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Secção', width=12, command=self.add_sec)
+        self.add_btn.grid(row=6, column=2, sticky='NSEW')
+
+    def add_sec(self):
+        print(self.upper_tabs)
+        self.upper_tabs.append('Teste')
+        self.tab1 = tk.Frame(self.nb)
+        self.nb.add(self.tab1, text='Teste')
