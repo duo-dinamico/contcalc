@@ -37,13 +37,17 @@ for i in range(0, len(headers_col0)):
         'General Info', headers_col0[i], '', None, i+3, 0, 1, 'W'
         )
 
-# Entries for column 1
+# Variables for entries
 sv_entry1 = tk.StringVar()
 sv_entry2 = tk.StringVar()
 sv_entry3 = tk.StringVar()
-lst_entries = [sv_entry1,sv_entry2,sv_entry3]
+sv_entry4 = tk.StringVar()
+sv_entry5 = tk.StringVar()
+
+lst_entries = [sv_entry1, sv_entry2, sv_entry3, sv_entry4, sv_entry5]
 mw.lst_entries = lst_entries
-for i in range(0, len(lst_entries)):
+
+for i in range(0, 3):
     nb.create_entry(
         'General Info', lst_entries[i], 'white', i+3, 1, 1, 'E'
         )
@@ -56,10 +60,9 @@ for i in range(0, len(headers_col2)):
         )
 
 # Entries for column 3
-entry_col3 = ['JJ', 'P01']
-for i in range(0, len(entry_col3)):
+for i in range(3,5):
     nb.create_entry(
-        'General Info', entry_col3[i], 'white', i+4, 3, 1, 'E'
+        'General Info', lst_entries[i], 'white', i+1, 3, 1, 'E'
         )
 
 # Label for bottom title

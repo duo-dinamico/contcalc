@@ -10,6 +10,7 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename
+import csv
 
 class MyWindow(ttk.Frame):
     def __init__(self, parent):
@@ -37,11 +38,12 @@ class MyWindow(ttk.Frame):
     # Function to open file
     def open_file(self):
         filepath = askopenfilename(
-            filetypes=[('Text Files', '*.txt'), ('All files', '*.*')]
+            filetypes=[('CSV Files', '*.csv'), ('All files', '*.*')]
         )
         if not filepath:
             return
-        with open(filepath, 'rt') as input_file:
+        with open(filepath, 'rb') as input_file:
             for i, myline in zip(self.lst_entries, input_file):
                 i.set(myline)
-        self.parent.title(f'Containment Calculation Sheet - {filepath}')
+        filename = filepath.split('/')                
+        self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')
