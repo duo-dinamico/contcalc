@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 Containment Calculation Sheet
-test_class_tk.py v0.1
+mywindowClass.py v0.1
 #odetojoy
 Copyright 2020, The JJ duo
 """
 
 import tkinter as tk
 from tkinter import ttk
-#from tkinter import PhotoImage
 from tkinter.filedialog import askopenfilename
 
 class MyWindow(ttk.Frame):
@@ -17,12 +16,10 @@ class MyWindow(ttk.Frame):
         tk.Frame.__init__(self, parent)
         parent.title('Containment Calculation Sheet')
         #self.notebook = Notebook(parent)
-        self.menu(parent)
         self.lst_entries = []
-
-
-    def menu(self, parent):
         self.parent = parent
+
+        # Menu creation
         self.menu = tk.Menu(parent)
         self.filemenu = tk.Menu(self.menu, tearoff=0)
         self.editmenu = tk.Menu(self.menu, tearoff=0)
