@@ -48,9 +48,7 @@ lst_entries = [sv_entry1, sv_entry2, sv_entry3, sv_entry4, sv_entry5]
 mw.lst_entries = lst_entries
 
 for i in range(0, 3):
-    nb.create_entry(
-        'General Info', lst_entries[i], 'white', i+3, 1, 1, 'E'
-        )
+    nb.create_entry('General Info', lst_entries[i], 'white', i+3, 1, 1, 'E')
 
 # Labels for column 2
 headers_col2 = ['Designer: ', 'Revision: ']
@@ -61,9 +59,7 @@ for i in range(0, len(headers_col2)):
 
 # Entries for column 3
 for i in range(3,5):
-    nb.create_entry(
-        'General Info', lst_entries[i], 'white', i+1, 3, 1, 'E'
-        )
+    nb.create_entry('General Info', lst_entries[i], 'white', i+1, 3, 1, 'E')
 
 # Label for bottom title
 titleLabel = nb.create_label(
