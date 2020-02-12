@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Containment Calculation Sheet
-test_class_tk.py v0.1
+notebookClass.py v0.1
 #odetojoy
 Copyright 2020, The JJ duo
 """
@@ -10,15 +10,44 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
-from tkinter.filedialog import askopenfilename
+#from tkinter.filedialog import askopenfilename
 
-class Notebook(ttk.Frame):
+
+class Notebook(ttk.Notebook):
+    """Class that define the Notebook that will contain all the tabs."""
+
     def __init__(self, parent):
-        tk.Frame.__init__(self, parent)
+        """
+        Parameters of this class:
+        nb: Notebook object
+        upper_tabs: List of names of tabs
+        tabs: Dict of tabs
+        section_name_entry: var of the entry for name of section
+        """
+
+        ttk.Notebook.__init__(self, parent)
         self.nb = ttk.Notebook(parent, width=600, height=400)
         self.nb.grid(row=1, column=0)
         self.upper_tabs = ['General Info', 'Calculation', 'Lookup']
         self.tabs = {}
+
+        self.section_name_entry = tk.StringVar()
+
+
+
+    def create_general_tab():
+        """Method to create the General tab"""
+        pass
+
+    def create_calc_tab():
+        """Method to create one Calculation tab"""
+
+        # Criar a tab e adicionar à lista de Tabs
+
+        # Criar o objecto secção
+
+        # Desenhar a tab, usando as variáveis da secção
+        pass
 
     def add_tab(self):
         for title in self.upper_tabs:
@@ -38,11 +67,14 @@ class Notebook(ttk.Frame):
         return entry
 
     def create_botao(self):
-        self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Secção', width=12, command=self.add_sec)
-        self.add_btn.grid(row=6, column=2, sticky='NSEW')
+        self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Nova Secção', width=12, command=self.add_sec)
+        self.add_btn.grid(row=6, column=1, sticky='NSEW')
+
+        entry = tk.Entry(self.tabs['General Info'], textvariable=self.section_name_entry, bg='white')
+        entry.grid(row=6, column=3, sticky='NSEW')
 
     def add_sec(self):
-        print(self.upper_tabs)
+        #print(self.upper_tabs)
         self.upper_tabs.append('Teste')
         self.tab1 = tk.Frame(self.nb)
         self.nb.add(self.tab1, text='Teste')
