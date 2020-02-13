@@ -13,6 +13,7 @@ from tkinter import PhotoImage
 from tkinter.filedialog import askopenfilename
 from mywindowClass import MyWindow
 from notebookClass import Notebook
+from tabClass import MyTab
 
 # Create main window
 root = tk.Tk()

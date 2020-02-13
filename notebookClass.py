@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
 #from tkinter.filedialog import askopenfilename
+from tabClass import MyTab
 
 
 class Notebook(ttk.Notebook):
@@ -26,10 +27,13 @@ class Notebook(ttk.Notebook):
         """
 
         ttk.Notebook.__init__(self, parent)
-        self.nb = ttk.Notebook(parent, width=600, height=400)
-        self.nb.grid(row=1, column=0)
+        #self.nb = ttk.Notebook(parent, width=600, height=400)
+        self.grid(row=1, column=0)
         self.upper_tabs = ['General Info', 'Calculation', 'Lookup']
         self.tabs = {}
+
+        # List of the current tab objects
+        self.tabs_list = []
 
         self.section_name_entry = tk.StringVar()
 
@@ -51,10 +55,10 @@ class Notebook(ttk.Notebook):
 
     def add_tab(self):
         for title in self.upper_tabs:
-            self.tab = tk.Frame(self.nb, width=600, height=400)
-            self.nb.add(self.tab, text=title)
+            self.tab = tk.Frame(self, width=600, height=400)
+            self.add(self.tab, text=title)
             self.tabs[title] = self.tab
-            self.nb.grid(row=1, column=0, sticky='nswe')
+            self.grid(row=1, column=0, sticky='nswe')
 
     def create_label(self, name, text, image, background, row, column, colspan, sticky):
         label = tk.Label(self.tabs[name], text=text, image=image, bg=background)
@@ -67,14 +71,28 @@ class Notebook(ttk.Notebook):
         return entry
 
     def create_botao(self):
-        self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Nova Secção', width=12, command=self.add_sec)
-        self.add_btn.grid(row=6, column=1, sticky='NSEW')
+
+        label = tk.Label(self.tabs['General Info'], text='Section Name', bg='white')
+        label.grid(row=6, column=0, columnspan=1, sticky='NSEW')
 
         entry = tk.Entry(self.tabs['General Info'], textvariable=self.section_name_entry, bg='white')
-        entry.grid(row=6, column=3, sticky='NSEW')
+        entry.grid(row=6, column=1, sticky='NSEW')
+
+        self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Nova Secção', width=12, command=self.add_sec)
+        self.add_btn.grid(row=6, column=2, columnspan=2, sticky='NSEW')
+
+
 
     def add_sec(self):
-        #print(self.upper_tabs)
-        self.upper_tabs.append('Teste')
-        self.tab1 = tk.Frame(self.nb)
-        self.nb.add(self.tab1, text='Teste')
+        exist = False
+        for n in self.tabs_list:
+            if n.name == self.section_name_entry.get():
+                exist = True
+        if self.section_name_entry.get() != '' and exist==False:
+            new_tab = MyTab(self, self.section_name_entry.get())
+            self.tabs_list.append(new_tab)
+            self.select(new_tab)
+            self.section_name_entry.set('')
+
+        #self.tab1 = tk.Frame(self.nb)
+        #self.nb.add(self.tab1, text='Teste')
