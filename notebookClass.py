@@ -12,6 +12,7 @@ from tkinter import ttk
 from tkinter import PhotoImage
 #from tkinter.filedialog import askopenfilename
 from tabClass import MyTab
+from tkinter import messagebox
 
 
 class Notebook(ttk.Notebook):
@@ -84,15 +85,18 @@ class Notebook(ttk.Notebook):
 
 
     def add_sec(self):
-        exist = False
         for n in self.tabs_list:
             if n.name == self.section_name_entry.get():
-                exist = True
-        if self.section_name_entry.get() != '' and exist==False:
+                messagebox.showwarning(title='No name', message='That section name already exist.')
+                return
+        if self.section_name_entry.get() != '':
             new_tab = MyTab(self, self.section_name_entry.get())
             self.tabs_list.append(new_tab)
             self.select(new_tab)
             self.section_name_entry.set('')
+        else:
+            messagebox.showwarning(title='No name', message='You must insert a section name.')
+
 
         #self.tab1 = tk.Frame(self.nb)
         #self.nb.add(self.tab1, text='Teste')
