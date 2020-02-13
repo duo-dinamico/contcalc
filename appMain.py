@@ -20,7 +20,7 @@ root = tk.Tk()
 
 # Title and Icon of the window
 root.title('Containment Calculation Sheet')
-#root.iconbitmap('calc.ico')
+root.iconbitmap('calc.ico')
 
 # Create the main frame of the window
 mw = MyWindow(root)
