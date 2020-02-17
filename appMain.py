@@ -10,7 +10,6 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
-from tkinter.filedialog import askopenfilename
 from mywindowClass import MyWindow, Menu
 from notebookClass import Notebook
 from tabClass import MyTab

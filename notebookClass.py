@@ -10,7 +10,6 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
-#from tkinter.filedialog import askopenfilename
 from tabClass import MyTab
 from tkinter import messagebox
 
@@ -40,11 +39,11 @@ class Notebook(ttk.Notebook):
 
 
 
-    def create_general_tab():
+    def create_general_tab(self):
         """Method to create the General tab"""
         pass
 
-    def create_calc_tab():
+    def create_calc_tab(self):
         """Method to create one Calculation tab"""
 
         # Criar a tab e adicionar à lista de Tabs
@@ -81,8 +80,6 @@ class Notebook(ttk.Notebook):
 
         self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Nova Secção', width=12, command=self.add_sec)
         self.add_btn.grid(row=6, column=2, columnspan=2, sticky='NSEW')
-
-
 
     def add_sec(self):
         for n in self.tabs_list:

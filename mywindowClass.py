@@ -97,4 +97,3 @@ class Menu(tk.Menu):
             for row in lst_toSave:
                 columns = [c.strip() for c in row.strip(', ').split(',')]
                 writer.writerow(columns)
-
