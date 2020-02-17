@@ -11,7 +11,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
 from tkinter.filedialog import askopenfilename
-from mywindowClass import MyWindow
+from mywindowClass import MyWindow, Menu
 from notebookClass import Notebook
 from tabClass import MyTab
 
@@ -24,6 +24,8 @@ root.iconbitmap('calc.ico')
 
 # Create the main frame of the window
 mw = MyWindow(root)
+menu = Menu(root)
+root.config(menu=menu)
 
 # Global variables to be added here
 #upper_tabs = ['General Info', 'Calculation', 'Lookup']
@@ -53,7 +55,7 @@ sv_entry4 = tk.StringVar()
 sv_entry5 = tk.StringVar()
 
 lst_entries = [sv_entry1, sv_entry2, sv_entry3, sv_entry4, sv_entry5]
-mw.lst_entries = lst_entries
+menu.lst_entries = lst_entries
 
 for i in range(0, 3):
     nb.create_entry('General Info', lst_entries[i], 'white', i+3, 1, 1, 'E')
