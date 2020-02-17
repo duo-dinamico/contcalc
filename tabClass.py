@@ -23,6 +23,8 @@ class MyTab(ttk.Frame):
         self.common_parameters.grid()
         self.cable_parameters = ttk.Labelframe(self, text='Cables')
         self.cable_parameters.grid()
+        self.cable_list_parameters = ttk.Labelframe(self, text='Cables List')
+        self.cable_list_parameters.grid()
 
         self.name = name
         self.install_type_var = tk.StringVar()
@@ -31,7 +33,9 @@ class MyTab(ttk.Frame):
         self.cable_ref_var = tk.StringVar()
         self.cable_type_var = tk.StringVar()
         self.cable_cores_var = tk.StringVar()
-
+        self.cable_csa_var = tk.StringVar()
+        self.cable_parallel_var = tk.StringVar()
+        self.cable_cpc_var = tk.StringVar()
 
         parent.add(self, text=self.name)
         self.tab_draw()
@@ -65,9 +69,37 @@ class MyTab(ttk.Frame):
 
         # Select core Number
         self.cable_cores_label = tk.Label(self.cable_parameters, text='Cores')
-        self.cable_cores_label.grid(row=2, column=0)
+        self.cable_cores_label.grid(row=1, column=2)
         self.cable_cores_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_cores_var, *self.get_cores_list(), command=self.cable_cores_select)
-        self.cable_cores_optionmenu.grid(row=2, column=1)
+        self.cable_cores_optionmenu.grid(row=1, column=3)
+
+        # Select CSA
+        self.cable_csa_label = tk.Label(self.cable_parameters, text='CSA')
+        self.cable_csa_label.grid(row=1, column=4)
+        self.cable_csa_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_csa_var, *self.get_csa_list(), command=self.cable_csa_select)
+        self.cable_csa_optionmenu.grid(row=1, column=5)
+
+        # Select Cables in parallel
+        self.cable_parallel_label = tk.Label(self.cable_parameters, text='Parallel')
+        self.cable_parallel_label.grid(row=1, column=6)
+        self.cable_parallel_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_parallel_var, *self.get_parallel_list(), command=self.cable_parallel_select)
+        self.cable_parallel_optionmenu.grid(row=1, column=7)
+
+        # Select CPC CSA
+        self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA')
+        self.cable_cpc_label.grid(row=2, column=0)
+        self.cable_cpc_entry = tk.Entry(self.cable_parameters, textvariable=self.cable_cpc_var)
+        self.cable_cpc_entry.grid(row=2, column=1)
+
+        # Cable Buttons
+        self.cable_add_btn = tk.Button(self.cable_parameters, text='Add', width=12, command=self.add_cable)
+        self.cable_add_btn.grid(row=3, column=0)
+
+        # List of cables
+        self.cable_list_label = tk.Label(self.cable_list_parameters, text='Cable List')
+        self.cable_list_label.grid(row=0, column=0)
+        self.parts_list_listbox = tk.Listbox(self.cable_list_parameters, height=8, width=50, border=0)
+        self.parts_list_listbox.grid(row=1, column=0, rowspan=6, columnspan=4, padx=20)
 
         # Delete_tab button
         self.del_tab_btn = tk.Button(self, text='Delete Section', width=12, command=self.delete_this_tab)
@@ -75,25 +107,36 @@ class MyTab(ttk.Frame):
 
     def delete_this_tab(self):
         """Method to destroy current tab"""
-        print(self.parent.tabs_list)
         self.parent.tabs_list.remove(self)
-        print(self.parent.tabs_list)
         self.destroy()
 
-    def add_cable(self, cable):
+    def add_cable(self):
         """Method to add a cable to this tab"""
+        cable = MyCable(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_var.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
         self.cable_list.append(cable)
+        print(cable.diam)
+        print(self.list_cables())
+        self.populate_list()
 
     def remove_cable(self, cable):
         """Method to remove a cable in this tab"""
         self.cable_list.remove(cable)
 
+    def populate_list(self):
+        self.parts_list_listbox.delete(0, tk.END)
+        for obj in self.cable_list:
+            self.parts_list_listbox.insert(tk.END, self.list_cables())
+
     def list_cables(self):
         """Method to list all cables in this tab"""
         result_list = []
         for cable in self.cable_list:
-            result_list.append(cable.cable_ref)
-        return result_list
+            result_list.append([cable.cable_ref, cable.cable_type, cable.integral_cables, cable.csa, cable.parallel, cable.cpc_csa, cable.diam])
+        result = ''
+        for i in result_list:
+            result += ' ' + str(i)
+        print(result)
+        return result
 
     def get_type_list(self):
         """Method that returns the list of all cables abvailable"""
@@ -107,12 +150,30 @@ class MyTab(ttk.Frame):
 
         # Um dia vai ser aqui criada uma lista de cores de cabos,
         # mas esse dia não é hoje
-        return ['1 core', '2 core', '3 core']
+        return ['1', '2', '3']
+
+    def get_csa_list(self):
+        """Method that returns the list of all cores abvailable"""
+
+        # Um dia vai ser aqui criada uma lista de cores de cabos,
+        # mas esse dia não é hoje
+        return ['240', '120', '35']
+
+    def get_parallel_list(self):
+        """Method that returns the list of all cores abvailable"""
+
+        # Um dia vai ser aqui criada uma lista de cores de cabos,
+        # mas esse dia não é hoje
+        return ['1', '2', '3']
 
     def cable_type_select(self, event):
         print(self.cable_type_var.get())
     def cable_cores_select(self, event):
         print(self.cable_cores_var.get())
+    def cable_csa_select(self, event):
+        print(self.cable_csa_var.get())
+    def cable_parallel_select(self, event):
+        print(self.cable_parallel_var.get())
 
 
 
