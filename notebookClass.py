@@ -12,6 +12,7 @@ from tkinter import ttk
 from tkinter import PhotoImage
 from tabClass import MyTab
 from tkinter import messagebox
+from general_info import GeneralInfo
 
 
 class Notebook(ttk.Notebook):
@@ -25,23 +26,23 @@ class Notebook(ttk.Notebook):
         tabs: Dict of tabs
         section_name_entry: var of the entry for name of section
         """
-
-        ttk.Notebook.__init__(self, parent)
-        #self.nb = ttk.Notebook(parent, width=600, height=400)
+        ttk.Notebook.__init__(self)
+        self.nb = ttk.Notebook(parent)
         self.grid(row=1, column=0)
         self.upper_tabs = ['General Info', 'Calculation', 'Lookup']
         self.tabs = {}
+        self.create_general_tab()
+        self.parent = parent
 
         # List of the current tab objects
         self.tabs_list = []
 
         self.section_name_entry = tk.StringVar()
 
-
-
     def create_general_tab(self):
         """Method to create the General tab"""
-        pass
+        tab1 = GeneralInfo(self)
+        self.add(tab1, text='General Info')
 
     def create_calc_tab(self):
         """Method to create one Calculation tab"""
@@ -52,34 +53,10 @@ class Notebook(ttk.Notebook):
 
         # Desenhar a tab, usando as variáveis da secção
         pass
-
-    def add_tab(self):
-        for title in self.upper_tabs:
-            self.tab = tk.Frame(self, width=600, height=400)
-            self.add(self.tab, text=title)
-            self.tabs[title] = self.tab
-            self.grid(row=1, column=0, sticky='nswe')
-
-    def create_label(self, name, text, image, background, row, column, colspan, sticky):
-        label = tk.Label(self.tabs[name], text=text, image=image, bg=background)
-        label.grid(row=row, column=column, columnspan=colspan, sticky=sticky)
-        return label
-
-    def create_entry(self, name, text, background, row, column, colspan, sticky):
-        entry = tk.Entry(self.tabs[name], textvariable=text, bg=background)
-        entry.grid(row=row, column=column, columnspan=colspan, sticky=sticky)
-        return entry
-
+    
     def create_botao(self):
-
-        label = tk.Label(self.tabs['General Info'], text='Section Name', bg='white')
-        label.grid(row=6, column=0, columnspan=1, sticky='NSEW')
-
-        entry = tk.Entry(self.tabs['General Info'], textvariable=self.section_name_entry, bg='white')
-        entry.grid(row=6, column=1, sticky='NSEW')
-
-        self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Nova Secção', width=12, command=self.add_sec)
-        self.add_btn.grid(row=6, column=2, columnspan=2, sticky='NSEW')
+        pass
+        # self.add_btn = tk.Button(self.tabs['General Info'], text='Criar Nova Secção', width=12, command=self.add_sec)
 
     def add_sec(self):
         for n in self.tabs_list:
