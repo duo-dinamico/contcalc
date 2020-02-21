@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Containment Calculation Sheet
-test_class_tk.py v0.2
+appMain.py v0.8
 #odetojoy
 Copyright 2020, The JJ duo
 """
@@ -17,7 +17,7 @@ class App(tk.Tk):
         tk.Tk.__init__(self)
         MyWindow(self)
         self.title('Containment Calculation Sheet')
-        self.iconbitmap('calc.ico')
+        self.iconbitmap('images/calc.ico')
         menu = Menu(self)
         self.config(menu=menu)
         Notebook(self)

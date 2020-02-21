@@ -29,8 +29,8 @@ class Notebook(ttk.Notebook):
         self.nb = ttk.Notebook(parent)
         self.grid(row=1, column=0)
         self.parent = parent
-        self.gifLogo = tk.PhotoImage(file='ArupLogo.gif')        
-        self.tabs_list = []
+        self.gifLogo = tk.PhotoImage(file='images/ArupLogo.gif')        
+        self.tabs_list = {}
         self.section_name_entry = tk.StringVar()
         """Variables for entries"""
         self.sv_entry1 = tk.StringVar()
@@ -45,9 +45,11 @@ class Notebook(ttk.Notebook):
     def create_general_tab(self, title):  
         """Method to create General Info tab"""
         frame = ttk.Frame(self)
-        self.add(frame, text=title) 
+        self.title = title
+        self.dict = {self.title: self}
+        self.add(frame, text=self.title) 
         self.grid(row=1, column=0)  
-        self.tabs_list.append(title) 
+        self.tabs_list.update(self.dict)
         
         """Labels with logo"""
         CreateLabel(frame, text='', image=self.gifLogo, background='white', height=150, width=700, row=1, column=0, colspan=5, sticky='NSEW')
@@ -90,13 +92,14 @@ class Notebook(ttk.Notebook):
         pass
     
     def add_sec(self):
-        for n in self.tabs_list:
-            if n == self.section_name_entry.get():
+        for k, v in self.tabs_list.items():
+            if k == self.section_name_entry.get():
                 messagebox.showwarning(title='Error', message='That section name already exist.')
                 return
         if self.section_name_entry.get() != '':
             new_tab = MyTab(self, self.section_name_entry.get())
-            self.tabs_list.append(new_tab)
+            self.dict = {self.section_name_entry.get(): new_tab}
+            self.tabs_list.update(self.dict)
             self.select(new_tab)
             self.section_name_entry.set('')
         else:

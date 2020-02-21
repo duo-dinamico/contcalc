@@ -2,15 +2,17 @@
 # -*- coding: utf-8 -*-
 """
 Containment Calculation Sheet
-mywindowClass.py v0.1
+mywindowClass.py v0.5
 #odetojoy
 Copyright 2020, The JJ duo
 """
 
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 import csv
+import platform
 
 class MyWindow(ttk.Frame):
     """Class that define the Frame container of the root window,
@@ -52,8 +54,10 @@ class Menu(tk.Menu):
 
         self.filemenu = tk.Menu(self, tearoff=0)
         self.editmenu = tk.Menu(self, tearoff=0)
+        self.helpmenu = tk.Menu(self, tearoff=0)
         self.add_cascade(label='File', menu=self.filemenu)
         self.add_cascade(label='Edit', menu=self.editmenu)
+        self.add_cascade(label='Help', menu=self.helpmenu)
         self.filemenu.add_command(label='Open', command=self.open_file)
         self.filemenu.add_command(label='Save as...', command=self.save_file)
         self.filemenu.add_separator()
@@ -61,6 +65,7 @@ class Menu(tk.Menu):
         self.editmenu.add_command(label='Cut', command=parent.quit)
         self.editmenu.add_command(label='Copy', command=parent.quit)
         self.editmenu.add_command(label='Past', command=parent.quit)
+        self.helpmenu.add_command(label='About', command=self.about_menu)
 
     def open_file(self):
         """Method for opening files.
@@ -96,3 +101,13 @@ class Menu(tk.Menu):
             for row in lst_toSave:
                 columns = [c.strip() for c in row.strip(', ').split(',')]
                 writer.writerow(columns)
+
+    def about_menu(self):
+        """Method for versions.
+        INPUT: self
+        OUTPUT: no output
+        """
+        py_version_compact = platform.python_version()
+        tkinter_version = tk.TkVersion
+        contcalc_version = 0.2
+        messagebox.showinfo(title='About', message=(f'This tools versions is: {contcalc_version}\nYour python version is: {py_version_compact}\nYour tkinter version is: {tkinter_version}'))
