@@ -10,9 +10,9 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from tkinter.filedialog import askopenfilename
-import csv
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 import platform
+import json
 
 class MyWindow(ttk.Frame):
     """Class that define the Frame container of the root window,
@@ -73,12 +73,13 @@ class Menu(tk.Menu):
         OUTPUT: no output
         """
         filepath = askopenfilename(
-            filetypes=[('CSV Files', '*.csv'), ('All files', '*.*')]
+            filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
         )
         if not filepath:
             return
         with open(filepath, 'r') as input_file:
-            for i, myline in zip(self.lst_entries, input_file):
+            data = json.load(input_file)
+            for i, myline in zip(self.lst_entries, data):
                 i.set(myline.strip())
         filename = filepath.split('/')
         self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')
@@ -89,18 +90,15 @@ class Menu(tk.Menu):
         OUTPUT: no output
         """
         lst_toSave = []
-        filepath = askopenfilename(
-            filetypes=[('CSV Files', '*.csv'), ('All files', '*.*')]
+        filepath = asksaveasfilename(
+            filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
         )
         if not filepath:
             return
-        with open(filepath, 'w', newline='') as save_file:
+        with open(filepath, 'w') as save_file:
             for i in self.lst_entries:
                 lst_toSave.append(str(i.get()))
-            writer = csv.writer(save_file, delimiter=',')
-            for row in lst_toSave:
-                columns = [c.strip() for c in row.strip(', ').split(',')]
-                writer.writerow(columns)
+            json.dump(lst_toSave, save_file)
 
     def about_menu(self):
         """Method for versions.
