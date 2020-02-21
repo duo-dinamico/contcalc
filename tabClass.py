@@ -79,40 +79,44 @@ class MyTab(ttk.Frame):
         self.common_trayref_entry.grid(row=2, column=3, sticky='W')
 
         # Cable - Entry for Cable ref
-        self.cable_ref_label = tk.Label(self.cable_parameters, text='Ref')
+        self.cable_ref_label = tk.Label(self.cable_parameters, text='Ref', width='15')
         self.cable_ref_label.grid(row=0, column=0)
         self.cable_ref_entry = tk.Entry(self.cable_parameters, textvariable=self.cable_ref_var)
-        self.cable_ref_entry.grid(row=0, column=1)
+        self.cable_ref_entry.grid(row=1, column=0, sticky='EW')
 
         # Cable - Select cable type
-        self.cable_type_label = tk.Label(self.cable_parameters, text='Type')
-        self.cable_type_label.grid(row=1, column=0)
+        self.cable_type_label = tk.Label(self.cable_parameters, text='Type', width='15')
+        self.cable_type_label.grid(row=0, column=1)
         self.cable_type_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_type_var, *self.get_type_list(), command=self.cable_type_select)
-        self.cable_type_optionmenu.grid(row=1, column=1)
+        self.cable_type_var.set(self.get_type_list()[0])
+        self.cable_type_optionmenu.grid(row=1, column=1, sticky='EW')
 
         # Cable - Select core Number
-        self.cable_cores_label = tk.Label(self.cable_parameters, text='Cores')
-        self.cable_cores_label.grid(row=1, column=2)
+        self.cable_cores_label = tk.Label(self.cable_parameters, text='Cores', width='15')
+        self.cable_cores_label.grid(row=0, column=2)
         self.cable_cores_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_cores_var, *self.get_cores_list(), command=self.cable_cores_select)
-        self.cable_cores_optionmenu.grid(row=1, column=3)
+        self.cable_cores_var.set(self.get_cores_list()[0])
+        self.cable_cores_optionmenu.grid(row=1, column=2, sticky='EW')
 
         # Cable - Select CSA
-        self.cable_csa_label = tk.Label(self.cable_parameters, text='CSA')
-        self.cable_csa_label.grid(row=1, column=4)
+        self.cable_csa_label = tk.Label(self.cable_parameters, text='CSA', width='15')
+        self.cable_csa_label.grid(row=0, column=3)
         self.cable_csa_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_csa_var, *self.get_csa_list(), command=self.cable_csa_select)
-        self.cable_csa_optionmenu.grid(row=1, column=5)
+        self.cable_csa_var.set(self.get_csa_list()[0])
+        self.cable_csa_optionmenu.grid(row=1, column=3, sticky='EW')
 
         # Cable - Select Cables in parallel
-        self.cable_parallel_label = tk.Label(self.cable_parameters, text='Parallel')
-        self.cable_parallel_label.grid(row=1, column=6)
+        self.cable_parallel_label = tk.Label(self.cable_parameters, text='Parallel', width='15')
+        self.cable_parallel_label.grid(row=0, column=4)
         self.cable_parallel_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_parallel_var, *self.get_parallel_list(), command=self.cable_parallel_select)
-        self.cable_parallel_optionmenu.grid(row=1, column=7)
+        self.cable_parallel_var.set(self.get_parallel_list()[0])
+        self.cable_parallel_optionmenu.grid(row=1, column=4, sticky='EW')
 
         # Cable - Select CPC CSA
-        self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA')
-        self.cable_cpc_label.grid(row=2, column=0)
+        self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA', width='15')
+        self.cable_cpc_label.grid(row=0, column=5)
         self.cable_cpc_entry = tk.Entry(self.cable_parameters, textvariable=self.cable_cpc_var)
-        self.cable_cpc_entry.grid(row=2, column=1)
+        self.cable_cpc_entry.grid(row=1, column=5, sticky='EW')
 
         # Cable - Buttons
         self.cable_add_btn = tk.Button(self.cable_parameters, text='Add', width=12, command=self.add_cable)
@@ -155,7 +159,7 @@ class MyTab(ttk.Frame):
         """Method to list all cables in this tab"""
         result_list = []
         for cable in self.cable_list:
-            result_list.append([cable.cable_ref, cable.cable_type, cable.integral_cables, cable.csa, cable.parallel, cable.cpc_csa, cable.diam])
+            result_list.append([cable.cable_ref, cable.cable_type, cable.number_cables, cable.csa, cable.parallel, cable.cpc_csa, cable.diam])
         result = ''
         for i in result_list:
             result += ' ' + str(i)
@@ -223,7 +227,7 @@ class MyTab(ttk.Frame):
         pass
 
     def common_install_select(self, event):
-        print(self.common_install_var.get())
+        # print(self.common_install_var.get())
         if self.common_install_var.get() in ['Touching', 'Spaced'] :
             self.common_spacing_entry.grid_forget()
             self.common_spacing_label.grid_forget()
@@ -239,14 +243,14 @@ class MyCable:
     def __init__(self, ref, typ, num, csa, par, cpc):
         self.cable_ref = ref
         self.cable_type = typ
-        self.integral_cables = float(num)
+        self.number_cables = float(num)
         self.csa = float(csa)
         self.parallel = par
-        self.cpc_csa = cpc
+        self.cpc_csa = float(cpc)
         self.diam = self.cable_calc()
 
     def cable_calc(self):
-        result = self.integral_cables * self.csa
+        result = self.number_cables * self.csa * self.cpc_csa
         return result
 
     def get_list(self):
