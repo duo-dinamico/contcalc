@@ -13,7 +13,6 @@ from tkinter import PhotoImage
 from mywindowClass import MyWindow, Menu
 from notebookClass import Notebook
 from tabClass import MyTab
-from widgetsClass import CreateButton, CreateEntry, CreateLabel
 
 # Create main window
 root = tk.Tk()
@@ -22,18 +21,12 @@ root = tk.Tk()
 root.title('Containment Calculation Sheet')
 root.iconbitmap('calc.ico')
 
-# Create the main frame of the window
+# Create the main frame of the window and menu
 mw = MyWindow(root)
 menu = Menu(root)
 root.config(menu=menu)
 
-# Global variables to be added here
-#upper_tabs = ['General Info', 'Calculation', 'Lookup']
-#tabs = {}
-
 # Notebook and Tabs
 nb = Notebook(root)
-
-nb.create_botao()
 
 root.mainloop()

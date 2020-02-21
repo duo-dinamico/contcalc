@@ -10,7 +10,6 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 
-
 class MyTab(ttk.Frame):
     """Class for the Section calculation tabs"""
 
@@ -133,7 +132,7 @@ class MyTab(ttk.Frame):
         """Method to destroy current tab"""
         self.parent.tabs_list.remove(self)
         self.destroy()
-        self.parent.select(self.parent.tabs['General Info'])
+        self.parent.select(self.parent.tabs_list[0])
 
 
     def add_cable(self):
