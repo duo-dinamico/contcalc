@@ -74,12 +74,10 @@ class Notebook(ttk.Notebook):
         """Create Sections"""
         CreateLabel(frame, text='Section Name: ', image='', background=None, height=6, width=0, row=5, column=0, colspan=1, sticky='W')
         CreateEntry(frame, text=self.section_name_entry, background='white', row=5, column=1, colspan=1, sticky='E')
-        CreateButton(frame, text='Create Section', height=1, width=0, command=self.add_sec, row=5, column=2, colspan=1, sticky='NSEW')
+        CreateButton(frame, text='Create Section', height=1, width=0, command=self.add_sec, row=5, column=2, colspan=1, sticky='')
 
         """Label for bottom title"""
-        CreateLabel(frame, text='''ESN Calc Sheet
-        Containment sizing spreadsheet
-        Revision 0.3 Feb20''', image='', background='white', height=10, width=0, row=6, column=0, colspan=5, sticky='NSEW')
+        CreateLabel(frame, text='''ESN Calc Sheet\n\nContainment sizing spreadsheet\n\nRevision 0.3 Feb20''', image='', background='white', height=10, width=0, row=6, column=0, colspan=5, sticky='NSEW')
 
     def create_calc_tab(self):
         """Method to create one Calculation tab"""
