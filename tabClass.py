@@ -24,7 +24,10 @@ class MyTab(ttk.Frame):
         self.cable_parameters.grid(row=1, column=0, sticky='WE', padx=20, pady=20)
         self.cable_list_parameters = ttk.Labelframe(self, text='Cables List')
         self.cable_list_parameters.grid(row=2, column=0, sticky='WE', padx=20, pady=20)
+        self.result_parameters = ttk.Labelframe(self, text='Results')
+        self.result_parameters.grid(row=3, column=0, sticky='WE', padx=20, pady=20)
 
+        # Object variables
         self.name = name
         self.common_install_var = tk.StringVar()
         self.common_spacing_var = tk.StringVar()
@@ -39,6 +42,7 @@ class MyTab(ttk.Frame):
         self.cable_parallel_var = tk.StringVar()
         self.cable_cpc_var = tk.StringVar()
 
+        # Start object
         parent.add(self, text=self.name)
         self.tab_draw()
 
@@ -128,16 +132,22 @@ class MyTab(ttk.Frame):
         self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=16, width=100, border=0)
         self.cable_list_listbox.grid(row=1, column=0, rowspan=6, columnspan=4, padx=20)
 
+        # Result -
+        self.result_label = tk.Label(self.result_parameters, text='Result:')
+        self.result_label.grid(row=0, column=0)
+
         # Delete_tab button
         self.del_tab_btn = tk.Button(self, text='Delete Section', width=12, command=self.delete_this_tab)
         self.del_tab_btn.grid(row=5, column=0)
 
     def delete_this_tab(self):
         """Method to destroy current tab"""
-        self.parent.tabs_list.remove(self)
+        # self.parent.tabs_list.remove(self)
+        self.parent.tabs_list.pop(self.name)
         self.destroy()
-        self.parent.select(self.parent.tabs_list[0])
 
+        # Select back the General Info tab
+        self.parent.select(self.parent.tabs()[0])
 
     def add_cable(self):
         """Method to add a cable to this tab"""
@@ -160,10 +170,10 @@ class MyTab(ttk.Frame):
         result_list = []
         for cable in self.cable_list:
             result_list.append([cable.cable_ref, cable.cable_type, cable.number_cables, cable.csa, cable.parallel, cable.cpc_csa, cable.diam])
-        result = ''
-        for i in result_list:
-            result += ' ' + str(i)
-        #print('list_cables' + result)
+        # result = ''
+        # for i in result_list:
+        #     result += ' ' + str(i)
+        # #print('list_cables' + result)
         return result_list
 
     def get_type_list(self):
@@ -234,7 +244,7 @@ class MyTab(ttk.Frame):
         if self.common_install_var.get() == 'Custom Spacing':
             self.common_spacing_label.grid(row=0, column=2, sticky='W')
             self.common_spacing_entry.grid(row=0, column=3, sticky='W')
-        #pass
+
 
 
 
