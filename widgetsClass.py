@@ -25,7 +25,7 @@ class CreateEntry(tk.Entry):
 
 
 class CreateButton(tk.Button):
-    def __init__(self, name, text, width, command, row, column, colspan, sticky):
+    def __init__(self, name, text, height, width, command, row, column, colspan, sticky):
         tk.Label.__init__(self)
-        button = tk.Button(master=name, text=text, width=width, command=command)
+        button = tk.Button(master=name, text=text, height=height, width=width, command=command)
         button.grid(row=row, column=column, columnspan=colspan, sticky=sticky)

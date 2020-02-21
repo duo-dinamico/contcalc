@@ -9,24 +9,19 @@ Copyright 2020, The JJ duo
 
 import tkinter as tk
 from tkinter import ttk
-from tkinter import PhotoImage
 from mywindowClass import MyWindow, Menu
 from notebookClass import Notebook
-from tabClass import MyTab
 
-# Create main window
-root = tk.Tk()
+class App(tk.Tk):
+    def __init__(self):
+        tk.Tk.__init__(self)
+        MyWindow(self)
+        self.title('Containment Calculation Sheet')
+        self.iconbitmap('calc.ico')
+        menu = Menu(self)
+        self.config(menu=menu)
+        Notebook(self)
 
-# Title and Icon of the window
-root.title('Containment Calculation Sheet')
-root.iconbitmap('calc.ico')
-
-# Create the main frame of the window and menu
-mw = MyWindow(root)
-menu = Menu(root)
-root.config(menu=menu)
-
-# Notebook and Tabs
-nb = Notebook(root)
-
-root.mainloop()
+if __name__ == '__main__':
+    app=App()
+    app.mainloop()
