@@ -41,6 +41,7 @@ class MyTab(ttk.Frame):
         self.cable_csa_var = tk.StringVar()
         self.cable_parallel_var = tk.StringVar()
         self.cable_cpc_var = tk.StringVar()
+        self.result_var = tk.StringVar()
 
         # Start object
         parent.add(self, text=self.name)
@@ -126,19 +127,34 @@ class MyTab(ttk.Frame):
         self.cable_add_btn = tk.Button(self.cable_parameters, text='Add', width=12, command=self.add_cable)
         self.cable_add_btn.grid(row=3, column=0, sticky='WE', padx=5, pady=5)
 
+        self.cable_remove_btn = tk.Button(self.cable_parameters, text='Remove', width=12, command=self.remove_cable)
+        self.cable_remove_btn.grid(row=3, column=1, sticky='WE', padx=5, pady=5)
+
+
+
+
         # Cable_List - List of cables
-        self.cable_list_label = tk.Label(self.cable_list_parameters, text='Cable List')
-        self.cable_list_label.grid(row=0, column=0)
+        # self.cable_list_label = tk.Label(self.cable_list_parameters, text='Cable List')
+        # self.cable_list_label.grid(row=0, column=0)
         self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=16, width=100, border=0)
-        self.cable_list_listbox.grid(row=1, column=0, rowspan=6, columnspan=4, padx=20)
+        self.cable_list_listbox.grid(row=1, column=0, rowspan=6, columnspan=4, padx=20, pady=20)
+        self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
 
         # Result -
         self.result_label = tk.Label(self.result_parameters, text='Result:')
         self.result_label.grid(row=0, column=0)
+        self.result_entry = tk.Entry(self.result_parameters, textvariable=self.result_var, state='disabled')
+        self.result_entry.grid(row=0, column=1, sticky='E')
 
         # Delete_tab button
         self.del_tab_btn = tk.Button(self, text='Delete Section', width=12, command=self.delete_this_tab)
         self.del_tab_btn.grid(row=5, column=0)
+
+
+    def select_item(self, event):
+        print(self.cable_list_listbox.curselection()[0])
+        print(self.cable_list[self.cable_list_listbox.curselection()[0]].cable_ref)
+        self.selected_item = self.cable_list[self.cable_list_listbox.curselection()[0]]
 
     def delete_this_tab(self):
         """Method to destroy current tab"""
@@ -154,10 +170,13 @@ class MyTab(ttk.Frame):
         self.cable_list.append(cable)
         print(cable.diam)
         self.populate_list()
+        self.print_result()
 
-    def remove_cable(self, cable):
+    def remove_cable(self):
         """Method to remove a cable in this tab"""
-        self.cable_list.remove(cable)
+        self.cable_list.remove(self.selected_item)
+        self.populate_list()
+        self.print_result()
 
     def populate_list(self):
         self.cable_list_listbox.delete(0, tk.END)
@@ -174,6 +193,13 @@ class MyTab(ttk.Frame):
         #     result += ' ' + str(i)
         # #print('list_cables' + result)
         return result_list
+
+    def print_result(self):
+        result = 0
+        for obj in self.cable_list:
+            result += obj.diam
+        self.result_var.set(result)
+        print(result)
 
     def get_type_list(self):
         """Method that returns the list of all cables abvailable"""
