@@ -10,6 +10,8 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk
 
+
+
 class MyTab(ttk.Frame):
     """Class for the Section calculation tabs"""
 
@@ -99,7 +101,8 @@ class MyTab(ttk.Frame):
         # Cable - Select core Number
         self.cable_cores_label = tk.Label(self.cable_parameters, text='Cores', width='15')
         self.cable_cores_label.grid(row=0, column=2)
-        self.cable_cores_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_cores_var, *self.get_cores_list(), command=self.cable_cores_select)
+        #self.cable_cores_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_cores_var, *self.get_cores_list(), command=self.cable_cores_select)
+        self.cable_cores_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_cores_var, 'Select...', command=self.cable_cores_select)
         self.cable_cores_var.set(self.get_cores_list()[0])
         self.cable_cores_optionmenu.grid(row=1, column=2, sticky='EW')
 
@@ -130,12 +133,14 @@ class MyTab(ttk.Frame):
         self.cable_remove_btn = tk.Button(self.cable_parameters, text='Remove', width=12, command=self.remove_cable)
         self.cable_remove_btn.grid(row=3, column=1, sticky='WE', padx=5, pady=5)
 
+        self.cable_update_btn = tk.Button(self.cable_parameters, text='Update', width=12, command=self.update_cable)
+        self.cable_update_btn.grid(row=3, column=2, sticky='WE', padx=5, pady=5)
 
+        self.cable_clear_btn = tk.Button(self.cable_parameters, text='Clear', width=12, command=self.clear_cable)
+        self.cable_clear_btn.grid(row=3, column=3, sticky='WE', padx=5, pady=5)
 
 
         # Cable_List - List of cables
-        # self.cable_list_label = tk.Label(self.cable_list_parameters, text='Cable List')
-        # self.cable_list_label.grid(row=0, column=0)
         self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=16, width=100, border=0)
         self.cable_list_listbox.grid(row=1, column=0, rowspan=6, columnspan=4, padx=20, pady=20)
         self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
@@ -155,6 +160,18 @@ class MyTab(ttk.Frame):
         print(self.cable_list_listbox.curselection()[0])
         print(self.cable_list[self.cable_list_listbox.curselection()[0]].cable_ref)
         self.selected_item = self.cable_list[self.cable_list_listbox.curselection()[0]]
+
+        self.cable_ref_entry.delete(0, tk.END)
+        self.cable_ref_entry.insert(tk.END, self.selected_item.cable_ref)
+
+        self.cable_type_var.set(self.selected_item.cable_type)
+        self.cable_cores_var.set(self.selected_item.number_cables)
+        self.cable_csa_var.set(self.selected_item.csa)
+        self.cable_parallel_var.set(self.selected_item.parallel)
+
+        self.cable_cpc_entry.delete(0, tk.END)
+        self.cable_cpc_entry.insert(tk.END, self.selected_item.cpc_csa)
+
 
     def delete_this_tab(self):
         """Method to destroy current tab"""
@@ -178,6 +195,21 @@ class MyTab(ttk.Frame):
         self.populate_list()
         self.print_result()
 
+    def update_cable(self):
+        """Method to update data of a cable in this tab"""
+        self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_var.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
+        self.populate_list()
+        self.print_result()
+
+    def clear_cable(self):
+        """Method to clear data entries of a cable in this tab"""
+        self.cable_ref_entry.delete(0, tk.END)
+        self.cable_type_var.set(self.get_type_list()[0])
+        self.cable_cores_var.set(self.get_cores_list()[0])
+        self.cable_csa_var.set(self.get_csa_list()[0])
+        self.cable_parallel_var.set(self.get_parallel_list()[0])
+        self.cable_cpc_entry.delete(0, tk.END)
+
     def populate_list(self):
         self.cable_list_listbox.delete(0, tk.END)
         for obj in self.list_cables():
@@ -188,10 +220,6 @@ class MyTab(ttk.Frame):
         result_list = []
         for cable in self.cable_list:
             result_list.append([cable.cable_ref, cable.cable_type, cable.number_cables, cable.csa, cable.parallel, cable.cpc_csa, cable.diam])
-        # result = ''
-        # for i in result_list:
-        #     result += ' ' + str(i)
-        # #print('list_cables' + result)
         return result_list
 
     def print_result(self):
@@ -204,15 +232,13 @@ class MyTab(ttk.Frame):
     def get_type_list(self):
         """Method that returns the list of all cables abvailable"""
 
-        # Um dia vai ser aqui criada uma lista de referencias de cabos,
-        # mas esse dia não é hoje
-        return ['Cabo A', 'Cabo B', 'Cabo C']
+        # print(list(db['cables']))
+        return list(db['cables'])
 
     def get_cores_list(self):
         """Method that returns the list of all cores abvailable"""
 
-        # Um dia vai ser aqui criada uma lista de cores de cabos,
-        # mas esse dia não é hoje
+        print(list(db['cables'][self.cable_type_var.get()]))
         return ['1', '2', '3']
 
     def get_csa_list(self):
@@ -244,6 +270,14 @@ class MyTab(ttk.Frame):
 
     def cable_type_select(self, event):
         #print(self.cable_type_var.get())
+        print(list(db['cables'][self.cable_type_var.get()]))
+        menu = self.cable_cores_optionmenu['menu']
+        menu.delete(0, tk.END)
+        for x in list(db['cables'][self.cable_type_var.get()]):
+            #menu.add_command(label=x, command=self.cable_cores_var.set(x))
+            menu.add_command(label=x, command=lambda value=x: self.cable_cores_var.set(value))
+
+        # self.cable_cores_optionmenu.children['menu'] = ['teste', 'teste2']
         pass
 
     def cable_cores_select(self, event):
@@ -270,6 +304,9 @@ class MyTab(ttk.Frame):
             self.common_spacing_label.grid(row=0, column=2, sticky='W')
             self.common_spacing_entry.grid(row=0, column=3, sticky='W')
 
+    def menu_select(self):
+        """ Don't do anything"""
+        pass
 
 
 
@@ -288,5 +325,67 @@ class MyCable:
         result = self.number_cables * self.csa * self.cpc_csa
         return result
 
-    def get_list(self):
-        return ['teste', 'aaaa', 'bbb']
+    def update_data(self, ref, typ, num, csa, par, cpc):
+        self.cable_ref = ref
+        self.cable_type = typ
+        self.number_cables = float(num)
+        self.csa = float(csa)
+        self.parallel = par
+        self.cpc_csa = float(cpc)
+        self.diam = self.cable_calc()
+
+
+db = {'cables': {
+    'XLPE/SWA/PVC': {
+        '1': {
+            '50': 17.5,
+            '70': 20.2
+        },
+        '2': {
+            '1.5': 12.3,
+            '2.5': 13.6
+        },
+        '3': {
+            '1.5': 12.6,
+            '2.5': 14.1
+        }
+    },
+    'XLPE/SWA/LSF': {
+        '1': {
+            '50': 17.5,
+            '70': 20.2,
+            '95': 22.3,
+            '120': 24.2,
+            '150': 27.4,
+            '185': 30.0,
+            '240': 32.8,
+            '300': 35.6,
+            '400': 40.4,
+            '500': 44.2,
+            '630': 48.8,
+            '800': 55.4,
+            '1000': 60.6
+        },
+        '2': {},
+        '3': {},
+        '4': {},
+        '5': {}
+    },
+    'FP400': {
+
+    },
+    'FP600S': {
+
+    },
+    'MICC (Light Duty)': {
+
+    },
+    'MICC (Heavy Duty)': {
+
+    },
+    'LSF Single': {
+
+    }
+
+}
+}
