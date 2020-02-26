@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 Containment Calculation Sheet
-notebookClass.py v0.1
+widgetsClass.py v0.4
 #odetojoy
 Copyright 2020, The JJ duo
 """
 
 import tkinter as tk
+from tkinter import ttk
 
 
 class CreateLabel(tk.Label):
@@ -29,3 +30,9 @@ class CreateButton(tk.Button):
         tk.Label.__init__(self)
         button = tk.Button(master=name, text=text, height=height, width=width, command=command)
         button.grid(row=row, column=column, columnspan=colspan, sticky=sticky)
+
+class CreateLabelFrame(ttk.LabelFrame):
+    def __init__(self, name, text, row, column, sticky, padx, pady):
+        ttk.LabelFrame.__init__(self)
+        labelframe = ttk.LabelFrame(master=name, text=text)
+        labelframe.grid(row=row, column=column, sticky=sticky, padx=padx, pady=pady)
