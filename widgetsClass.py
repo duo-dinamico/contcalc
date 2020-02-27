@@ -31,8 +31,7 @@ class CreateButton(tk.Button):
         button = tk.Button(master=name, text=text, height=height, width=width, command=command)
         button.grid(row=row, column=column, columnspan=colspan, sticky=sticky)
 
-class CreateLabelFrame(ttk.LabelFrame):
-    def __init__(self, name, text, row, column, sticky, padx, pady):
-        ttk.LabelFrame.__init__(self)
-        labelframe = ttk.LabelFrame(master=name, text=text)
-        labelframe.grid(row=row, column=column, sticky=sticky, padx=padx, pady=pady)
+class CreateLabelframe(ttk.Labelframe):
+    def __init__(self, name, text, row, column, colspan, sticky, ipadx, ipady, padx, pady):
+        ttk.Labelframe.__init__(self, master=name, text=text)
+        self.grid(row=row, column=column, columnspan=colspan, sticky=sticky, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady)
