@@ -179,7 +179,7 @@ class MyTab(ttk.Frame):
         self.destroy()
 
         # Select back the General Info tab
-        self.parent.select(self.parent.tabs_list['General Info'])
+        self.parent.select(self.parent.tabs_list['Main Page'])
 
     def add_cable(self):
         """Method to add a cable to this tab"""

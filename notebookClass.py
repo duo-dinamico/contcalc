@@ -45,11 +45,11 @@ class Notebook(ttk.Notebook):
     def create_general_tab(self, title):  
         """Method to create General Info tab"""
         frame = ttk.Frame(self)
-        self.title = title
-        self.dict = {self.title: self}
-        self.add(frame, text=self.title) 
+        title = title
+        main_dict = {title: frame}
+        self.add(frame, text=title) 
         self.grid(row=1, column=0)  
-        self.tabs_list.update(self.dict)
+        self.tabs_list.update(main_dict)
 
         self.info = CreateLabelframe(frame, text='General Info', row=1, column=0, colspan=5, sticky='NSWE', ipadx=0, ipady=0, padx=20, pady=20)
         self.cSection = CreateLabelframe(frame, text='Create New Section', row=2, column=0, colspan=5, sticky='NSWE', ipadx=0, ipady=0, padx=20, pady=20)    
