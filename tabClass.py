@@ -92,7 +92,7 @@ class MyTab(ttk.Frame):
         self.cable_type_label = tk.Label(self.cable_parameters, text='Type', width='15')
         self.cable_type_label.grid(row=0, column=1)
         self.cable_type_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']), postcommand=self.get_type_list, state='readonly')
-        self.cable_type_combobox.current(2)
+        self.cable_type_combobox.current(0)
         self.cable_type_combobox.bind('<<ComboboxSelected>>', self.cable_type_select)
         self.cable_type_combobox.grid(row=1, column=1, sticky='EW')
 
@@ -235,14 +235,17 @@ class MyTab(ttk.Frame):
     def get_type_list(self):
         """Method that returns the list of all cables available"""
         self.cable_type_combobox['values'] = list(db['cables'])
+        self.cable_type_combobox.set(self.cable_type_combobox['values'][0])
 
     def get_cores_list(self):
         """Method that returns the list of all cores abvailable"""
         self.cable_cores_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()])
+        self.cable_cores_combobox.set(self.cable_cores_combobox['values'][0])
 
     def get_csa_list(self):
         """Method that returns the list of all cores abvailable"""
         self.cable_csa_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()])
+        self.cable_csa_combobox.set(self.cable_csa_combobox['values'][0])
 
     def get_parallel_list(self):
         """Method that returns the list of all cores abvailable"""
@@ -365,12 +368,80 @@ db = {'cables': {
             '800': 55.4,
             '1000': 60.6
         },
-        '2': {},
-        '3': {},
-        '4': {},
-        '5': {}
+        '2': {
+            '1.5': 12.3,
+            '2.5': 13.6,
+            '4': 14.7,
+            '6': 15.9,
+            '10': 18.0,
+            '16': 20.4,
+            '25': 20.4,
+            '35': 23.3,
+            '50': 25.8,
+            '70': 29.0,
+            '95': 33.1,
+            '120': 36.1,
+            '150': 39.3,
+            '185': 44.7,
+            '240': 49.0,
+            '300': 53.5,
+            '400': 59.0,
+        },
+        '3': {
+            '1.5': 12.6,
+            '2.5': 14.1,
+            '4': 15.3,
+            '6': 16.6,
+            '10': 19.5,
+            '16': 21.6,
+            '25': 25.5,
+            '35': 28.0,
+            '50': 28.5,
+            '70': 32.2,
+            '95': 37.0,
+            '120': 40.4,
+            '150': 45.5,
+            '185': 49.8,
+            '240': 55.1,
+            '300': 60.2,
+            '400': 66.6
+        },
+        '4': {
+            '1.5': 13.5,
+            '2.5': 15.0,
+            '4': 16.4,
+            '6': 18.7,
+            '10': 21.1,
+            '16': 22.9,
+            '25': 27.6,
+            '35': 30.4,
+            '50': 32.0,
+            '70': 37.7,
+            '95': 41.7,
+            '120': 47.1,
+            '150': 51.4,
+            '185': 56.6,
+            '240': 63.0,
+            '300': 68.8,
+            '400': 78.1
+        },
+        '5': {
+            '1.5': 14.3,
+            '2.5': 16.3,
+            '4': 17.8,
+            '6': 20.0,
+            '10': 22.9,
+            '16': 26.6,
+            '25': 31.5,
+            '35': 34.8,
+            '50': 40.4,
+            '70': 46.3
+        }
     },
     'FP400': {
+        '2': {
+            '1.5': 12.9
+        }
 
     },
     'FP600S': {
