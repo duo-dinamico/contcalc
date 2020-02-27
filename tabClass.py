@@ -38,10 +38,6 @@ class MyTab(ttk.Frame):
         self.common_trayref_var = tk.StringVar()
         self.cable_list = []
         self.cable_ref_var = tk.StringVar()
-        self.cable_type_var = tk.StringVar()
-        self.cable_cores_var = tk.StringVar()
-        self.cable_csa_var = tk.StringVar()
-        self.cable_parallel_var = tk.StringVar()
         self.cable_cpc_var = tk.StringVar()
         self.result_var = tk.StringVar()
 
@@ -85,6 +81,7 @@ class MyTab(ttk.Frame):
         self.common_trayref_entry = tk.Entry(self.common_parameters, textvariable=self.common_trayref_var, state='disabled')
         self.common_trayref_entry.grid(row=2, column=3, sticky='W')
 
+
         # Cable - Entry for Cable ref
         self.cable_ref_label = tk.Label(self.cable_parameters, text='Ref', width='15')
         self.cable_ref_label.grid(row=0, column=0)
@@ -94,31 +91,33 @@ class MyTab(ttk.Frame):
         # Cable - Select cable type
         self.cable_type_label = tk.Label(self.cable_parameters, text='Type', width='15')
         self.cable_type_label.grid(row=0, column=1)
-        self.cable_type_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_type_var, *self.get_type_list(), command=self.cable_type_select)
-        self.cable_type_var.set(self.get_type_list()[0])
-        self.cable_type_optionmenu.grid(row=1, column=1, sticky='EW')
+        self.cable_type_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']), postcommand=self.get_type_list, state='readonly')
+        self.cable_type_combobox.current(2)
+        self.cable_type_combobox.bind('<<ComboboxSelected>>', self.cable_type_select)
+        self.cable_type_combobox.grid(row=1, column=1, sticky='EW')
 
-        # Cable - Select core Number
+        # Cable - Select Core Number
         self.cable_cores_label = tk.Label(self.cable_parameters, text='Cores', width='15')
         self.cable_cores_label.grid(row=0, column=2)
-        #self.cable_cores_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_cores_var, *self.get_cores_list(), command=self.cable_cores_select)
-        self.cable_cores_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_cores_var, 'Select...', command=self.cable_cores_select)
-        self.cable_cores_var.set(self.get_cores_list()[0])
-        self.cable_cores_optionmenu.grid(row=1, column=2, sticky='EW')
+        self.cable_cores_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']['XLPE/SWA/PVC']), postcommand=self.get_cores_list, state='readonly')
+        self.cable_cores_combobox.current(0)
+        self.cable_cores_combobox.grid(row=1, column=2, sticky='EW')
 
-        # Cable - Select CSA
+        # Cable - Select CSA (combobox)
         self.cable_csa_label = tk.Label(self.cable_parameters, text='CSA', width='15')
         self.cable_csa_label.grid(row=0, column=3)
-        self.cable_csa_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_csa_var, *self.get_csa_list(), command=self.cable_csa_select)
-        self.cable_csa_var.set(self.get_csa_list()[0])
-        self.cable_csa_optionmenu.grid(row=1, column=3, sticky='EW')
+        self.cable_csa_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']['XLPE/SWA/PVC']['1']), postcommand=self.get_csa_list, state='readonly')
+        self.cable_csa_combobox.current(0)
+        self.cable_csa_combobox.grid(row=1, column=3, sticky='EW')
 
-        # Cable - Select Cables in parallel
+
+        # Cable - Select Cables in parallel (combobox)
         self.cable_parallel_label = tk.Label(self.cable_parameters, text='Parallel', width='15')
         self.cable_parallel_label.grid(row=0, column=4)
-        self.cable_parallel_optionmenu = tk.OptionMenu(self.cable_parameters, self.cable_parallel_var, *self.get_parallel_list(), command=self.cable_parallel_select)
-        self.cable_parallel_var.set(self.get_parallel_list()[0])
-        self.cable_parallel_optionmenu.grid(row=1, column=4, sticky='EW')
+        self.cable_parallel_combobox = ttk.Combobox(self.cable_parameters, values=[1, 2, 3, 4, 5, 6, 7, 8], postcommand=self.get_parallel_list, state='readonly')
+        self.cable_parallel_combobox.current(0)
+        self.cable_parallel_combobox.grid(row=1, column=4, sticky='EW')
+
 
         # Cable - Select CPC CSA
         self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA', width='15')
@@ -164,10 +163,11 @@ class MyTab(ttk.Frame):
         self.cable_ref_entry.delete(0, tk.END)
         self.cable_ref_entry.insert(tk.END, self.selected_item.cable_ref)
 
-        self.cable_type_var.set(self.selected_item.cable_type)
-        self.cable_cores_var.set(self.selected_item.number_cables)
-        self.cable_csa_var.set(self.selected_item.csa)
-        self.cable_parallel_var.set(self.selected_item.parallel)
+        self.cable_type_combobox.set(self.selected_item.cable_type)
+        self.cable_cores_combobox.set(self.selected_item.number_cables)
+        self.cable_csa_combobox.set(self.selected_item.csa)
+        #self.cable_parallel_var.set(self.selected_item.parallel)
+        self.cable_parallel_combobox.set(self.selected_item.parallel)
 
         self.cable_cpc_entry.delete(0, tk.END)
         self.cable_cpc_entry.insert(tk.END, self.selected_item.cpc_csa)
@@ -183,7 +183,8 @@ class MyTab(ttk.Frame):
 
     def add_cable(self):
         """Method to add a cable to this tab"""
-        cable = MyCable(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_var.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
+        # cable = MyCable(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_combobox.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
+        cable = MyCable(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_var.get())
         self.cable_list.append(cable)
         print(cable.diam)
         self.populate_list()
@@ -197,17 +198,19 @@ class MyTab(ttk.Frame):
 
     def update_cable(self):
         """Method to update data of a cable in this tab"""
-        self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_var.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
+        # self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_var.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
+        self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_var.get())
         self.populate_list()
         self.print_result()
 
     def clear_cable(self):
         """Method to clear data entries of a cable in this tab"""
         self.cable_ref_entry.delete(0, tk.END)
-        self.cable_type_var.set(self.get_type_list()[0])
-        self.cable_cores_var.set(self.get_cores_list()[0])
-        self.cable_csa_var.set(self.get_csa_list()[0])
-        self.cable_parallel_var.set(self.get_parallel_list()[0])
+        self.cable_type_combobox.set(self.get_type_list()[0])
+        self.cable_cores_combobox.set(self.get_cores_list()[0])
+        self.cable_csa_combobox.set(self.get_csa_list()[0])
+        #self.cable_parallel_var.set(self.get_parallel_list()[0])
+        self.cable_parallel_combobox.set(self.get_parallel_list()[0])
         self.cable_cpc_entry.delete(0, tk.END)
 
     def populate_list(self):
@@ -230,30 +233,21 @@ class MyTab(ttk.Frame):
         print(result)
 
     def get_type_list(self):
-        """Method that returns the list of all cables abvailable"""
-
-        # print(list(db['cables']))
-        return list(db['cables'])
+        """Method that returns the list of all cables available"""
+        self.cable_type_combobox['values'] = list(db['cables'])
 
     def get_cores_list(self):
         """Method that returns the list of all cores abvailable"""
-
-        print(list(db['cables'][self.cable_type_var.get()]))
-        return ['1', '2', '3']
+        self.cable_cores_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()])
 
     def get_csa_list(self):
         """Method that returns the list of all cores abvailable"""
-
-        # Um dia vai ser aqui criada uma lista de cores de cabos,
-        # mas esse dia não é hoje
-        return ['240', '120', '35']
+        self.cable_csa_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()])
 
     def get_parallel_list(self):
         """Method that returns the list of all cores abvailable"""
-
-        # Um dia vai ser aqui criada uma lista de cores de cabos,
-        # mas esse dia não é hoje
-        return ['1', '2', '3']
+        #self.cable_parallel_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()][self.cable_csa_combobox.get()])
+        pass
 
     def get_cont_list(self):
         """Method that returns the list of containment types abvailable"""
@@ -269,20 +263,25 @@ class MyTab(ttk.Frame):
         return ['Spaced', 'Touching', 'Custom Spacing']
 
     def cable_type_select(self, event):
-        #print(self.cable_type_var.get())
-        print(list(db['cables'][self.cable_type_var.get()]))
-        menu = self.cable_cores_optionmenu['menu']
-        menu.delete(0, tk.END)
-        for x in list(db['cables'][self.cable_type_var.get()]):
-            #menu.add_command(label=x, command=self.cable_cores_var.set(x))
-            menu.add_command(label=x, command=lambda value=x: self.cable_cores_var.set(value))
 
+        # print(list(db['cables'][self.cable_type_combobox.get()]))
+
+        #print(list(db['cables'][self.cable_type_var.get()]))
+
+        # prepare number of cores menu
+        # menu = self.cable_cores_optionmenu['menu']
+        # menu.delete(0, tk.END)
+        # for x in list(db['cables'][self.cable_type_var.get()]):
+        #     menu.add_command(label=x, command=lambda value=x: self.cable_cores_var.set(value))
+        # self.cable_cores_var.set('Select...')
         # self.cable_cores_optionmenu.children['menu'] = ['teste', 'teste2']
         pass
 
+
     def cable_cores_select(self, event):
-        #print(self.cable_cores_var.get())
-        pass
+        print('Prepare CSA menu.')
+        print(list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()]))
+
 
     def cable_csa_select(self, event):
         #print(self.cable_csa_var.get())
