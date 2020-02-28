@@ -51,7 +51,7 @@ class Menu(tk.Menu):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-
+        
         self.filemenu = tk.Menu(self, tearoff=0)
         self.editmenu = tk.Menu(self, tearoff=0)
         self.helpmenu = tk.Menu(self, tearoff=0)
