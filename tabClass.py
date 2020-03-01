@@ -142,13 +142,15 @@ class MyTab(ttk.Frame):
 
 
         # Cable_List - List of cables
-        self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=16, width=100, border=0)
-        self.cable_list_listbox.grid(row=1, column=0, rowspan=6, columnspan=4, padx=20, pady=20)
+        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 12), text='{:_<30s} {:_<30s} {:_<15s} {:_>15s} {:_>15s} {:_>15s} {:_>15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
+        self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
+        self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.SINGLE, font=('TkFixedFont', 12))
+        self.cable_list_listbox.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
         self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
 
         # Cable_List - Scrollbar
         self.cable_list_scrollbar = ttk.Scrollbar(self.cable_list_parameters)
-        self.cable_list_scrollbar.grid(row=1, column=5, rowspan=6, sticky='NS', padx=20, pady=20)
+        self.cable_list_scrollbar.grid(row=1, column=1, sticky='NS', padx=0, pady=20)
         self.cable_list_listbox.configure(yscrollcommand=self.cable_list_scrollbar.set)
         self.cable_list_scrollbar.configure(command=self.cable_list_listbox.yview)
 
@@ -225,8 +227,9 @@ class MyTab(ttk.Frame):
 
     def populate_list(self):
         self.cable_list_listbox.delete(0, tk.END)
-        for obj in self.list_cables():
-            self.cable_list_listbox.insert(tk.END, obj)
+        for obj in self.cable_list:
+            line = '{:_<30s}{:_<30s}{:_<15d}{:>13.2f}{:_>15d}{:_>15d}{:>13.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), float(obj.csa), int(obj.parallel), int(obj.cpc_csa), obj.diam)
+            self.cable_list_listbox.insert(tk.END, line)
 
     def list_cables(self):
         """Method to list all cables in this tab"""
@@ -335,10 +338,10 @@ class MyCable:
     def __init__(self, ref, typ, num, csa, par, cpc):
         self.cable_ref = ref
         self.cable_type = typ
-        self.number_cables = float(num)
+        self.number_cables = int(num)
         self.csa = float(csa)
         self.parallel = par
-        self.cpc_csa = float(cpc)
+        self.cpc_csa = int(cpc)
         self.diam = self.cable_calc()
 
     def cable_calc(self):
@@ -348,8 +351,8 @@ class MyCable:
     def update_data(self, ref, typ, num, csa, par, cpc):
         self.cable_ref = ref
         self.cable_type = typ
-        self.number_cables = float(num)
+        self.number_cables = int(num)
         self.csa = float(csa)
         self.parallel = par
-        self.cpc_csa = float(cpc)
+        self.cpc_csa = int(cpc)
         self.diam = self.cable_calc()
