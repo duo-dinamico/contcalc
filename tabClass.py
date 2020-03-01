@@ -9,6 +9,7 @@ Copyright 2020, The JJ duo
 
 import tkinter as tk
 from tkinter import ttk
+from myDB import db
 
 
 
@@ -145,6 +146,12 @@ class MyTab(ttk.Frame):
         self.cable_list_listbox.grid(row=1, column=0, rowspan=6, columnspan=4, padx=20, pady=20)
         self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
 
+        # Cable_List - Scrollbar
+        self.cable_list_scrollbar = ttk.Scrollbar(self.cable_list_parameters)
+        self.cable_list_scrollbar.grid(row=1, column=5, rowspan=6, sticky='NS', padx=20, pady=20)
+        self.cable_list_listbox.configure(yscrollcommand=self.cable_list_scrollbar.set)
+        self.cable_list_scrollbar.configure(command=self.cable_list_listbox.yview)
+
         # Result -
         self.result_label = tk.Label(self.result_parameters, text='Result:')
         self.result_label.grid(row=0, column=0)
@@ -167,11 +174,10 @@ class MyTab(ttk.Frame):
         self.cable_type_combobox.set(self.selected_item.cable_type)
         self.cable_cores_combobox.set(self.selected_item.number_cables)
         self.cable_csa_combobox.set(self.selected_item.csa)
-        #self.cable_parallel_var.set(self.selected_item.parallel)
         self.cable_parallel_combobox.set(self.selected_item.parallel)
 
         self.cable_cpc_entry.delete(0, tk.END)
-        self.cable_cpc_entry.insert(tk.END, self.selected_item.cpc_csa)
+        self.cable_cpc_entry.insert(tk.END, int(self.selected_item.cpc_csa))
 
 
     def delete_this_tab(self):
@@ -185,11 +191,15 @@ class MyTab(ttk.Frame):
     def add_cable(self):
         """Method to add a cable to this tab"""
         # cable = MyCable(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_combobox.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
-        cable = MyCable(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_var.get())
-        self.cable_list.append(cable)
-        print(cable.diam)
-        self.populate_list()
-        self.print_result()
+        if self.check_cable_entries():
+            cable = MyCable(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_var.get())
+            self.cable_list.append(cable)
+            # print(cable.diam)
+            self.populate_list()
+            self.print_result()
+            self.clear_cable()
+        else:
+            print('Erro.')
 
     def remove_cable(self):
         """Method to remove a cable in this tab"""
@@ -199,19 +209,18 @@ class MyTab(ttk.Frame):
 
     def update_cable(self):
         """Method to update data of a cable in this tab"""
-        # self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_var.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
         self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_var.get())
         self.populate_list()
         self.print_result()
+        self.clear_cable()
 
     def clear_cable(self):
         """Method to clear data entries of a cable in this tab"""
         self.cable_ref_entry.delete(0, tk.END)
-        self.cable_type_combobox.set(self.get_type_list()[0])
-        self.cable_cores_combobox.set(self.get_cores_list()[0])
-        self.cable_csa_combobox.set(self.get_csa_list()[0])
-        #self.cable_parallel_var.set(self.get_parallel_list()[0])
-        self.cable_parallel_combobox.set(self.get_parallel_list()[0])
+        self.cable_type_combobox.current(newindex=0)
+        self.cable_cores_combobox.current(newindex=0)
+        self.cable_csa_combobox.current(newindex=0)
+        self.cable_parallel_combobox.current(newindex=0)
         self.cable_cpc_entry.delete(0, tk.END)
 
     def populate_list(self):
@@ -232,6 +241,21 @@ class MyTab(ttk.Frame):
             result += obj.diam
         self.result_var.set(result)
         print(result)
+
+    def check_cable_entries(self):
+        result = True
+        for cable in self.cable_list:
+            if self.cable_ref_var.get()==cable.cable_ref:
+                print('Cable ref')
+                result = False
+        # self.cable_type_combobox.get()
+        # self.cable_cores_combobox.get()
+        # self.cable_csa_combobox.get()
+        # self.cable_parallel_combobox.get()
+        if not self.cable_cpc_var.get().isdigit():
+            print('CPC')
+            result = False
+        return result
 
     def get_type_list(self):
         """Method that returns the list of all cables available"""
@@ -329,127 +353,3 @@ class MyCable:
         self.parallel = par
         self.cpc_csa = float(cpc)
         self.diam = self.cable_calc()
-
-
-db = {'cables': {
-    'XLPE/SWA/PVC': {
-        '1': {
-            '50': 17.5,
-            '70': 20.2
-        },
-        '2': {
-            '1.5': 12.3,
-            '2.5': 13.6
-        },
-        '3': {
-            '1.5': 12.6,
-            '2.5': 14.1
-        }
-    },
-    'XLPE/SWA/LSF': {
-        '1': {
-            '50': 17.5,
-            '70': 20.2,
-            '95': 22.3,
-            '120': 24.2,
-            '150': 27.4,
-            '185': 30.0,
-            '240': 32.8,
-            '300': 35.6,
-            '400': 40.4,
-            '500': 44.2,
-            '630': 48.8,
-            '800': 55.4,
-            '1000': 60.6
-        },
-        '2': {
-            '1.5': 12.3,
-            '2.5': 13.6,
-            '4': 14.7,
-            '6': 15.9,
-            '10': 18.0,
-            '16': 20.4,
-            '25': 20.4,
-            '35': 23.3,
-            '50': 25.8,
-            '70': 29.0,
-            '95': 33.1,
-            '120': 36.1,
-            '150': 39.3,
-            '185': 44.7,
-            '240': 49.0,
-            '300': 53.5,
-            '400': 59.0,
-        },
-        '3': {
-            '1.5': 12.6,
-            '2.5': 14.1,
-            '4': 15.3,
-            '6': 16.6,
-            '10': 19.5,
-            '16': 21.6,
-            '25': 25.5,
-            '35': 28.0,
-            '50': 28.5,
-            '70': 32.2,
-            '95': 37.0,
-            '120': 40.4,
-            '150': 45.5,
-            '185': 49.8,
-            '240': 55.1,
-            '300': 60.2,
-            '400': 66.6
-        },
-        '4': {
-            '1.5': 13.5,
-            '2.5': 15.0,
-            '4': 16.4,
-            '6': 18.7,
-            '10': 21.1,
-            '16': 22.9,
-            '25': 27.6,
-            '35': 30.4,
-            '50': 32.0,
-            '70': 37.7,
-            '95': 41.7,
-            '120': 47.1,
-            '150': 51.4,
-            '185': 56.6,
-            '240': 63.0,
-            '300': 68.8,
-            '400': 78.1
-        },
-        '5': {
-            '1.5': 14.3,
-            '2.5': 16.3,
-            '4': 17.8,
-            '6': 20.0,
-            '10': 22.9,
-            '16': 26.6,
-            '25': 31.5,
-            '35': 34.8,
-            '50': 40.4,
-            '70': 46.3
-        }
-    },
-    'FP400': {
-        '2': {
-            '1.5': 12.9
-        }
-
-    },
-    'FP600S': {
-
-    },
-    'MICC (Light Duty)': {
-
-    },
-    'MICC (Heavy Duty)': {
-
-    },
-    'LSF Single': {
-
-    }
-
-}
-}
