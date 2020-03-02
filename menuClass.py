@@ -10,6 +10,7 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tabClass import MyTab
 import platform
 import json
 
@@ -50,8 +51,12 @@ class Menu(tk.Menu):
             return
         with open(filepath, 'r') as input_file:
             data = json.load(input_file)
-            for i, myline in zip(self.parent.nb.lst_entries, data):
+            for i, myline in zip(self.parent.nb.lst_entries, data[0]):
                 i.set(myline.strip())
+            for d in data[1]:
+                new_tab = MyTab(self.parent.nb, d)
+                self.dict = {d: new_tab}
+                self.parent.nb.tabs_list.update(self.dict)
         filename = filepath.split('/')
         self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')
 
@@ -60,16 +65,27 @@ class Menu(tk.Menu):
         INPUT: self
         OUTPUT: no output
         """
-        lst_toSave = []
+        lst_entries = []
+        lst_tabs = []
+        lst_toSave = [lst_entries, lst_tabs]
         filepath = asksaveasfilename(
             filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
         )
         if not filepath:
             return
-        with open(filepath, 'w') as save_file:
+        if '.txt' in filepath:
+            filepath = filepath.replace('.txt', '')
+        with open(filepath + '.txt', 'w') as save_file:
             for i in self.parent.nb.lst_entries:
-                lst_toSave.append(str(i.get()))
+                lst_entries.append(str(i.get()))
+            for k in self.parent.nb.tabs_list:
+                if k == 'Main Page':
+                    pass
+                else:
+                    lst_tabs.append(k)
             json.dump(lst_toSave, save_file)
+        filename = filepath.split('/')
+        self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')
 
     def about_menu(self):
         """Method for versions.
