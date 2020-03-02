@@ -31,7 +31,8 @@ class Menu(tk.Menu):
         self.add_cascade(label='Edit', menu=self.editmenu)
         self.add_cascade(label='Help', menu=self.helpmenu)
         self.filemenu.add_command(label='Open', command=self.open_file)
-        self.filemenu.add_command(label='Save as...', command=self.save_file)
+        self.filemenu.add_command(label='Save', command=self.save_file)
+        self.filemenu.add_command(label='Save as...', command=self.saveas_file)
         self.filemenu.add_separator()
         self.filemenu.add_command(label='Exit', command=parent.quit)
         self.editmenu.add_command(label='Cut', command=parent.quit)
@@ -41,7 +42,7 @@ class Menu(tk.Menu):
 
     def open_file(self):
         """Method for opening files.
-        INPUT: self
+        INPUT: JSON file with entries and tabs
         OUTPUT: no output
         """
         filepath = askopenfilename(
@@ -57,13 +58,36 @@ class Menu(tk.Menu):
                 new_tab = MyTab(self.parent.nb, d)
                 self.dict = {d: new_tab}
                 self.parent.nb.tabs_list.update(self.dict)
-        filename = filepath.split('/')
-        self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')
+        self.filename = filepath.split('/')
+        self.parent.title(f'Containment Calculation Sheet - {self.filename[-1]}')
 
     def save_file(self):
         """Method for saving files.
         INPUT: self
-        OUTPUT: no output
+        OUTPUT: JSON file with entries and tabs
+        """
+        lst_entries = []
+        lst_tabs = []
+        lst_toSave = [lst_entries, lst_tabs]
+        try:
+            if self.filename:
+                filepath = 'json/' + self.filename[-1]
+                with open(filepath, 'w') as save_file:
+                    for i in self.parent.nb.lst_entries:
+                        lst_entries.append(str(i.get()))
+                    for k in self.parent.nb.tabs_list:
+                        if k == 'Main Page':
+                            pass
+                        else:
+                            lst_tabs.append(k)
+                    json.dump(lst_toSave, save_file)
+        except AttributeError:
+            pass
+            
+    def saveas_file(self):
+        """Method for saving files as.
+        INPUT: self
+        OUTPUT: JSON file with entries and tabs
         """
         lst_entries = []
         lst_tabs = []
