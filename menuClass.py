@@ -50,7 +50,7 @@ class Menu(tk.Menu):
             return
         with open(filepath, 'r') as input_file:
             data = json.load(input_file)
-            for i, myline in zip(self.lst_entries, data):
+            for i, myline in zip(self.parent.nb.lst_entries, data):
                 i.set(myline.strip())
         filename = filepath.split('/')
         self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')
@@ -67,7 +67,7 @@ class Menu(tk.Menu):
         if not filepath:
             return
         with open(filepath, 'w') as save_file:
-            for i in self.lst_entries:
+            for i in self.parent.nb.lst_entries:
                 lst_toSave.append(str(i.get()))
             json.dump(lst_toSave, save_file)
 

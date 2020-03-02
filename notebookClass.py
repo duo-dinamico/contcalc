@@ -46,7 +46,7 @@ class Notebook(ttk.Notebook):
         self.tabs_list.update(main_dict)
         
         self.info = CreateLabelframe(frame, text='General Info', row=1, column=0, colspan=4, sticky='NSWE', ipadx=0, ipady=0, padx=20, pady=20)
-        self.cSection = CreateLabelframe(frame, text='Create New Section', row=2, column=0, colspan=4, sticky='NSWE', ipadx=0, ipady=0, padx=20, pady=20)    
+        self.cSection = CreateLabelframe(frame, text='Create New Section', row=2, column=0, colspan=4, sticky='NSWE', ipadx=0, ipady=0, padx=20, pady=20)
         """Labels with logo"""
         CreateLabel(frame, text='', image=self.gifLogo, background='white', height=300, width=750, row=0, column=0, colspan=4, sticky='NSEW')
         
@@ -67,7 +67,7 @@ class Notebook(ttk.Notebook):
         self.e_designer = CreateEntry(self.info, background='white', row=1, column=3, colspan=1, sticky='EW')
         self.e_revision = CreateEntry(self.info, background='white', row=2, column=3, colspan=1, sticky='EW')
         
-        Menu.lst_entries = [self.e_job_title.text, self.e_job_number.text, self.e_date.text, self.e_designer.text, self.e_revision.text]
+        self.lst_entries = [self.e_job_title.text, self.e_job_number.text, self.e_date.text, self.e_designer.text, self.e_revision.text]
 
         """Create Sections"""
         CreateLabel(self.cSection, text='Section Name: ', image='', background=None, height=3, width=0, row=0, column=0, colspan=1, sticky='EW')

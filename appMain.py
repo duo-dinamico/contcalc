@@ -17,9 +17,10 @@ class App(tk.Tk):
         tk.Tk.__init__(self)
         self.title('Containment Calculation Sheet')
         self.iconbitmap('images/calc.ico')
-        menu = Menu(self)
-        self.config(menu=menu)
-        Notebook(self)
+        self.lst_entries = []
+        self.menu = Menu(self)
+        self.config(menu=self.menu)
+        self.nb = Notebook(self)
 
 if __name__ == '__main__':
     app=App()
