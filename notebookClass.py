@@ -13,7 +13,7 @@ from tkinter import PhotoImage
 from tabClass import MyTab
 from tkinter import messagebox
 from widgetsClass import CreateButton, CreateEntry, CreateLabel, CreateLabelframe
-from mywindowClass import Menu
+from menuClass import Menu
 
 class Notebook(ttk.Notebook):
     """Class that define the Notebook that will contain all the tabs."""

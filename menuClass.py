@@ -2,45 +2,16 @@
 # -*- coding: utf-8 -*-
 """
 Containment Calculation Sheet
-mywindowClass.py v0.5
+menuClass.py v1.0
 #odetojoy
 Copyright 2020, The JJ duo
 """
 
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import platform
 import json
-
-class MyWindow(ttk.Frame):
-    """Class that define the Frame container of the root window,
-    and include:
-    Icon bar
-    Status
-    """
-
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.parent = parent # ver se funciona sem isto
-  
-    """Method that create the icon bar.
-
-    INPUT: self
-    OUTPUT: no output
-    """
-    def create_icon_bar(self):
-        pass
-
-    """Method that create the status bar.
-
-    INPUT: self
-    OUTPUT: no output
-    """
-    def create_status_bar(self):
-        pass
-
 
 class Menu(tk.Menu):
     """Class that create the menu.
