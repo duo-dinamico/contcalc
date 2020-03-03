@@ -39,8 +39,9 @@ class MyTab(ttk.Frame):
         self.common_trayref_var = tk.StringVar()
         self.cable_list = []
         self.cable_ref_var = tk.StringVar()
-        self.cable_cpc_var = tk.StringVar()
+        #self.cable_cpc_var = tk.StringVar()
         self.result_var = tk.StringVar()
+        self.result_with_install_var = tk.StringVar()
 
         # Start object
         parent.add(self, text=self.name)
@@ -59,7 +60,9 @@ class MyTab(ttk.Frame):
         # Common - Custom spacing
         self.common_spacing_label = tk.Label(self.common_parameters, text='Custom spacing (mm):')
         # self.common_spacing_label.grid(row=0, column=2, sticky='W')
-        self.common_spacing_entry = tk.Entry(self.common_parameters, textvariable=self.common_spacing_var)
+        self.common_spacing_entry = tk.Entry(self.common_parameters, textvariable=self.common_spacing_var, validate='focusout', validatecommand=self.print_result)
+        self.common_spacing_var.set('0')
+        #self.common_spacing_var.trace('w', self.print_result())
         # self.common_spacing_entry.grid(row=0, column=3, sticky='W')
 
         # Common - Countainment type
@@ -124,8 +127,10 @@ class MyTab(ttk.Frame):
         # Cable - Select CPC CSA
         self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA', width='15')
         self.cable_cpc_label.grid(row=0, column=5)
-        self.cable_cpc_entry = tk.Entry(self.cable_parameters, textvariable=self.cable_cpc_var)
-        self.cable_cpc_entry.grid(row=1, column=5, sticky='EW')
+        #self.cable_cpc_entry = tk.Entry(self.cable_parameters, textvariable=self.cable_cpc_var)
+        self.cable_cpc_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']['LSF Single']['1']), state='readonly')
+        self.cable_cpc_combobox.current(0)
+        self.cable_cpc_combobox.grid(row=1, column=5, sticky='EW')
 
         # Cable - Buttons
         self.cable_add_btn = tk.Button(self.cable_parameters, text='Add', width=12, command=self.add_cable)
@@ -142,7 +147,7 @@ class MyTab(ttk.Frame):
 
 
         # Cable_List - List of cables
-        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 12), text='{:_<30s} {:_<30s} {:_<15s} {:_>15s} {:_>15s} {:_>15s} {:_>15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
+        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 12), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
         self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
         self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.SINGLE, font=('TkFixedFont', 12))
         self.cable_list_listbox.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
@@ -155,10 +160,14 @@ class MyTab(ttk.Frame):
         self.cable_list_scrollbar.configure(command=self.cable_list_listbox.yview)
 
         # Result -
-        self.result_label = tk.Label(self.result_parameters, text='Result:')
+        self.result_label = tk.Label(self.result_parameters, text='Cable Diam sum:')
         self.result_label.grid(row=0, column=0)
         self.result_entry = tk.Entry(self.result_parameters, textvariable=self.result_var, state='disabled')
         self.result_entry.grid(row=0, column=1, sticky='E')
+        self.result_label = tk.Label(self.result_parameters, text=f'Installation Diam:')
+        self.result_label.grid(row=1, column=0)
+        self.result_entry = tk.Entry(self.result_parameters, textvariable=self.result_with_install_var, state='disabled')
+        self.result_entry.grid(row=1, column=1, sticky='E')
 
         # Delete_tab button
         self.del_tab_btn = tk.Button(self, text='Delete Section', width=12, command=self.delete_this_tab)
@@ -178,8 +187,8 @@ class MyTab(ttk.Frame):
         self.cable_csa_combobox.set(self.selected_item.csa)
         self.cable_parallel_combobox.set(self.selected_item.parallel)
 
-        self.cable_cpc_entry.delete(0, tk.END)
-        self.cable_cpc_entry.insert(tk.END, int(self.selected_item.cpc_csa))
+        self.cable_cpc_combobox.delete(0, tk.END)
+        self.cable_cpc_combobox.insert(tk.END, self.selected_item.cpc_csa)
 
 
     def delete_this_tab(self):
@@ -194,7 +203,7 @@ class MyTab(ttk.Frame):
         """Method to add a cable to this tab"""
         # cable = MyCable(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_combobox.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
         if self.check_cable_entries():
-            cable = MyCable(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_var.get())
+            cable = MyCable(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_combobox.get())
             self.cable_list.append(cable)
             # print(cable.diam)
             self.populate_list()
@@ -223,12 +232,12 @@ class MyTab(ttk.Frame):
         self.cable_cores_combobox.current(newindex=0)
         self.cable_csa_combobox.current(newindex=0)
         self.cable_parallel_combobox.current(newindex=0)
-        self.cable_cpc_entry.delete(0, tk.END)
+        self.cable_cpc_combobox.delete(0, tk.END)
 
     def populate_list(self):
         self.cable_list_listbox.delete(0, tk.END)
         for obj in self.cable_list:
-            line = '{:_<30s}{:_<30s}{:_<15d}{:>13.2f}{:_>15d}{:_>15d}{:>13.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), float(obj.csa), int(obj.parallel), int(obj.cpc_csa), obj.diam)
+            line = '{:_^30s}|{:_^30s}|{:_^15d}|{:_^15s}|{:_^15d}|{:_^15s}|{:_^15.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam)
             self.cable_list_listbox.insert(tk.END, line)
 
     def list_cables(self):
@@ -240,10 +249,21 @@ class MyTab(ttk.Frame):
 
     def print_result(self):
         result = 0
+        result_with_install = 0
         for obj in self.cable_list:
             result += obj.diam
         self.result_var.set(result)
-        print(result)
+
+        if self.common_install_var.get() == 'Spaced':
+            result_with_install = result * 2
+        elif self.common_install_var.get() == 'Touching':
+            result_with_install = result
+        else:
+            result_with_install = result + (len(self.cable_list)-1) * float(self.common_spacing_var.get())
+            print(f'{result} + {len(self.cable_list)}-1 * {self.common_spacing_var.get()}')
+        self.result_with_install_var.set(result_with_install)
+        return True
+
 
     def check_cable_entries(self):
         result = True
@@ -255,9 +275,9 @@ class MyTab(ttk.Frame):
         # self.cable_cores_combobox.get()
         # self.cable_csa_combobox.get()
         # self.cable_parallel_combobox.get()
-        if not self.cable_cpc_var.get().isdigit():
-            print('CPC')
-            result = False
+        # if not self.cable_cpc_var.get().isdigit():
+        #     print('CPC')
+        #     result = False
         return result
 
     def get_type_list(self):
@@ -326,6 +346,7 @@ class MyTab(ttk.Frame):
         if self.common_install_var.get() == 'Custom Spacing':
             self.common_spacing_label.grid(row=0, column=2, sticky='W')
             self.common_spacing_entry.grid(row=0, column=3, sticky='W')
+        self.print_result()
 
     def menu_select(self):
         """ Don't do anything"""
@@ -338,21 +359,24 @@ class MyCable:
     def __init__(self, ref, typ, num, csa, par, cpc):
         self.cable_ref = ref
         self.cable_type = typ
-        self.number_cables = int(num)
-        self.csa = float(csa)
+        self.number_cables = num
+        self.csa = csa
         self.parallel = par
-        self.cpc_csa = int(cpc)
+        self.cpc_csa = cpc
         self.diam = self.cable_calc()
 
     def cable_calc(self):
-        result = self.number_cables * self.csa * self.cpc_csa
+        # print(db['cables'][self.cable_type][self.number_cables][self.csa])
+        overall = db['cables'][self.cable_type][self.number_cables][self.csa]
+        single = db['cables']['LSF Single']['1'][self.cpc_csa]
+        result = float(overall) * int(self.parallel) + float(single)
         return result
 
     def update_data(self, ref, typ, num, csa, par, cpc):
         self.cable_ref = ref
         self.cable_type = typ
-        self.number_cables = int(num)
-        self.csa = float(csa)
+        self.number_cables = num
+        self.csa = csa
         self.parallel = par
-        self.cpc_csa = int(cpc)
+        self.cpc_csa = cpc
         self.diam = self.cable_calc()
