@@ -42,6 +42,8 @@ class MyTab(ttk.Frame):
         #self.cable_cpc_var = tk.StringVar()
         self.result_var = tk.StringVar()
         self.result_with_install_var = tk.StringVar()
+        self.result_with_spare_var = tk.StringVar()
+        self.result_with_cont_var = tk.StringVar()
 
         # Start object
         parent.add(self, text=self.name)
@@ -160,14 +162,22 @@ class MyTab(ttk.Frame):
         self.cable_list_scrollbar.configure(command=self.cable_list_listbox.yview)
 
         # Result -
-        self.result_label = tk.Label(self.result_parameters, text='Cable Diam sum:')
-        self.result_label.grid(row=0, column=0)
-        self.result_entry = tk.Entry(self.result_parameters, textvariable=self.result_var, state='disabled')
-        self.result_entry.grid(row=0, column=1, sticky='E')
-        self.result_label = tk.Label(self.result_parameters, text=f'Installation Diam:')
-        self.result_label.grid(row=1, column=0)
-        self.result_entry = tk.Entry(self.result_parameters, textvariable=self.result_with_install_var, state='disabled')
-        self.result_entry.grid(row=1, column=1, sticky='E')
+        self.result_label_1 = tk.Label(self.result_parameters, text='Cable diameter raw sum:')
+        self.result_label_1.grid(row=0, column=0, sticky='E')
+        self.result_entry_1 = tk.Entry(self.result_parameters, textvariable=self.result_var, state='disabled')
+        self.result_entry_1.grid(row=0, column=1, sticky='E')
+        self.result_label_2 = tk.Label(self.result_parameters, text=f'Total diameter required for all cables:')
+        self.result_label_2.grid(row=1, column=0, sticky='E')
+        self.result_entry_2 = tk.Entry(self.result_parameters, textvariable=self.result_with_install_var, state='disabled')
+        self.result_entry_2.grid(row=1, column=1, sticky='E')
+        self.result_label_3 = tk.Label(self.result_parameters, text=f'Total diameter required for all cables, with spare capacity:')
+        self.result_label_3.grid(row=2, column=0, sticky='E')
+        self.result_entry_3 = tk.Entry(self.result_parameters, textvariable=self.result_with_spare_var, state='disabled')
+        self.result_entry_3.grid(row=2, column=1, sticky='E')
+        self.result_label_4 = tk.Label(self.result_parameters, text=f'Standard containment size required (Ladder Rack):')
+        self.result_label_4.grid(row=3, column=0, sticky='E')
+        self.result_entry_4 = tk.Entry(self.result_parameters, textvariable=self.result_with_cont_var, state='disabled')
+        self.result_entry_4.grid(row=3, column=1, sticky='E')
 
         # Delete_tab button
         self.del_tab_btn = tk.Button(self, text='Delete Section', width=12, command=self.delete_this_tab)
@@ -248,12 +258,16 @@ class MyTab(ttk.Frame):
         return result_list
 
     def print_result(self):
+        """ Method to get the multiple results to print."""
+
+        ## Raw Result
         result = 0
         result_with_install = 0
         for obj in self.cable_list:
             result += obj.diam
         self.result_var.set(result)
 
+        ## Result with install
         if self.common_install_var.get() == 'Spaced':
             result_with_install = result * 2
         elif self.common_install_var.get() == 'Touching':
@@ -262,6 +276,26 @@ class MyTab(ttk.Frame):
             result_with_install = result + (len(self.cable_list)-1) * float(self.common_spacing_var.get())
             print(f'{result} + {len(self.cable_list)}-1 * {self.common_spacing_var.get()}')
         self.result_with_install_var.set(result_with_install)
+
+        ## Result with spare
+        if self.common_spare_var.get() != '':
+            self.result_with_spare_var.set(float(self.result_with_install_var.get()) * (1 + int(self.common_spare_var.get())/100 ))
+            print(f'With spare {self.result_with_install_var.get()} * (1 + {self.common_spare_var.get()}     {self.result_with_spare_var.get()})')
+        else:
+            self.result_with_spare_var.set(self.result_with_install_var.get())
+
+        ## Result containment
+        if self.common_cont_var.get() == 'Ladder Rack':
+            for n in list(db['ladder'])[::-1]:
+                if n > float(self.result_with_spare_var.get()):
+                    self.result_with_cont_var.set(n)
+                    break
+        elif self.common_cont_var.get() == 'Cable Tray':
+            for n in list(db['tray'])[::-1]:
+                if n > float(self.result_with_spare_var.get()):
+                    self.result_with_cont_var.set(n)
+                    break
+
         return True
 
 
@@ -334,9 +368,10 @@ class MyTab(ttk.Frame):
     def cable_parallel_select(self, event):
         #print(self.cable_parallel_var.get())
         pass
+
     def common_cont_select(self, event):
-        #print(self.cable_parallel_var.get())
-        pass
+        self.print_result()
+
 
     def common_install_select(self, event):
         # print(self.common_install_var.get())
