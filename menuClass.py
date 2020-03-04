@@ -32,13 +32,36 @@ class Menu(tk.Menu):
         self.add_cascade(label='Help', menu=self.helpmenu)
         self.filemenu.add_command(label='Open', command=self.open_file)
         self.filemenu.add_command(label='Save', command=self.save_file)
+        self.filemenu.entryconfigure(1, state='disabled')
         self.filemenu.add_command(label='Save as...', command=self.saveas_file)
         self.filemenu.add_separator()
-        self.filemenu.add_command(label='Exit', command=parent.quit)
-        self.editmenu.add_command(label='Cut', command=parent.quit)
-        self.editmenu.add_command(label='Copy', command=parent.quit)
-        self.editmenu.add_command(label='Past', command=parent.quit)
+        self.filemenu.add_command(label='Exit', command=self.confirm_exit)
+        self.editmenu.add_command(label='Add...', command=parent.quit)
         self.helpmenu.add_command(label='About', command=self.about_menu)
+
+    def confirm_exit(self):
+        """Method to get warning box about exiting.
+        INPUT: no input
+        OUTPUT: no output
+        """
+        self.confirm_exit_dialog = messagebox.askyesnocancel(title='Save on close', message='Do you want to save before quiting?', default=tk.messagebox.YES, icon='question')
+        
+        try:
+            if self.confirm_exit_dialog and self.filename:
+                self.save_file()
+                self.parent.quit()
+            elif self.confirm_exit_dialog is None:
+                return
+            else:
+                self.parent.quit()
+        except AttributeError:          
+            if self.confirm_exit_dialog:
+                self.saveas_file()
+                self.parent.quit()
+            elif self.confirm_exit_dialog is None:
+                return
+            else:
+                self.parent.quit()
 
     def open_file(self):
         """Method for opening files.
@@ -60,6 +83,7 @@ class Menu(tk.Menu):
                 self.parent.nb.tabs_list.update(self.dict)
         self.filename = filepath.split('/')
         self.parent.title(f'Containment Calculation Sheet - {self.filename[-1]}')
+        self.filemenu.entryconfigure(1, state='normal')
 
     def save_file(self):
         """Method for saving files.
@@ -68,7 +92,8 @@ class Menu(tk.Menu):
         """
         lst_entries = []
         lst_tabs = []
-        lst_toSave = [lst_entries, lst_tabs]
+        lst_cables = []
+        lst_toSave = [lst_entries, lst_tabs, lst_cables]
         try:
             if self.filename:
                 filepath = 'json/' + self.filename[-1]
@@ -80,6 +105,8 @@ class Menu(tk.Menu):
                             pass
                         else:
                             lst_tabs.append(k)
+                    for e in MyTab.cable_list:
+                        lst_cables.append(e)
                     json.dump(lst_toSave, save_file)
         except AttributeError:
             pass
@@ -91,7 +118,8 @@ class Menu(tk.Menu):
         """
         lst_entries = []
         lst_tabs = []
-        lst_toSave = [lst_entries, lst_tabs]
+        lst_cables = []
+        lst_toSave = [lst_entries, lst_tabs, lst_cables]
         filepath = asksaveasfilename(
             filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
         )
@@ -107,6 +135,8 @@ class Menu(tk.Menu):
                     pass
                 else:
                     lst_tabs.append(k)
+            for e in MyTab.cable_list:
+                    lst_cables.append(e)
             json.dump(lst_toSave, save_file)
         filename = filepath.split('/')
         self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')

@@ -25,4 +25,5 @@ class App(tk.Tk):
 
 if __name__ == '__main__':
     app=App()
+    app.protocol('WM_DELETE_WINDOW', app.menu.confirm_exit)
     app.mainloop()
