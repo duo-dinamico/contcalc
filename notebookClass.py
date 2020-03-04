@@ -48,7 +48,7 @@ class Notebook(ttk.Notebook):
         self.info = CreateLabelframe(frame, text='General Info', row=1, column=0, colspan=4, sticky='NSWE', ipadx=0, ipady=0, padx=20, pady=20)
         self.cSection = CreateLabelframe(frame, text='Create New Section', row=2, column=0, colspan=4, sticky='NSWE', ipadx=0, ipady=0, padx=20, pady=20)
         """Labels with logo"""
-        CreateLabel(frame, text='', image=self.gifLogo, background='white', height=300, width=750, row=0, column=0, colspan=4, sticky='NSEW')
+        CreateLabel(frame, text='', image=self.gifLogo, background='white', height=300, width=1300, row=0, column=0, colspan=4, sticky='NSEW')
         
         """Labels for column 0"""
         CreateLabel(self.info, text='Job Title: ', image='', background=None, height=3, width=0, row=0, column=0, colspan=1, sticky='EW')

@@ -17,6 +17,7 @@ class App(tk.Tk):
         tk.Tk.__init__(self)
         self.title('Containment Calculation Sheet')
         self.iconbitmap('images/calc.ico')
+        self.resizable(False, False)
         self.lst_entries = []
         self.menu = Menu(self)
         self.config(menu=self.menu)
