@@ -12,7 +12,6 @@ from tkinter import ttk, messagebox
 from myDB import db
 
 
-
 class MyTab(ttk.Frame):
     """Class for the Section calculation tabs"""
 
@@ -39,7 +38,6 @@ class MyTab(ttk.Frame):
         self.common_trayref_var = tk.StringVar()
         self.cable_list = []
         self.cable_ref_var = tk.StringVar()
-        #self.cable_cpc_var = tk.StringVar()
         self.result_var = tk.StringVar()
         self.result_with_install_var = tk.StringVar()
         self.result_with_spare_var = tk.StringVar()
@@ -71,8 +69,9 @@ class MyTab(ttk.Frame):
         # Common - Countainment type
         self.common_cont_label = tk.Label(self.common_parameters, text='Countainment type:')
         self.common_cont_label.grid(row=1, column=0, sticky='W')
-        self.common_cont_optionmenu = tk.OptionMenu(self.common_parameters, self.common_cont_var, *self.get_cont_list(), command=self.common_cont_select)
-        self.common_cont_var.set(self.get_cont_list()[0])
+        self.common_cont_optionmenu = tk.OptionMenu(self.common_parameters, self.common_cont_var, *['Ladder Rack', 'Cable Tray'], command=self.common_cont_select)
+        self.common_cont_var.set('Ladder Rack')
+        # print(f'Draw: {self.get_cont_list()}')
         self.common_cont_optionmenu.grid(row=1, column=1, sticky='WE')
 
         # Common - Spare capacity
@@ -184,12 +183,11 @@ class MyTab(ttk.Frame):
         self.del_tab_btn = tk.Button(self, text='Delete Section', width=12, command=self.delete_this_tab)
         self.del_tab_btn.grid(row=5, column=0)
 
+        self.print_result()
+
 
     def select_item(self, event):
-
         try:
-            print(self.cable_list_listbox.curselection()[0])
-            print(self.cable_list[self.cable_list_listbox.curselection()[0]].cable_ref)
             self.selected_item = self.cable_list[self.cable_list_listbox.curselection()[0]]
 
             self.cable_ref_entry.delete(0, tk.END)
@@ -216,11 +214,9 @@ class MyTab(ttk.Frame):
 
     def add_cable(self):
         """Method to add a cable to this tab"""
-        # cable = MyCable(self.cable_ref_var.get(), self.cable_type_var.get(), self.cable_cores_var.get(), self.cable_csa_combobox.get(), self.cable_parallel_var.get(), self.cable_cpc_var.get())
         if self.check_cable_entries():
             cable = MyCable(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_combobox.get())
             self.cable_list.append(cable)
-            # print(cable.diam)
             self.populate_list()
             self.print_result()
             self.clear_cable()
@@ -250,6 +246,7 @@ class MyTab(ttk.Frame):
         self.cable_cpc_combobox.current(newindex=0)
 
     def populate_list(self):
+        """ Method that update the data in the listbox."""
         self.cable_list_listbox.delete(0, tk.END)
         for obj in self.cable_list:
             line = '{:_^30s}|{:_^30s}|{:_^15d}|{:_^15s}|{:_^15d}|{:_^15s}|{:_^15.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam)
@@ -264,7 +261,7 @@ class MyTab(ttk.Frame):
 
     def print_result(self):
         """ Method to get the multiple results to print."""
-
+        print('Print Resuklt')
         ## Raw Result
         result = 0
         result_with_install = 0
@@ -290,6 +287,7 @@ class MyTab(ttk.Frame):
             self.result_with_spare_var.set(self.result_with_install_var.get())
 
         ## Result containment
+        print(self.common_cont_var.get())
         if self.common_cont_var.get() == 'Ladder Rack':
             for n in list(db['ladder'])[::-1]:
                 if n > float(self.result_with_spare_var.get()):
@@ -300,11 +298,14 @@ class MyTab(ttk.Frame):
                 if n > float(self.result_with_spare_var.get()):
                     self.result_with_cont_var.set(n)
                     break
-
+        # print(f'Test {self.result_with_cont_var.get()}')
+        # if int(self.result_with_cont_var.get()) > 900:
+        #     messagebox.showwarning(title='Error', message='The size needed exceed Ladder/Tray maximum size.')
         return True
 
 
     def check_cable_entries(self):
+        """ Method that check if data inserted are valid."""
         result = True
         for cable in self.cable_list:
             if self.cable_ref_var.get()==cable.cable_ref:
@@ -326,12 +327,10 @@ class MyTab(ttk.Frame):
         self.cable_type_combobox.current(newindex=0)
 
 
-
     def get_cores_list(self):
         """Method that returns the list of all cores abvailable"""
         self.cable_cores_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()])
         self.cable_cores_combobox.current(newindex=0)
-
 
 
     def get_csa_list(self):
@@ -344,12 +343,12 @@ class MyTab(ttk.Frame):
         #self.cable_parallel_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()][self.cable_csa_combobox.get()])
         pass
 
-    def get_cont_list(self):
-        """Method that returns the list of containment types abvailable"""
-
-        # Um dia vai ser aqui criada uma lista de cores de cabos,
-        # mas esse dia não é hoje
-        return ['Ladder Rack', 'Cable Tray']
+    # def get_cont_list(self):
+    #     """Method that returns the list of containment types abvailable"""
+    #
+    #     # Um dia vai ser aqui criada uma lista de cores de cabos,
+    #     # mas esse dia não é hoje
+    #     return ['Ladder Rack', 'Cable Tray']
     def get_install_list(self):
         """Method that returns the list of containment types abvailable"""
 
@@ -380,14 +379,10 @@ class MyTab(ttk.Frame):
 
 
     def common_install_select(self, event):
-        # print(self.common_install_var.get())
         if self.common_install_var.get() in ['Touching', 'Spaced'] :
             self.common_spacing_entry.config(state='disabled')
-            # self.common_spacing_label.grid_forget()
         if self.common_install_var.get() == 'Custom Spacing':
             self.common_spacing_entry.config(state='normal')
-            #self.common_spacing_label.grid(row=0, column=2, sticky='W')
-            #self.common_spacing_entry.grid(row=0, column=3, sticky='W')
         self.print_result()
 
     def menu_select(self):
@@ -408,10 +403,10 @@ class MyCable:
         self.diam = self.cable_calc()
 
     def cable_calc(self):
-        # print(db['cables'][self.cable_type][self.number_cables][self.csa])
         overall = db['cables'][self.cable_type][self.number_cables][self.csa]
         single = db['cables']['LSF Single']['1'][self.cpc_csa]
         result = float(overall) * int(self.parallel) + float(single)
+        print(f'{float(overall)} * {int(self.parallel)} + {float(single)}')
         return result
 
     def update_data(self, ref, typ, num, csa, par, cpc):
