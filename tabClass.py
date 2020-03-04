@@ -8,7 +8,7 @@ Copyright 2020, The JJ duo
 """
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from myDB import db
 
 
@@ -58,14 +58,15 @@ class MyTab(ttk.Frame):
         self.common_install_optionmenu = tk.OptionMenu(self.common_parameters, self.common_install_var, *self.get_install_list(), command=self.common_install_select)
         self.common_install_var.set(self.get_install_list()[0])
         self.common_install_optionmenu.grid(row=0, column=1, sticky='WE')
+        self.common_parameters.grid_columnconfigure(1, minsize=150)
 
         # Common - Custom spacing
         self.common_spacing_label = tk.Label(self.common_parameters, text='Custom spacing (mm):')
-        # self.common_spacing_label.grid(row=0, column=2, sticky='W')
-        self.common_spacing_entry = tk.Entry(self.common_parameters, textvariable=self.common_spacing_var, validate='focusout', validatecommand=self.print_result)
+        self.common_spacing_label.grid(row=0, column=2, sticky='W')
+        self.common_spacing_entry = tk.Entry(self.common_parameters, textvariable=self.common_spacing_var, validate='focusout', validatecommand=self.print_result, state='disabled')
         self.common_spacing_var.set('0')
         #self.common_spacing_var.trace('w', self.print_result())
-        # self.common_spacing_entry.grid(row=0, column=3, sticky='W')
+        self.common_spacing_entry.grid(row=0, column=3, sticky='W')
 
         # Common - Countainment type
         self.common_cont_label = tk.Label(self.common_parameters, text='Countainment type:')
@@ -77,8 +78,8 @@ class MyTab(ttk.Frame):
         # Common - Spare capacity
         self.common_spare_label = tk.Label(self.common_parameters, text='Spare capacity (%):')
         self.common_spare_label.grid(row=2, column=0, sticky='W')
-        self.common_spare_entry = tk.Entry(self.common_parameters, textvariable=self.common_spare_var)
-        self.common_spare_entry.grid(row=2, column=1, sticky='W')
+        self.common_spare_entry = tk.Entry(self.common_parameters, textvariable=self.common_spare_var, validate='focusout', validatecommand=self.print_result)
+        self.common_spare_entry.grid(row=2, column=1, sticky='WE')
 
         # Common - Cable Tray Ref
         self.common_trayref_label = tk.Label(self.common_parameters, text='Cable Tray Ref:')
@@ -151,7 +152,7 @@ class MyTab(ttk.Frame):
         # Cable_List - List of cables
         self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 12), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
         self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
-        self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.SINGLE, font=('TkFixedFont', 12))
+        self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.BROWSE, font=('TkFixedFont', 12))
         self.cable_list_listbox.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
         self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
 
@@ -185,20 +186,24 @@ class MyTab(ttk.Frame):
 
 
     def select_item(self, event):
-        print(self.cable_list_listbox.curselection()[0])
-        print(self.cable_list[self.cable_list_listbox.curselection()[0]].cable_ref)
-        self.selected_item = self.cable_list[self.cable_list_listbox.curselection()[0]]
 
-        self.cable_ref_entry.delete(0, tk.END)
-        self.cable_ref_entry.insert(tk.END, self.selected_item.cable_ref)
+        try:
+            print(self.cable_list_listbox.curselection()[0])
+            print(self.cable_list[self.cable_list_listbox.curselection()[0]].cable_ref)
+            self.selected_item = self.cable_list[self.cable_list_listbox.curselection()[0]]
 
-        self.cable_type_combobox.set(self.selected_item.cable_type)
-        self.cable_cores_combobox.set(self.selected_item.number_cables)
-        self.cable_csa_combobox.set(self.selected_item.csa)
-        self.cable_parallel_combobox.set(self.selected_item.parallel)
+            self.cable_ref_entry.delete(0, tk.END)
+            self.cable_ref_entry.insert(tk.END, self.selected_item.cable_ref)
 
-        self.cable_cpc_combobox.delete(0, tk.END)
-        self.cable_cpc_combobox.insert(tk.END, self.selected_item.cpc_csa)
+            self.cable_type_combobox.set(self.selected_item.cable_type)
+            self.cable_cores_combobox.set(self.selected_item.number_cables)
+            self.cable_csa_combobox.set(self.selected_item.csa)
+            self.cable_parallel_combobox.set(self.selected_item.parallel)
+
+            self.cable_cpc_combobox.delete(0, tk.END)
+            self.cable_cpc_combobox.insert(tk.END, self.selected_item.cpc_csa)
+        except IndexError:
+            pass
 
 
     def delete_this_tab(self):
@@ -230,7 +235,7 @@ class MyTab(ttk.Frame):
 
     def update_cable(self):
         """Method to update data of a cable in this tab"""
-        self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_var.get())
+        self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_combobox.get())
         self.populate_list()
         self.print_result()
         self.clear_cable()
@@ -242,7 +247,7 @@ class MyTab(ttk.Frame):
         self.cable_cores_combobox.current(newindex=0)
         self.cable_csa_combobox.current(newindex=0)
         self.cable_parallel_combobox.current(newindex=0)
-        self.cable_cpc_combobox.delete(0, tk.END)
+        self.cable_cpc_combobox.current(newindex=0)
 
     def populate_list(self):
         self.cable_list_listbox.delete(0, tk.END)
@@ -304,6 +309,7 @@ class MyTab(ttk.Frame):
         for cable in self.cable_list:
             if self.cable_ref_var.get()==cable.cable_ref:
                 print('Cable ref')
+                messagebox.showwarning(title='Error', message='That cable name already exist.')
                 result = False
         # self.cable_type_combobox.get()
         # self.cable_cores_combobox.get()
@@ -376,11 +382,12 @@ class MyTab(ttk.Frame):
     def common_install_select(self, event):
         # print(self.common_install_var.get())
         if self.common_install_var.get() in ['Touching', 'Spaced'] :
-            self.common_spacing_entry.grid_forget()
-            self.common_spacing_label.grid_forget()
+            self.common_spacing_entry.config(state='disabled')
+            # self.common_spacing_label.grid_forget()
         if self.common_install_var.get() == 'Custom Spacing':
-            self.common_spacing_label.grid(row=0, column=2, sticky='W')
-            self.common_spacing_entry.grid(row=0, column=3, sticky='W')
+            self.common_spacing_entry.config(state='normal')
+            #self.common_spacing_label.grid(row=0, column=2, sticky='W')
+            #self.common_spacing_entry.grid(row=0, column=3, sticky='W')
         self.print_result()
 
     def menu_select(self):
