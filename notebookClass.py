@@ -32,8 +32,6 @@ class Notebook(ttk.Notebook):
         self.gifLogo = tk.PhotoImage(file='images/Arup_logo.gif')        
         self.tabs_list = {}
         self.section_name_entry = tk.StringVar()
-        """Variables for entries"""
-        # Menu.lst_entries = [self.e_job_title.text, self.e_job_number.text, self.e_date.text, self.e_designer.text, self.e_revision.text]
         self.create_general_tab('Main Page')
         
     def create_general_tab(self, title):  
@@ -74,18 +72,9 @@ class Notebook(ttk.Notebook):
         self.e_create_section = CreateEntry(self.cSection, background='white', row=0, column=1, colspan=2, sticky='EW')
         CreateButton(self.cSection, text='Create Section', height=1, width=0, command=self.add_sec, row=0, column=3, colspan=1, sticky='EW')
         self.e_create_section.grid_columnconfigure(1, weight=1)
-        CreateButton(self.cSection, text='Test', height=1, width=0, command=self.to_save, row=0, column=4, colspan=1, sticky='EW')
+        CreateButton(self.cSection, text='Test', height=1, width=0, command=self.parent.menu.to_save, row=0, column=4, colspan=1, sticky='EW')
         """Label for bottom title"""
         CreateLabel(frame, text='''ESN Calc Sheet\n\nContainment sizing spreadsheet\n\nRevision 0.3 Feb20''', image='', background='white', height=10, width=0, row=3, column=0, colspan=4, sticky='NSEW')
-    
-    def to_save(self):
-        objects = []
-        for i in self.tabs_list.values():
-            objects.append(i)
-        objects = objects[1:]
-        print(objects)
-        print(objects[0].cable_list[0].cable_ref)
-        print(self.parent.menu.to_save)
 
     def create_calc_tab(self):
         """Method to create one Calculation tab"""

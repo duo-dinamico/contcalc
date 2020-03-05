@@ -90,32 +90,33 @@ class Menu(tk.Menu):
         INPUT: self
         OUTPUT: JSON file with entries and tabs
         """
-        lst_entries = []
-        lst_tabs = []
-        lst_toSave = [lst_entries, lst_tabs]
+        # lst_entries = []
+        # lst_tabs = []
+        # lst_toSave = []
         try:
             if self.filename:
                 filepath = 'json/' + self.filename[-1]
-                with open(filepath, 'w') as save_file:
-                    for i in self.parent.nb.lst_entries:
-                        lst_entries.append(str(i.get()))
-                    for k in self.parent.nb.tabs_list:
-                        if k == 'Main Page':
-                            pass
-                        else:
-                            lst_tabs.append(k)
-                    json.dump(lst_toSave, save_file)
+                with open(filepath + '.txt', 'w') as save_file:
+                    # for i in self.parent.nb.lst_entries:
+                    #     lst_entries.append(str(i.get()))
+                    # for k in self.parent.nb.tabs_list:
+                    #     if k == 'Main Page':
+                    #         pass
+                    #     else:
+                    #         lst_tabs.append(k)
+                    json.dump(self.to_save(), save_file)
         except AttributeError:
             pass
+        self.filemenu.entryconfigure(1, state='disabled')
             
     def saveas_file(self):
         """Method for saving files as.
         INPUT: self
         OUTPUT: JSON file with entries and tabs
         """
-        lst_entries = []
-        lst_tabs = []
-        lst_toSave = [lst_entries, lst_tabs]
+        # lst_entries = []
+        # lst_tabs = []
+        # lst_toSave = []
         filepath = asksaveasfilename(
             filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
         )
@@ -124,50 +125,92 @@ class Menu(tk.Menu):
         if '.txt' in filepath:
             filepath = filepath.replace('.txt', '')
         with open(filepath + '.txt', 'w') as save_file:
-            for i in self.parent.nb.lst_entries:
-                lst_entries.append(str(i.get()))
-            for k in self.parent.nb.tabs_list:
-                if k == 'Main Page':
-                    pass
-                else:
-                    lst_tabs.append(k)
-            json.dump(lst_toSave, save_file)
+            # for i in self.parent.nb.lst_entries:
+            #     lst_entries.append(str(i.get()))
+            # for k in self.parent.nb.tabs_list:
+            #     if k == 'Main Page':
+            #         pass
+            #     else:
+            #         lst_tabs.append(k)
+            json.dump(self.to_save(), save_file)
         self.filename = filepath.split('/')
         self.parent.title(f'Containment Calculation Sheet - {self.filename[-1]}')
         self.filemenu.entryconfigure(1, state='normal')
 
     def to_save(self):
         to_save = {
-            'Project Info':{
-                'Job Title':'',
-                'Job Number':'',
-                'Designer':'',
-                'Date':'',
-                'Revision':''
-            },
-            'Project Tabs':{
-                'Tab':{
-                    'Reference':'',
-                    'Type':'',
-                    'Number of cables':'',
-                    'CSA':'',
-                    'No Parallels':'',
-                    'CPC CSA':''
-                }
-            }
+            # 'Project Info':{
+            #     'Job Title':'',
+            #     'Job Number':'',
+            #     'Designer':'',
+            #     'Date':'',
+            #     'Revision':''
+            # },
+            # 'Project Tabs':{
+            #     'Tab':{
+            #         'Reference':{
+            #            'Type':'',
+            #            'Number of cables':'',
+            #            'CSA':'',
+            #            'No Parallels':'',
+            #            'CPC CSA':''
+            #           }
+            #     }
+            # }
         }
-
+        # The following makes the entries in the main page a dictionary and adds them to the save list
+        lst_entries = []
         for i in self.parent.nb.lst_entries:
-            tmp_dict = {
-                'Job Title':'',
-                'Job Number':'',
-                'Designer':'',
-                'Date':'',
-                'Revision':''
-            }
-            to_save.update('k' = i)
+                lst_entries.append(str(i.get()))
+        dict_info_headers = {'Job Title': lst_entries[0], 'Job Number': lst_entries[1], 'Designer': lst_entries[2], 'Date': lst_entries[3], 'Revision': lst_entries[4]}
+        dict_info = {'Project Info': dict_info_headers}
+        to_save.update(dict_info)
 
-        return to_save
+        # The following makes the tabs into a dictionary and adds them to the save list
+        # lst_tabs = []
+        # for k in self.parent.nb.tabs_list:
+        #     if k == 'Main Page':
+        #         pass
+        #     else:
+        #         lst_tabs.append(k)
+        # dict_info_headers = {}
+        # for h in lst_tabs:
+        #     dict_info_headers.update({h: ''})
+        # dict_tabs = {'Project Tabs': dict_info_headers}
+        # to_save.update(dict_tabs)
+        
+        dict_tabs = {}
+        for k, v in self.parent.nb.tabs_list.items():
+            if k == 'Main Page':
+                pass
+            else:
+                tmp_dict = {k: v.list_cables()}
+                dict_tabs.update(tmp_dict)
+        # print(lst_tabs)
+
+        # dict_info_headers = {}
+        # for h in lst_tabs:
+        #     dict_info_headers.update({h: ''})
+        # dict_tabs = {'Project Tabs': dict_info_headers}
+        to_save.update(dict_tabs)
+
+        # The following make the list of cables into a dictionary and adds them to the save list
+        # lst_obj_tabs = []
+        # for i in self.parent.nb.tabs_list.values():
+        #     lst_obj_tabs.append(i)
+        # lst_obj_tabs = lst_obj_tabs[1:]
+        # lst_cables = []
+        # for o in lst_obj_tabs:
+        #     lst_cables.append(o.list_cables())
+        # # print(lst_cables)
+        # try:
+        #     dict_cables_headers = {}
+        #     for c in lst_cables:
+        #         dict_cables_headers = {'Type': c[1], 'Number of cables': c[2], 'CSA': c[3], 'No Parallels': c[4], 'CPC CSA': c[5]}
+        #         print(dict_cables_headers)
+        # except IndexError:
+        #     pass
+        return(to_save)
 
     def about_menu(self):
         """Method for versions.
