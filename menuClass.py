@@ -92,8 +92,7 @@ class Menu(tk.Menu):
         """
         lst_entries = []
         lst_tabs = []
-        lst_cables = []
-        lst_toSave = [lst_entries, lst_tabs, lst_cables]
+        lst_toSave = [lst_entries, lst_tabs]
         try:
             if self.filename:
                 filepath = 'json/' + self.filename[-1]
@@ -105,8 +104,6 @@ class Menu(tk.Menu):
                             pass
                         else:
                             lst_tabs.append(k)
-                    for e in MyTab.cable_list:
-                        lst_cables.append(e)
                     json.dump(lst_toSave, save_file)
         except AttributeError:
             pass
@@ -118,8 +115,7 @@ class Menu(tk.Menu):
         """
         lst_entries = []
         lst_tabs = []
-        lst_cables = []
-        lst_toSave = [lst_entries, lst_tabs, lst_cables]
+        lst_toSave = [lst_entries, lst_tabs]
         filepath = asksaveasfilename(
             filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
         )
@@ -135,11 +131,10 @@ class Menu(tk.Menu):
                     pass
                 else:
                     lst_tabs.append(k)
-            for e in MyTab.cable_list:
-                    lst_cables.append(e)
             json.dump(lst_toSave, save_file)
-        filename = filepath.split('/')
-        self.parent.title(f'Containment Calculation Sheet - {filename[-1]}')
+        self.filename = filepath.split('/')
+        self.parent.title(f'Containment Calculation Sheet - {self.filename[-1]}')
+        self.filemenu.entryconfigure(1, state='normal')
 
     def about_menu(self):
         """Method for versions.
