@@ -1,1 +1,34 @@
-[["", "", "", "", ""], ["gfs"]]
+	to_save = {			
+	'project info':{			
+		'Job Title':	value1	
+		'Job Number':	value2	
+		'Designer':	value3	
+		'Date':	value4	
+		'Revision':	value5	
+	}			
+	'project tabs':{			
+		'Tab1':{		
+			'Reference':	cable_ref
+			'Type':	cable_type
+			'Number of Cables':	number_cables
+			'CSA':	csa
+			'No Parallels':	parallel
+			'CPC CSA':	cpc_csa
+		'Tab2':{		
+			'Reference':	cable_ref
+			'Type':	cable_type
+			'Number of Cables':	number_cables
+			'CSA':	csa
+			'No Parallels':	parallel
+			'CPC CSA':	cpc_csa
+		…		
+			…	…
+		'Tab100':{		
+			'Reference':	cable_ref
+			'Type':	cable_type
+			'Number of Cables':	number_cables
+			'CSA':	csa
+			'No Parallels':	parallel
+			'CPC CSA':	cpc_csa
+	}			
+	}			

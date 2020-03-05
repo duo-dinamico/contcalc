@@ -136,6 +136,39 @@ class Menu(tk.Menu):
         self.parent.title(f'Containment Calculation Sheet - {self.filename[-1]}')
         self.filemenu.entryconfigure(1, state='normal')
 
+    def to_save(self):
+        to_save = {
+            'Project Info':{
+                'Job Title':'',
+                'Job Number':'',
+                'Designer':'',
+                'Date':'',
+                'Revision':''
+            },
+            'Project Tabs':{
+                'Tab':{
+                    'Reference':'',
+                    'Type':'',
+                    'Number of cables':'',
+                    'CSA':'',
+                    'No Parallels':'',
+                    'CPC CSA':''
+                }
+            }
+        }
+
+        for i in self.parent.nb.lst_entries:
+            tmp_dict = {
+                'Job Title':'',
+                'Job Number':'',
+                'Designer':'',
+                'Date':'',
+                'Revision':''
+            }
+            to_save.update('k' = i)
+
+        return to_save
+
     def about_menu(self):
         """Method for versions.
         INPUT: self
