@@ -72,7 +72,7 @@ class Notebook(ttk.Notebook):
         self.e_create_section = CreateEntry(self.cSection, background='white', row=0, column=1, colspan=2, sticky='EW')
         CreateButton(self.cSection, text='Create Section', height=1, width=0, command=self.add_sec, row=0, column=3, colspan=1, sticky='EW')
         self.e_create_section.grid_columnconfigure(1, weight=1)
-        CreateButton(self.cSection, text='Test', height=1, width=0, command=self.parent.menu.test_dic, row=0, column=4, colspan=1, sticky='EW')
+        # CreateButton(self.cSection, text='Test', height=1, width=0, command=self.parent.menu.test_dic, row=0, column=4, colspan=1, sticky='EW')
         """Label for bottom title"""
         CreateLabel(frame, text='''ESN Calc Sheet\n\nContainment sizing spreadsheet\n\nRevision 0.3 Feb20''', image='', background='white', height=10, width=0, row=3, column=0, colspan=4, sticky='NSEW')
 
