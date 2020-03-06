@@ -42,6 +42,7 @@ class MyTab(ttk.Frame):
         self.result_with_install_var = tk.StringVar()
         self.result_with_spare_var = tk.StringVar()
         self.result_with_cont_var = tk.StringVar()
+        self.result_with_cont_var.set('0')
 
         # Start object
         parent.add(self, text=self.name)
@@ -53,8 +54,8 @@ class MyTab(ttk.Frame):
         # Common - Installation type
         self.common_install_label = tk.Label(self.common_parameters, text='Installation type:')
         self.common_install_label.grid(row=0, column=0, sticky='W')
-        self.common_install_optionmenu = tk.OptionMenu(self.common_parameters, self.common_install_var, *self.get_install_list(), command=self.common_install_select)
-        self.common_install_var.set(self.get_install_list()[0])
+        self.common_install_optionmenu = tk.OptionMenu(self.common_parameters, self.common_install_var, *['Spaced', 'Touching', 'Custom Spacing'], command=self.common_install_select)
+        self.common_install_var.set('Spaced')
         self.common_install_optionmenu.grid(row=0, column=1, sticky='WE')
         self.common_parameters.grid_columnconfigure(1, minsize=150)
 
@@ -121,7 +122,7 @@ class MyTab(ttk.Frame):
         # Cable - Select Cables in parallel (combobox)
         self.cable_parallel_label = tk.Label(self.cable_parameters, text='Parallel', width='15')
         self.cable_parallel_label.grid(row=0, column=4)
-        self.cable_parallel_combobox = ttk.Combobox(self.cable_parameters, values=[1, 2, 3, 4, 5, 6, 7, 8], postcommand=self.get_parallel_list, state='readonly')
+        self.cable_parallel_combobox = ttk.Combobox(self.cable_parameters, values=[1, 2, 3, 4, 5, 6, 7, 8], state='readonly')
         self.cable_parallel_combobox.current(0)
         self.cable_parallel_combobox.grid(row=1, column=4, sticky='EW')
 
@@ -261,33 +262,31 @@ class MyTab(ttk.Frame):
 
     def print_result(self):
         """ Method to get the multiple results to print."""
-        print('Print Resuklt')
         ## Raw Result
         result = 0
-        result_with_install = 0
         for obj in self.cable_list:
             result += obj.diam
         self.result_var.set(result)
 
         ## Result with install
+        result_with_install = 0
         if self.common_install_var.get() == 'Spaced':
             result_with_install = result * 2
         elif self.common_install_var.get() == 'Touching':
             result_with_install = result
         else:
             result_with_install = result + (len(self.cable_list)-1) * float(self.common_spacing_var.get())
-            print(f'{result} + {len(self.cable_list)}-1 * {self.common_spacing_var.get()}')
+            print(f'result_with_install = {result} + {len(self.cable_list)}-1 * {self.common_spacing_var.get()}')
         self.result_with_install_var.set(result_with_install)
 
         ## Result with spare
         if self.common_spare_var.get() != '':
             self.result_with_spare_var.set(float(self.result_with_install_var.get()) * (1 + int(self.common_spare_var.get())/100 ))
-            print(f'With spare {self.result_with_install_var.get()} * (1 + {self.common_spare_var.get()}     {self.result_with_spare_var.get()})')
+            print(f'With spare {float(self.result_with_install_var.get())} * (1 + {int(self.common_spare_var.get())}   ->  {self.result_with_spare_var.get()})')
         else:
             self.result_with_spare_var.set(self.result_with_install_var.get())
 
         ## Result containment
-        print(self.common_cont_var.get())
         if self.common_cont_var.get() == 'Ladder Rack':
             for n in list(db['ladder'])[::-1]:
                 if n > float(self.result_with_spare_var.get()):
@@ -298,9 +297,16 @@ class MyTab(ttk.Frame):
                 if n > float(self.result_with_spare_var.get()):
                     self.result_with_cont_var.set(n)
                     break
-        # print(f'Test {self.result_with_cont_var.get()}')
-        # if int(self.result_with_cont_var.get()) > 900:
-        #     messagebox.showwarning(title='Error', message='The size needed exceed Ladder/Tray maximum size.')
+
+        ## Warning if total diam is higher than maximum size of Tray/Ladder
+        ## Need to pass if result_entry_4 does not already exist
+        try:
+            if float(self.result_with_spare_var.get()) > float(self.result_with_cont_var.get()):
+                self.result_entry_4.configure(disabledbackground='red')
+            else:
+                self.result_entry_4.configure(disabledbackground='SystemButtonFace')
+        except:
+            pass
         return True
 
 
@@ -309,7 +315,6 @@ class MyTab(ttk.Frame):
         result = True
         for cable in self.cable_list:
             if self.cable_ref_var.get()==cable.cable_ref:
-                print('Cable ref')
                 messagebox.showwarning(title='Error', message='That cable name already exist.')
                 result = False
         # self.cable_type_combobox.get()
@@ -343,18 +348,6 @@ class MyTab(ttk.Frame):
         #self.cable_parallel_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()][self.cable_csa_combobox.get()])
         pass
 
-    # def get_cont_list(self):
-    #     """Method that returns the list of containment types abvailable"""
-    #
-    #     # Um dia vai ser aqui criada uma lista de cores de cabos,
-    #     # mas esse dia não é hoje
-    #     return ['Ladder Rack', 'Cable Tray']
-    def get_install_list(self):
-        """Method that returns the list of containment types abvailable"""
-
-        # Um dia vai ser aqui criada uma lista de cores de cabos,
-        # mas esse dia não é hoje
-        return ['Spaced', 'Touching', 'Custom Spacing']
 
     def cable_type_select(self, event):
         """Method that changes current values in combobox to default"""
