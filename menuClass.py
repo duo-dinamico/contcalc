@@ -39,29 +39,17 @@ class Menu(tk.Menu):
         self.editmenu.add_command(label='Add...', command=parent.quit)
         self.helpmenu.add_command(label='About', command=self.about_menu)
 
-    def confirm_exit(self):
-        """Method to get warning box about exiting.
-        INPUT: no input
-        OUTPUT: no output
-        """
-        self.confirm_exit_dialog = messagebox.askyesnocancel(title='Save on close', message='Do you want to save before quiting?', default=tk.messagebox.YES, icon='question')
-        
-        try:
-            if self.confirm_exit_dialog and self.filename:
-                self.save_file()
-                self.parent.quit()
-            elif self.confirm_exit_dialog is None:
-                return
-            else:
-                self.parent.quit()
-        except AttributeError:          
-            if self.confirm_exit_dialog:
-                self.saveas_file()
-                self.parent.quit()
-            elif self.confirm_exit_dialog is None:
-                return
-            else:
-                self.parent.quit()
+    def test_dic(self):
+        filepath = askopenfilename(
+            filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
+        )
+        if not filepath:
+            return
+        with open(filepath, 'r') as input_file:
+            data = json.load(input_file)
+            print(data)
+            for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()):
+                i.set(myline)
 
     def open_file(self):
         """Method for opening files.
@@ -221,3 +209,27 @@ class Menu(tk.Menu):
         tkinter_version = tk.TkVersion
         contcalc_version = 0.2
         messagebox.showinfo(title='About', message=(f'This tools versions is: {contcalc_version}\nYour python version is: {py_version_compact}\nYour tkinter version is: {tkinter_version}'))
+
+    def confirm_exit(self):
+        """Method to get warning box about exiting.
+        INPUT: no input
+        OUTPUT: no output
+        """
+        self.confirm_exit_dialog = messagebox.askyesnocancel(title='Save on close', message='Do you want to save before quiting?', default=tk.messagebox.YES, icon='question')
+        
+        try:
+            if self.confirm_exit_dialog and self.filename:
+                self.save_file()
+                self.parent.quit()
+            elif self.confirm_exit_dialog is None:
+                return
+            else:
+                self.parent.quit()
+        except AttributeError:          
+            if self.confirm_exit_dialog:
+                self.saveas_file()
+                self.parent.quit()
+            elif self.confirm_exit_dialog is None:
+                return
+            else:
+                self.parent.quit()
