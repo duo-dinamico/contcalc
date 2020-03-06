@@ -41,58 +41,50 @@ class Menu(tk.Menu):
         self.helpmenu.add_command(label='About', command=self.about_menu)
 
     def json_access(self, mode, dialog):
-        """Method to load and get data from a json.
-        INPUT: JSON file with entries and tabs
+        """Method to load and dump data from a json.
+        INPUT: JSON file with entries and tabs 
         OUTPUT: no output
         """
-        self.mode = mode
-        self.dialog = dialog
+        self.mode = mode # the mode will determine if we're doing Write or Read
+        self.dialog = dialog # the dialog will determine if we're doing Save as Filename or Open Filename
 
-        if self.dialog == asksaveasfilename:
+        if self.dialog == asksaveasfilename or self.dialog == askopenfilename: # if dialog asks for dialog box, give it to the user
             self.filepath = self.dialog(
                 filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
             )
-            print(self.filepath)
             if not self.filepath:
                 return
-        elif self.dialog == askopenfilename:
-            self.filepath = self.dialog(
-                filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
-            )
-            print(self.filepath)
-            if not self.filepath:
-                return
-        else:
-            self.filemenu.entryconfigure(1, state='disabled')
+        else: # otherwise pass. save only needs the filepath
+            pass
         
-        with open(self.filepath, self.mode) as json_file:
-            if self.dialog == askopenfilename:
+        with open(self.filepath, self.mode) as json_file: # access the json file as Write or Read mode
+            if self.dialog == askopenfilename: # if open file, access the file and save it on a variable
                 data = json.load(json_file)
-                self.filemenu.entryconfigure(1, state='normal')
+                self.filemenu.entryconfigure(1, state='normal') # set menu save to normal
             else:
-                json.dump(self.to_save(), json_file)
-                data = ''
-                self.filemenu.entryconfigure(1, state='disabled')
-        return data
+                json.dump(self.to_save(), json_file) # otherwise just do a dump into the file
+                data = '' # set data to empty just for error handling
+                self.filemenu.entryconfigure(1, state='disabled') # disable the save menu
+        return data # return the data to be used when opening a file
 
     def open_file(self):
         """Method for opening files.
         INPUT: JSON file with entries and tabs
         OUTPUT: no output
         """
-        data = self.json_access('r', askopenfilename)
-        for k, v in self.parent.nb.tabs_list.items():
+        data = self.json_access('r', askopenfilename) # convert the data into a variable inside the open
+        for k, v in self.parent.nb.tabs_list.items(): # cycle through open tabs and destroy them
             if k == 'Main Page':
                 pass
             else:
                 v.destroy()
-        for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()):
+        for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()): # cycle through the list of tk entries to fill them with the values from data
             i.set(myline)
-        for d in data['Project Tabs']:
+        for d in data['Project Tabs']: # cycle through the data on tabs in the file and create them
             new_tab = MyTab(self.parent.nb, d)
             self.dict = {d: new_tab}
             self.parent.nb.tabs_list.update(self.dict)
-        for k, v in self.parent.nb.tabs_list.items():
+        for k, v in self.parent.nb.tabs_list.items(): # now cycle through created tabs and try to generate the  list of cables. silently exit if it doesn't find tabs.
             if k == 'Main Page':
                 pass
             else:
@@ -103,15 +95,14 @@ class Menu(tk.Menu):
                         v.populate_list()
                         v.print_result()
                         v.clear_cable()
-                        # print(v)
                 except IndexError:
                         pass
-        self.filename_state_normal()
+        self.filename_state_normal() # function to set title and save menu to enabled
 
     def filename_state_normal(self):
-        self.filename = self.filepath.split('/')[-1].replace('.txt', '')
-        self.parent.title(f'Containment Calculation Sheet - {self.filename}')
-        self.filemenu.entryconfigure(1, state='normal')
+        self.filename = self.filepath.split('/')[-1].replace('.txt', '') # clean filepath to get filename only
+        self.parent.title(f'Containment Calculation Sheet - {self.filename}') # set the title of the window to the filename
+        self.filemenu.entryconfigure(1, state='normal') # set save menu to enabled
 
     def save_file(self):
         """Method for saving files.
@@ -119,8 +110,9 @@ class Menu(tk.Menu):
         OUTPUT: JSON file with entries and tabs
         """
         try:
-            if self.filename:
+            if self.filename: # if the software has a name, should be able to save it to the filepath. if not, silently pass
                 self.json_access('w', '')
+                self.filemenu.entryconfigure(1, state='disabled')
         except AttributeError:
             pass
                
