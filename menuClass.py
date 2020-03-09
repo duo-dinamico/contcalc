@@ -13,6 +13,7 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tabClass import MyTab, MyCable
 import platform
 import json
+from openpyxl import Workbook
 
 class Menu(tk.Menu):
     """Class that create the menu.
@@ -23,7 +24,7 @@ class Menu(tk.Menu):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        
+
         # The following 14 lines of code create our menu and associate commands to the options
         self.filemenu = tk.Menu(self, tearoff=0)
         self.editmenu = tk.Menu(self, tearoff=0)
@@ -36,13 +37,15 @@ class Menu(tk.Menu):
         self.filemenu.entryconfigure(1, state='disabled')
         self.filemenu.add_command(label='Save as...', command=self.saveas_file)
         self.filemenu.add_separator()
+        self.filemenu.add_command(label='Export to Excel', command=self.export_excel)
+        self.filemenu.add_separator()
         self.filemenu.add_command(label='Exit', command=self.confirm_exit)
         self.editmenu.add_command(label='Add...', command=parent.quit)
         self.helpmenu.add_command(label='About', command=self.about_menu)
 
     def json_access(self, mode, dialog):
         """Method to load and dump data from a json.
-        INPUT: JSON file with entries and tabs 
+        INPUT: JSON file with entries and tabs
         OUTPUT: no output
         """
         self.mode = mode # the mode will determine if we're doing Write or Read
@@ -64,7 +67,7 @@ class Menu(tk.Menu):
             if self.dialog == askopenfilename: # if open file, access the file and save it on a variable
                 data = json.load(json_file)
                 self.filemenu.entryconfigure(1, state='normal') # set menu save to normal
-            else:                
+            else:
                 json.dump(self.to_save(), json_file) # otherwise just do a dump into the file
                 data = '' # set data to empty just for error handling
                 self.filemenu.entryconfigure(1, state='disabled') # disable the save menu
@@ -118,7 +121,7 @@ class Menu(tk.Menu):
                 self.filemenu.entryconfigure(1, state='disabled')
         except AttributeError:
             pass
-               
+
     def saveas_file(self):
         """Method for saving files as.
         INPUT: self
@@ -128,6 +131,48 @@ class Menu(tk.Menu):
         self.filename = self.filepath.split('/')[-1].replace('.txt', '')
         self.parent.title(f'Containment Calculation Sheet - {self.filename}')
         self.filemenu.entryconfigure(1, state='normal')
+
+    def export_excel(self):
+        """ Method to export data to Excel. """
+
+        ## Create Workbook
+        wb = Workbook()
+
+        ## File to save. Need improvement
+        dest_filename = 'empty_book.xlsx'
+
+        ## Get data
+        data = self.to_save()
+
+        ## New Workbook always have one sheet, let use that one
+        sheet_1 = wb.active
+        sheet_1.title = 'Project Info'
+        my_row = 1
+        for text in list(data['Project Info']):
+            sheet_1.cell(row=my_row, column=1, value=text)
+            sheet_1.cell(row=my_row, column=2, value=data["Project Info"][text])
+            my_row += 1
+            #print(f'{x}: {data["Project Info"][x]}')
+
+        ## Check if there are calculation tabs
+        print(f'Number of tabs: {len(list(data["Project Tabs"]))}')
+        if len(list(data["Project Tabs"])) > 0:
+
+            ## Loop all tables
+            for tab in list(data["Project Tabs"]):
+                print(f'Tab: {tab}')
+                wb.create_sheet(title=tab)
+
+                ## Write data to the cells, from list
+                my_row = 1
+                for field in data["Project Tabs"][tab]:
+                    print(f'Field: {field}')
+                    wb[tab].cell(row=my_row, column=1, value=str(field))
+                    my_row += 1
+
+        ## Save Workbook to file
+        wb.save(dest_filename)
+
 
     def to_save(self):
         to_save = {
@@ -145,6 +190,49 @@ class Menu(tk.Menu):
             #           }
             #     }
             # }
+
+
+            ## Proposta de alteração:
+
+            # 'Project Info':{
+            #     'Job Title':'',
+            #     'Job Number':'',
+            #     'Designer':'',
+            #     'Date':'',
+            #     'Revision':''
+            # },
+            # 'Project Tabs':{
+            #     'Tab':{
+            #         'Common': {
+            #             'Installation type': '',
+            #             'Containment Type': '',
+            #             'Spare Capacity': '',
+            #             'Custom Spacing': ''
+            #         },
+            #         'Cables': [
+            #             {
+            #                 'Reference': '',
+            #                 'Type': '',
+            #                 'Number of cables': '',
+            #                 'CSA': '',
+            #                 'No Parallels': '',
+            #                 'CPC CSA'
+            #             },
+            #             {
+            #                 'Reference': '',
+            #                 'Type': '',
+            #                 'Number of cables': '',
+            #                 'CSA': '',
+            #                 'No Parallels': '',
+            #                 'CPC CSA': ''
+            #             }
+            #         ]
+            #     }
+            # }
+
+
+
+
         }
         # The following makes the entries in the main page a dictionary and adds them to the save list
         lst_entries = []
@@ -184,7 +272,7 @@ class Menu(tk.Menu):
         OUTPUT: no output
         """
         self.confirm_exit_dialog = messagebox.askyesnocancel(title='Save on close', message='Do you want to save before quiting?', default=tk.messagebox.YES, icon='question')
-        
+
         try:
             if self.confirm_exit_dialog and self.filename:
                 self.save_file()
