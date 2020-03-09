@@ -56,12 +56,15 @@ class Menu(tk.Menu):
                 return
         else: # otherwise pass. save only needs the filepath
             pass
-        
+        if '.txt' not in self.filepath:
+            self.filepath = self.filepath + '.txt'
+        else:
+            pass
         with open(self.filepath, self.mode) as json_file: # access the json file as Write or Read mode
             if self.dialog == askopenfilename: # if open file, access the file and save it on a variable
                 data = json.load(json_file)
                 self.filemenu.entryconfigure(1, state='normal') # set menu save to normal
-            else:
+            else:                
                 json.dump(self.to_save(), json_file) # otherwise just do a dump into the file
                 data = '' # set data to empty just for error handling
                 self.filemenu.entryconfigure(1, state='disabled') # disable the save menu
