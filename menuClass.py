@@ -56,7 +56,7 @@ class Menu(tk.Menu):
                 return
         else: # otherwise pass. save only needs the filepath
             pass
-        if '.txt' not in self.filepath:
+        if '.txt' not in self.filepath and self.dialog == asksaveasfilename:
             self.filepath = self.filepath + '.txt'
         else:
             pass
@@ -140,12 +140,8 @@ class Menu(tk.Menu):
             # },
             # 'Project Tabs':{
             #     'Tab':{
-            #         'Reference':{
-            #            'Type':'',
-            #            'Number of cables':'',
-            #            'CSA':'',
-            #            'No Parallels':'',
-            #            'CPC CSA':''
+            #         'Common': ['Installation type', 'Containment Type', 'Spare Capacity', 'Custom Spacing']
+            #         'Reference': [['Type', 'Number of cables', 'CSA', 'No Parallels', 'CPC CSA']]
             #           }
             #     }
             # }
@@ -165,11 +161,12 @@ class Menu(tk.Menu):
             if k == 'Main Page':
                 pass
             else:
-                tmp_dict = {k: v.list_cables()}
+                tmp_dict = {k: [v.common_install_var.get(), v.common_cont_var.get(), v.common_spare_var.get(), v.common_spacing_var.get()]}
+                tmp_dict[k].append(v.list_cables())
                 dict_cables.update(tmp_dict)
         to_save.update(dict_tabs)
 
-        return(to_save)
+        return to_save
 
     def about_menu(self):
         """Method for versions.

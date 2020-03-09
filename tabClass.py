@@ -68,7 +68,7 @@ class MyTab(ttk.Frame):
         self.common_spacing_entry.grid(row=0, column=3, sticky='W')
 
         # Common - Countainment type
-        self.common_cont_label = tk.Label(self.common_parameters, text='Countainment type:')
+        self.common_cont_label = tk.Label(self.common_parameters, text='Containment type:')
         self.common_cont_label.grid(row=1, column=0, sticky='W')
         self.common_cont_optionmenu = tk.OptionMenu(self.common_parameters, self.common_cont_var, *['Ladder Rack', 'Cable Tray'], command=self.common_cont_select)
         self.common_cont_var.set('Ladder Rack')
