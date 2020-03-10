@@ -382,6 +382,31 @@ class MyTab(ttk.Frame):
         """ Don't do anything"""
         pass
 
+    def get_tab_dict(self, with_results):
+        """ Method that return a dictionary with data of the tab. """
+
+        ## First values
+        result_dict = {
+            'Tab_name': self.name,
+            'Installation type': self.common_install_var.get(),
+            'Custom Spacing': self.common_spacing_var.get(),
+            'Containment Type': self.common_cont_var.get(),
+            'Spare Capacity': self.common_spare_var.get()
+        }
+
+        ## Create cable list
+        my_list = []
+        for cable in self.cable_list:
+            my_list.append(cable.get_cable_dict(with_results))
+
+        ## Add list of cables to dictionary
+        result_dict.update({'Cables': my_list})
+
+        ## Add results if with_results is True
+        if with_results:
+            pass
+
+        return result_dict
 
 
 class MyCable:
@@ -410,3 +435,20 @@ class MyCable:
         self.parallel = par
         self.cpc_csa = cpc
         self.diam = self.cable_calc()
+
+    def get_cable_dict(self, with_results):
+        """ Method that return a dictionary with data of cable. """
+        result_dict = {
+            'Reference': self.cable_ref,
+            'Type': self.cable_type,
+            'Number of cables': self.number_cables,
+            'CSA': self.csa,
+            'No Parallels': self.parallel,
+            'CPC CSA': self.cpc_csa
+        }
+
+        ## Add diameter, if with_results is True
+        if with_results:
+            result_dict.update({'Diameter': self.diam})
+
+        return result_dict
