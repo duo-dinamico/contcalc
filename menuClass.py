@@ -144,6 +144,7 @@ class Menu(tk.Menu):
         ## Get data
         data = self.to_save()
 
+
         ## New Workbook always have one sheet, let use that one
         sheet_1 = wb.active
         sheet_1.title = 'Project Info'
@@ -158,7 +159,7 @@ class Menu(tk.Menu):
         print(f'Number of tabs: {len(list(data["Project Tabs"]))}')
         if len(list(data["Project Tabs"])) > 0:
 
-            ## Loop all tables
+            ## Loop all calculation tabs
             for tab in list(data["Project Tabs"]):
                 print(f'Tab: {tab}')
                 wb.create_sheet(title=tab)
@@ -172,6 +173,13 @@ class Menu(tk.Menu):
 
         ## Save Workbook to file
         wb.save(dest_filename)
+
+        ## Lets test
+        for tab_name, tab_obj in self.parent.nb.tabs_list.items():
+            if tab_name == 'Main Page':
+                pass
+            else:
+                print(tab_obj.get_tab_dict(False))
 
 
     def to_save(self):
@@ -204,12 +212,11 @@ class Menu(tk.Menu):
             # 'Project Tabs':[
             #     {
             #         'Tab_name': '',
-            #         'Common': {
-            #             'Installation type': '',
-            #             'Containment Type': '',
-            #             'Spare Capacity': '',
-            #             'Custom Spacing': ''
-            #         },
+            #         'Installation type': '',
+            #         'Custom Spacing': '',
+            #         'Containment Type': '',
+            #         'Spare Capacity': '',
+
             #         'Cables': [
             #             {
             #                 'Reference': '',
