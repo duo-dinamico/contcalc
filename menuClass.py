@@ -201,8 +201,9 @@ class Menu(tk.Menu):
             #     'Date':'',
             #     'Revision':''
             # },
-            # 'Project Tabs':{
-            #     'Tab':{
+            # 'Project Tabs':[
+            #     {
+            #         'Tab_name': '',
             #         'Common': {
             #             'Installation type': '',
             #             'Containment Type': '',
@@ -228,7 +229,7 @@ class Menu(tk.Menu):
             #             }
             #         ]
             #     }
-            # }
+            # ]
 
 
 
