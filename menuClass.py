@@ -175,11 +175,10 @@ class Menu(tk.Menu):
         wb.save(dest_filename)
 
         ## Lets test
-        for tab_name, tab_obj in self.parent.nb.tabs_list.items():
-            if tab_name == 'Main Page':
-                pass
-            else:
-                print(tab_obj.get_tab_dict(False))
+
+        print(self.parent.nb.get_notebook_dict(False))
+        print(json.dumps(self.parent.nb.get_notebook_dict(False), indent=4, sort_keys=True, separators=(',', ': ')))
+
 
 
     def to_save(self):
