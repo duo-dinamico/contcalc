@@ -1,0 +1,53 @@
+{
+    "Project Info": {
+        "Job Title": "Churchill",
+        "Job Number": "248094",
+        "Date": "24/05/2018",
+        "Designer": "OP",
+        "Revision": "A"
+    },
+    "Project Tabs": [
+        {
+            "Tab_name": "c",
+            "Installation type": "Custom Spacing",
+            "Custom Spacing": "25",
+            "Containment Type": "Ladder Rack",
+            "Spare Capacity": "25",
+            "Cables": [
+                {
+                    "Reference": "dfg",
+                    "Type": "XLPE/SWA/PVC",
+                    "Number of cables": "1",
+                    "CSA": "50",
+                    "No Parallels": "1",
+                    "CPC CSA": "N/A"
+                },
+                {
+                    "Reference": "wer",
+                    "Type": "XLPE/SWA/PVC",
+                    "Number of cables": "1",
+                    "CSA": "50",
+                    "No Parallels": "1",
+                    "CPC CSA": "N/A"
+                }
+            ]
+        },
+        {
+            "Tab_name": "d",
+            "Installation type": "Touching",
+            "Custom Spacing": "25",
+            "Containment Type": "Ladder Rack",
+            "Spare Capacity": "25",
+            "Cables": [
+                {
+                    "Reference": "sdf",
+                    "Type": "XLPE/SWA/PVC",
+                    "Number of cables": "1",
+                    "CSA": "50",
+                    "No Parallels": "1",
+                    "CPC CSA": "N/A"
+                }
+            ]
+        }
+    ]
+}

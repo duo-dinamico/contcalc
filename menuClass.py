@@ -59,17 +59,16 @@ class Menu(tk.Menu):
                 return
         else: # otherwise pass. save only needs the filepath
             return
-
         if '.txt' not in self.filepath and self.dialog == asksaveasfilename:
             self.filepath = self.filepath + '.txt'
         else:
             pass
-        with open(self.filepath, self.mode) as json_file: # access the json file as Write or Read mode
+        with open(self.filepath, self.mode, encoding='utf-8') as json_file: # access the json file as Write or Read mode
             if self.dialog == askopenfilename: # if open file, access the file and save it on a variable
                 data = json.load(json_file)
                 self.filemenu.entryconfigure(1, state='normal') # set menu save to normal
             else:
-                json.dump(self.to_save(), json_file) # otherwise just do a dump into the file
+                json.dump(self.to_save(), json_file, ensure_ascii=False, indent=4, separators=(',', ': ')) # otherwise just do a dump into the file
                 data = '' # set data to empty just for error handling
                 self.filemenu.entryconfigure(1, state='disabled') # disable the save menu
         return data # return the data to be used when opening a file
@@ -81,39 +80,42 @@ class Menu(tk.Menu):
         """
         data = self.json_access('r', askopenfilename) # convert the data into a variable inside the open
         try:
-            for k, v in self.parent.nb.tabs_list.items(): # cycle through open tabs and destroy them
-                if k == 'Main Page':
-                    pass
-                else:
-                    v.destroy()
+            for v in self.parent.nb.tabs_list.values(): # cycle through open tabs and destroy them
+                # if k == 'Main Page':
+                #     pass
+                # else:
+                v.destroy()
+            self.parent.nb.create_general_tab('Main Page') # generate a clear main page
             for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()): # cycle through the list of tk entries to fill them with the values from data
                 i.set(myline)
-            # for d in data['Project Tabs']: # cycle through the data on tabs in the file and create them
-            #     new_tab = MyTab(self.parent.nb, d)
-            #     self.dict = {d: new_tab}
-            #     self.parent.nb.tabs_list.update(self.dict)
-            # for k, v in self.parent.nb.tabs_list.items(): # now cycle through created tabs and try to generate the  list of cables. silently exit if it doesn't find tabs.
-            #     if k == 'Main Page':
-            #         pass
-            #     else:
-            #         try:
-            #             for z in range(0, len(data['Project Tabs'][k])):
-            #                 cable = MyCable(data['Project Tabs'][k][z][0], data['Project Tabs'][k][z][1], data['Project Tabs'][k][z][2], data['Project Tabs'][k][z][3], data['Project Tabs'][k][z][4], data['Project Tabs'][k][z][5])
-            #                 v.cable_list.append(cable)
-            #                 v.populate_list()
-            #                 v.print_result()
-            #                 v.clear_cable()
-            #         except IndexError:
-            #                 pass
-            self.filename_state_normal() # function to set title and save menu to enabled
+            for d in enumerate(data['Project Tabs']):
+                new_tab = MyTab(self.parent.nb, d[1]['Tab_name'])
+                if d[1]['Installation type'] == 'Custom Spacing':
+                    new_tab.common_spacing_entry.config(state='normal')
+                else:
+                    pass
+                new_tab.common_install_var.set(d[1]['Installation type'])
+                new_tab.common_spacing_var.set(d[1]['Custom Spacing'])
+                new_tab.common_cont_var.set(d[1]['Containment Type'])
+                new_tab.common_spare_var.set(d[1]['Spare Capacity'])
+                for z in range(0, len(d[1]['Cables'])):
+                    cable = MyCable(d[1]['Cables'][z]['Reference'], d[1]['Cables'][z]['Type'], d[1]['Cables'][z]['Number of cables'], d[1]['Cables'][z]['CSA'], d[1]['Cables'][z]['No Parallels'], d[1]['Cables'][z]['CPC CSA'])
+                    new_tab.cable_list.append(cable)
+                    new_tab.populate_list()
+                    new_tab.print_result()
+                    new_tab.clear_cable()
+                self.dict = {d[1]['Tab_name']: new_tab}
+                self.parent.nb.tabs_list.update(self.dict)
+
+            self.filename_state('normal') # function to set title and save menu to enabled
         except TypeError:
             return
 
-    def filename_state_normal(self):
+    def filename_state(self, state):
         self.filename = self.filepath.lower().split('/')[-1].replace('.txt', '') # clean filepath to get filename only
         self.filename = self.filename.title()
         self.parent.title(f'Containment Calculation Sheet - {self.filename}') # set the title of the window to the filename
-        self.filemenu.entryconfigure(1, state='normal') # set save menu to enabled
+        self.filemenu.entryconfigure(1, state=state) # set save menu to enabled
 
     def save_file(self):
         """Method for saving files.
@@ -123,7 +125,7 @@ class Menu(tk.Menu):
         try:
             if self.filename: # if the software has a name, should be able to save it to the filepath. if not, silently pass
                 self.json_access('w', '')
-                self.filemenu.entryconfigure(1, state='disabled')
+                self.filename_state('disabled') # function to set title and save menu to enabled
         except AttributeError:
             pass
 
@@ -133,9 +135,7 @@ class Menu(tk.Menu):
         OUTPUT: JSON file with entries and tabs
         """
         self.json_access('w', asksaveasfilename)
-        self.filename = self.filepath.split('/')[-1].replace('.txt', '')
-        self.parent.title(f'Containment Calculation Sheet - {self.filename}')
-        self.filemenu.entryconfigure(1, state='normal')
+        self.filename_state('normal') # function to set title and save menu to enabled
 
     def export_excel(self):
         """ Method to export data to Excel. """
@@ -185,28 +185,7 @@ class Menu(tk.Menu):
         print(json.dumps(self.parent.nb.get_notebook_dict(False), indent=4, sort_keys=True, separators=(',', ': ')))
 
     def to_save(self):
-        to_save = {}
-
-        # The following makes the entries in the main page a dictionary and adds them to the save list
-        lst_entries = []
-        for i in self.parent.nb.lst_entries:
-                lst_entries.append(str(i.get()))
-        dict_info_headers = {'Job Title': lst_entries[0], 'Job Number': lst_entries[1], 'Designer': lst_entries[2], 'Date': lst_entries[3], 'Revision': lst_entries[4]}
-        dict_info = {'Project Info': dict_info_headers}
-        to_save.update(dict_info)
-
-        # The following makes the tabs and their cables into a dictionary and adds them to the save list
-        dict_cables = {}
-        dict_tabs = {'Project Tabs': dict_cables}
-        for k, v in self.parent.nb.tabs_list.items():
-            if k == 'Main Page':
-                pass
-            else:
-                tmp_dict = {k: [v.common_install_var.get(), v.common_cont_var.get(), v.common_spare_var.get(), v.common_spacing_var.get()]}
-                tmp_dict[k].append(v.list_cables())
-                dict_cables.update(tmp_dict)
-        to_save.update(dict_tabs)
-
+        to_save = self.parent.nb.get_notebook_dict(False)
         return to_save
 
     def about_menu(self):

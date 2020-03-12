@@ -108,8 +108,8 @@ class Notebook(ttk.Notebook):
             'Project Info':{
                 'Job Title': self.lst_entries[0].get(),
                 'Job Number': self.lst_entries[1].get(),
-                'Designer': self.lst_entries[2].get(),
-                'Date': self.lst_entries[3].get(),
+                'Date': self.lst_entries[2].get(),
+                'Designer': self.lst_entries[3].get(),
                 'Revision': self.lst_entries[4].get()
             },
             'Project Tabs': []
