@@ -88,30 +88,29 @@ class Menu(tk.Menu):
                     v.destroy()
             for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()): # cycle through the list of tk entries to fill them with the values from data
                 i.set(myline)
-            # for d in data['Project Tabs']: # cycle through the data on tabs in the file and create them
-            #     new_tab = MyTab(self.parent.nb, d)
-            #     self.dict = {d: new_tab}
-            #     self.parent.nb.tabs_list.update(self.dict)
-            # for k, v in self.parent.nb.tabs_list.items(): # now cycle through created tabs and try to generate the  list of cables. silently exit if it doesn't find tabs.
-            #     if k == 'Main Page':
-            #         pass
-            #     else:
-            #         try:
-            #             for z in range(0, len(data['Project Tabs'][k])):
-            #                 cable = MyCable(data['Project Tabs'][k][z][0], data['Project Tabs'][k][z][1], data['Project Tabs'][k][z][2], data['Project Tabs'][k][z][3], data['Project Tabs'][k][z][4], data['Project Tabs'][k][z][5])
-            #                 v.cable_list.append(cable)
-            #                 v.populate_list()
-            #                 v.print_result()
-            #                 v.clear_cable()
-            #         except IndexError:
-            #                 pass
+            for d in data['Project Tabs']: # cycle through the data on tabs in the file and create them
+                new_tab = MyTab(self.parent.nb, d)
+                self.dict = {d: new_tab}
+                self.parent.nb.tabs_list.update(self.dict)
+            for k, v in self.parent.nb.tabs_list.items(): # now cycle through created tabs and try to generate the  list of cables. silently exit if it doesn't find tabs.
+                if k == 'Main Page':
+                    pass
+                else:
+                    try:
+                        for z in range(0, len(data['Project Tabs'][k])):
+                            cable = MyCable(data['Project Tabs'][k][z][0], data['Project Tabs'][k][z][1], data['Project Tabs'][k][z][2], data['Project Tabs'][k][z][3], data['Project Tabs'][k][z][4], data['Project Tabs'][k][z][5])
+                            v.cable_list.append(cable)
+                            v.populate_list()
+                            v.print_result()
+                            v.clear_cable()
+                    except IndexError:
+                            pass
             self.filename_state_normal() # function to set title and save menu to enabled
         except TypeError:
             return
 
     def filename_state_normal(self):
-        self.filename = self.filepath.lower().split('/')[-1].replace('.txt', '') # clean filepath to get filename only
-        self.filename = self.filename.title()
+        self.filename = self.filepath.split('/')[-1].replace('.txt', '') # clean filepath to get filename only
         self.parent.title(f'Containment Calculation Sheet - {self.filename}') # set the title of the window to the filename
         self.filemenu.entryconfigure(1, state='normal') # set save menu to enabled
 
@@ -185,8 +184,62 @@ class Menu(tk.Menu):
         print(json.dumps(self.parent.nb.get_notebook_dict(False), indent=4, sort_keys=True, separators=(',', ': ')))
 
     def to_save(self):
-        to_save = {}
+        to_save = {
+            # 'Project Info':{
+            #     'Job Title':'',
+            #     'Job Number':'',
+            #     'Designer':'',
+            #     'Date':'',
+            #     'Revision':''
+            # },
+            # 'Project Tabs':{
+            #     'Tab':{
+            #         'Common': ['Installation type', 'Containment Type', 'Spare Capacity', 'Custom Spacing']
+            #         'Reference': [['Type', 'Number of cables', 'CSA', 'No Parallels', 'CPC CSA']]
+            #           }
+            #     }
+            # }
 
+
+            ## Proposta de alteração:
+
+            # 'Project Info':{
+            #     'Job Title':'',
+            #     'Job Number':'',
+            #     'Designer':'',
+            #     'Date':'',
+            #     'Revision':''
+            # },
+            # 'Project Tabs':[
+            #     {
+            #         'Tab_name': '',
+            #         'Installation type': '',
+            #         'Custom Spacing': '',
+            #         'Containment Type': '',
+            #         'Spare Capacity': '',
+
+            #         'Cables': [
+            #             {
+            #                 'Reference': '',
+            #                 'Type': '',
+            #                 'Number of cables': '',
+            #                 'CSA': '',
+            #                 'No Parallels': '',
+            #                 'CPC CSA'
+            #             },
+            #             {
+            #                 'Reference': '',
+            #                 'Type': '',
+            #                 'Number of cables': '',
+            #                 'CSA': '',
+            #                 'No Parallels': '',
+            #                 'CPC CSA': ''
+            #             }
+            #         ]
+            #     }
+            # ]
+        }
+        
         # The following makes the entries in the main page a dictionary and adds them to the save list
         lst_entries = []
         for i in self.parent.nb.lst_entries:
