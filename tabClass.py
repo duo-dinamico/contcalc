@@ -62,7 +62,7 @@ class MyTab(ttk.Frame):
         # Common - Custom spacing
         self.common_spacing_label = tk.Label(self.common_parameters, text='Custom spacing (mm):')
         self.common_spacing_label.grid(row=0, column=2, sticky='W')
-        self.common_spacing_entry = tk.Entry(self.common_parameters, textvariable=self.common_spacing_var, validate='focusout', validatecommand=self.print_result, state='disabled')
+        self.common_spacing_entry = tk.Entry(self.common_parameters, textvariable=self.common_spacing_var, validate='focusout', validatecommand=self.common_spacing_validate, state='disabled')
         self.common_spacing_var.set('0')
         #self.common_spacing_var.trace('w', self.print_result())
         self.common_spacing_entry.grid(row=0, column=3, sticky='W')
@@ -379,6 +379,18 @@ class MyTab(ttk.Frame):
             self.common_spacing_entry.config(state='normal')
         self.print_result()
 
+
+    def common_spacing_validate(self):
+        """ Method that validate if spacing is a number. """
+        if self.common_spacing_var.get().isdigit():
+            self.print_result()
+            return True
+        else:
+            messagebox.showwarning(title='Error', message='Spacing must be a number.')
+            self.common_spacing_entry.focus_set()
+            return False
+
+        
     def common_spare_validate(self):
         """ Method that validate if spare is a number. """
         ## Check if is number
@@ -389,6 +401,7 @@ class MyTab(ttk.Frame):
             messagebox.showwarning(title='Error', message='Spare must be a number.')
             self.common_spare_entry.focus_set()
             return False
+
 
     def menu_select(self):
         """ Don't do anything"""
