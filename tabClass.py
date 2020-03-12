@@ -78,7 +78,8 @@ class MyTab(ttk.Frame):
         # Common - Spare capacity
         self.common_spare_label = tk.Label(self.common_parameters, text='Spare capacity (%):')
         self.common_spare_label.grid(row=2, column=0, sticky='W')
-        self.common_spare_entry = tk.Entry(self.common_parameters, textvariable=self.common_spare_var, validate='focusout', validatecommand=self.print_result)
+        self.common_spare_entry = tk.Entry(self.common_parameters, textvariable=self.common_spare_var, validate='focusout', validatecommand=self.common_spare_validate)
+        self.common_spare_var.set('25')
         self.common_spare_entry.grid(row=2, column=1, sticky='WE')
 
         # Common - Cable Tray Ref
@@ -377,6 +378,17 @@ class MyTab(ttk.Frame):
         if self.common_install_var.get() == 'Custom Spacing':
             self.common_spacing_entry.config(state='normal')
         self.print_result()
+
+    def common_spare_validate(self):
+        """ Method that validate if spare is a number. """
+        ## Check if is number
+        if self.common_spare_var.get().isdigit():
+            self.print_result()
+            return True
+        else:
+            messagebox.showwarning(title='Error', message='Spare must be a number.')
+            self.common_spare_entry.focus_set()
+            return False
 
     def menu_select(self):
         """ Don't do anything"""
