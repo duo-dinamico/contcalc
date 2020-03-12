@@ -104,7 +104,16 @@ class Notebook(ttk.Notebook):
         """ Method that return a dictionary with data of the notebook. """
 
         ## Start dict
-        result_dict = {'Project Tabs':[]}
+        result_dict = {
+            'Project Info':{
+                'Job Title': self.lst_entries[0].get(),
+                'Job Number': self.lst_entries[1].get(),
+                'Designer': self.lst_entries[2].get(),
+                'Date': self.lst_entries[3].get(),
+                'Revision': self.lst_entries[4].get()
+            },
+            'Project Tabs': []
+        }
 
         ## Add tab dictionaries to the list
         for tab_name, tab_obj in self.tabs_list.items():
