@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Containment Calculation Sheet
-widgetsClass.py v0.4
+widgetsClass.py v1.0
 #odetojoy
 Copyright 2020, The JJ duo
 """
