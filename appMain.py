@@ -23,6 +23,8 @@ class App(tk.Tk):
         self.config(menu=self.menu)
         self.nb = Notebook(self)
 
+contcalc_version = '1.0'
+
 if __name__ == '__main__':
     app=App()
     app.protocol('WM_DELETE_WINDOW', app.menu.confirm_exit)
