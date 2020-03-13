@@ -10,6 +10,7 @@ Copyright 2020, The JJ duo
 import tkinter as tk
 from tkinter import ttk, messagebox
 from myDB import db
+from decimal import Decimal, getcontext
 
 
 class MyTab(ttk.Frame):
@@ -43,6 +44,10 @@ class MyTab(ttk.Frame):
         self.result_with_spare_var = tk.StringVar()
         self.result_with_cont_var = tk.StringVar()
         self.result_with_cont_var.set('0')
+
+        ## Configure Decimal
+        print(getcontext())
+        getcontext().prec = 4
 
         # Start object
         parent.add(self, text=self.name)
@@ -276,26 +281,26 @@ class MyTab(ttk.Frame):
         elif self.common_install_var.get() == 'Touching':
             result_with_install = result
         else:
-            result_with_install = result + (len(self.cable_list)-1) * float(self.common_spacing_var.get())
+            result_with_install = result + (len(self.cable_list)-1) * Decimal(self.common_spacing_var.get())
             print(f'result_with_install = {result} + {len(self.cable_list)}-1 * {self.common_spacing_var.get()}')
         self.result_with_install_var.set(result_with_install)
 
         ## Result with spare
         if self.common_spare_var.get() != '':
-            self.result_with_spare_var.set(float(self.result_with_install_var.get()) * (1 + int(self.common_spare_var.get())/100 ))
-            print(f'With spare {float(self.result_with_install_var.get())} * (1 + {int(self.common_spare_var.get())}   ->  {self.result_with_spare_var.get()})')
+            self.result_with_spare_var.set(Decimal(self.result_with_install_var.get()) * Decimal(1 + int(self.common_spare_var.get())/100 ))
+            print(f'With spare {Decimal(self.result_with_install_var.get())} * (1 + {int(self.common_spare_var.get())}   ->  {self.result_with_spare_var.get()})')
         else:
             self.result_with_spare_var.set(self.result_with_install_var.get())
 
         ## Result containment
         if self.common_cont_var.get() == 'Ladder Rack':
             for n in list(db['ladder'])[::-1]:
-                if n > float(self.result_with_spare_var.get()):
+                if n > Decimal(self.result_with_spare_var.get()):
                     self.result_with_cont_var.set(n)
                     break
         elif self.common_cont_var.get() == 'Cable Tray':
             for n in list(db['tray'])[::-1]:
-                if n > float(self.result_with_spare_var.get()):
+                if n > Decimal(self.result_with_spare_var.get()):
                     self.result_with_cont_var.set(n)
                     break
 
@@ -390,7 +395,7 @@ class MyTab(ttk.Frame):
             self.common_spacing_entry.focus_set()
             return False
 
-        
+
     def common_spare_validate(self):
         """ Method that validate if spare is a number. """
         ## Check if is number
@@ -448,8 +453,8 @@ class MyCable:
     def cable_calc(self):
         overall = db['cables'][self.cable_type][self.number_cables][self.csa]
         single = db['cables']['LSF Single']['1'][self.cpc_csa]
-        result = float(overall) * int(self.parallel) + float(single)
-        print(f'{float(overall)} * {int(self.parallel)} + {float(single)}')
+        result = Decimal(overall) * int(self.parallel) + Decimal(single)
+        print(f'{Decimal(overall)} * {int(self.parallel)} + {Decimal(single)}')
         return result
 
     def update_data(self, ref, typ, num, csa, par, cpc):
