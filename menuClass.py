@@ -15,7 +15,7 @@ from tabClass import MyTab, MyCable
 from widgetsClass import CreateLabel, CreateEntry, CreateButton
 import platform
 import json
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 class Menu(tk.Menu):
     """Class that create the menu.
@@ -139,8 +139,11 @@ class Menu(tk.Menu):
     def export_excel(self):
         """ Method to export data to Excel. """
 
+        ## Load template file
+        twb = load_workbook('temp_book.xlsx')
+
         ## Create Workbook
-        wb = Workbook()
+        #wb = Workbook()
 
         ## File to save. Need improvement
         dest_filename = 'empty_book.xlsx'
@@ -149,39 +152,38 @@ class Menu(tk.Menu):
         data = self.to_save()
 
 
-        ## New Workbook always have one sheet, let use that one
-        sheet_1 = wb.active
-        sheet_1.title = 'Project Info'
-        my_row = 1
-        for text in list(data['Project Info']):
-            sheet_1.cell(row=my_row, column=1, value=text)
-            sheet_1.cell(row=my_row, column=2, value=data["Project Info"][text])
-            my_row += 1
-            #print(f'{x}: {data["Project Info"][x]}')
 
-        ## Check if there are calculation tabs
-        print(f'Number of tabs: {len(list(data["Project Tabs"]))}')
-        if len(list(data["Project Tabs"])) > 0:
+        ## Insert data in project info
+        twb['Project Info']['B3'] = data['Project Info']['Job Title']
+        twb['Project Info']['B4'] = data['Project Info']['Job Number']
+        twb['Project Info']['B5'] = data['Project Info']['Designer']
+        twb['Project Info']['B6'] = data['Project Info']['Date']
+        twb['Project Info']['B7'] = data['Project Info']['Revision']
 
-            ## Loop all calculation tabs
-            for tab in list(data["Project Tabs"]):
-                print(f'Tab: {tab}')
-                wb.create_sheet(title=tab)
+        ## Copy from Temp_Tab, and insert data
+        for dict in data['Project Tabs']:
+            sheet = twb.copy_worksheet(twb['Temp_Tab'])
+            sheet.title = dict['Tab_name']
+            sheet['B3'] = dict['Installation type']
+            sheet['B4'] = dict['Custom Spacing']
+            sheet['B5'] = dict['Containment Type']
+            sheet['B6'] = dict['Spare Capacity']
 
-                ## Write data to the cells, from list
-                my_row = 1
-                for field in data["Project Tabs"][tab]:
-                    print(f'Field: {field}')
-                    wb[tab].cell(row=my_row, column=1, value=str(field))
-                    my_row += 1
+            my_row = 10
+            for cable_dict in dict['Cables']:
+                sheet.cell(row=my_row, column=2, value=cable_dict['Reference'])
+                my_row += 1
+
+
+
+        ## Delete Temp_Tab
+        twb.remove_sheet(twb['Temp_Tab'])
 
         ## Save Workbook to file
-        wb.save(dest_filename)
+        twb.save(dest_filename)
 
-        ## Lets test
-
-        print(self.parent.nb.get_notebook_dict(False))
-        print(json.dumps(self.parent.nb.get_notebook_dict(False), indent=4, sort_keys=True, separators=(',', ': ')))
+        ## Just to check structure
+        print(json.dumps(data, indent=4, separators=(',', ': ')))
 
     def to_save(self):
         to_save = self.parent.nb.get_notebook_dict(False)
@@ -234,7 +236,7 @@ class Menu(tk.Menu):
 
     def cleanup(self):
         self.popup_value = self.pu_entry.get()
- 
+
         for k in self.parent.nb.tabs_list:
             if k == self.popup_value:
                 messagebox.showwarning(title='Error', message='That section name already exist.')
