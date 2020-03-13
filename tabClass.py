@@ -213,11 +213,15 @@ class MyTab(ttk.Frame):
 
     def delete_this_tab(self):
         """Method to destroy current tab"""
-        self.parent.tabs_list.pop(self.name)
-        self.destroy()
+        msgbox = tk.messagebox.askyesno('Delete Tab', 'Are you sure you want to delete ' + self.name + '?')
+        if msgbox:
+            self.parent.tabs_list.pop(self.name)
+            self.destroy()
 
-        # Select back the General Info tab
-        self.parent.select(self.parent.tabs_list['Main Page'])
+            # Select back the General Info tab
+            self.parent.select(self.parent.tabs_list['Main Page'])
+        else:
+            return
 
     def add_cable(self):
         """Method to add a cable to this tab"""
