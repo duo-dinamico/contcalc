@@ -81,30 +81,27 @@ class Menu(tk.Menu):
         data = self.json_access('r', askopenfilename) # convert the data into a variable inside the open
         try:
             for v in self.parent.nb.tabs_list.values(): # cycle through open tabs and destroy them
-                # if k == 'Main Page':
-                #     pass
-                # else:
                 v.destroy()
             self.parent.nb.create_general_tab('Main Page') # generate a clear main page
             for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()): # cycle through the list of tk entries to fill them with the values from data
                 i.set(myline)
-            for d in enumerate(data['Project Tabs']):
-                new_tab = MyTab(self.parent.nb, d[1]['Tab_name'])
-                if d[1]['Installation type'] == 'Custom Spacing':
+            for d in data['Project Tabs']:
+                new_tab = MyTab(self.parent.nb, d['Tab_name'])
+                if d['Installation type'] == 'Custom Spacing':
                     new_tab.common_spacing_entry.config(state='normal')
                 else:
                     pass
-                new_tab.common_install_var.set(d[1]['Installation type'])
-                new_tab.common_spacing_var.set(d[1]['Custom Spacing'])
-                new_tab.common_cont_var.set(d[1]['Containment Type'])
-                new_tab.common_spare_var.set(d[1]['Spare Capacity'])
-                for z in range(0, len(d[1]['Cables'])):
-                    cable = MyCable(d[1]['Cables'][z]['Reference'], d[1]['Cables'][z]['Type'], d[1]['Cables'][z]['Number of cables'], d[1]['Cables'][z]['CSA'], d[1]['Cables'][z]['No Parallels'], d[1]['Cables'][z]['CPC CSA'])
+                new_tab.common_install_var.set(d['Installation type'])
+                new_tab.common_spacing_var.set(d['Custom Spacing'])
+                new_tab.common_cont_var.set(d['Containment Type'])
+                new_tab.common_spare_var.set(d['Spare Capacity'])
+                for z in d['Cables']:
+                    cable = MyCable(z['Reference'], z['Type'], z['Number of cables'], z['CSA'], z['No Parallels'], z['CPC CSA'])
                     new_tab.cable_list.append(cable)
                     new_tab.populate_list()
                     new_tab.print_result()
                     new_tab.clear_cable()
-                self.dict = {d[1]['Tab_name']: new_tab}
+                self.dict = {d['Tab_name']: new_tab}
                 self.parent.nb.tabs_list.update(self.dict)
 
             self.filename_state('normal') # function to set title and save menu to enabled
