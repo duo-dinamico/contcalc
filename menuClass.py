@@ -8,9 +8,11 @@ Copyright 2020, The JJ duo
 """
 
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tabClass import MyTab, MyCable
+from widgetsClass import CreateLabel, CreateEntry, CreateButton
 import platform
 import json
 from openpyxl import Workbook
@@ -39,8 +41,8 @@ class Menu(tk.Menu):
         self.filemenu.add_separator()
         self.filemenu.add_command(label='Export to Excel', command=self.export_excel)
         self.filemenu.add_separator()
-        self.filemenu.add_command(label='Exit', command=self.confirm_exit)
-        self.editmenu.add_command(label='Add...', command=parent.quit)
+        self.filemenu.add_command(label='Exit', command=parent.quit)
+        self.editmenu.add_command(label='Add...', command=self.popupWindow)
         self.helpmenu.add_command(label='About', command=self.about_menu)
 
     def json_access(self, mode, dialog):
@@ -218,3 +220,27 @@ class Menu(tk.Menu):
                 return
             else:
                 self.parent.quit()
+
+    def popupWindow(self):
+        self.top = tk.Toplevel(self.parent)
+        self.top.title('Section Name')
+        self.top.wm_geometry('300x150')
+        self.pu_frame = ttk.Frame(self.top)
+        self.pu_frame.pack()
+        self.pu_label = CreateLabel(self.pu_frame, text='Please enter name of section', image='', background=None, height=2, width=25, row=0, column=0, colspan=1, sticky='EW')
+        self.pu_entry = CreateEntry(self.pu_frame, background='white', row=1, column=0, colspan=1, sticky='')
+        CreateLabel(self.pu_frame, text='', image='', background=None, height=1, width=25, row=2, column=0, colspan=1, sticky='EW')
+        self.pu_button = CreateButton(self.pu_frame, text='Confirm', height=2, width=10, command=self.cleanup, row=3, column=0, colspan=1, sticky='')
+
+    def cleanup(self):
+        self.popup_value = self.pu_entry.get()
+ 
+        for k in self.parent.nb.tabs_list:
+            if k == self.popup_value:
+                messagebox.showwarning(title='Error', message='That section name already exist.')
+                return
+        if self.popup_value != '':
+            self.parent.nb.tab_create(self.popup_value)
+        else:
+            return
+        self.top.destroy()

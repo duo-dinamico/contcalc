@@ -92,13 +92,16 @@ class Notebook(ttk.Notebook):
                 messagebox.showwarning(title='Error', message='That section name already exist.')
                 return
         if self.e_create_section.get() != '':
-            new_tab = MyTab(self, self.e_create_section.get())
-            self.dict = {self.e_create_section.get(): new_tab}
-            self.tabs_list.update(self.dict)
-            self.select(new_tab)
+            self.tab_create(self.e_create_section.get())
             self.e_create_section.text.set('')
         else:
             messagebox.showwarning(title='Error', message='You must insert a section name.')
+    
+    def tab_create(self, tab_name):
+        new_tab = MyTab(self, tab_name)
+        self.dict = {tab_name: new_tab}
+        self.tabs_list.update(self.dict)
+        self.select(new_tab)
 
     def get_notebook_dict(self, with_results):
         """ Method that return a dictionary with data of the notebook. """
