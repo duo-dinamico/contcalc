@@ -140,50 +140,52 @@ class Menu(tk.Menu):
         """ Method to export data to Excel. """
 
         ## Load template file
-        twb = load_workbook('temp_book.xlsx')
-
-        ## Create Workbook
-        #wb = Workbook()
-
-        ## File to save. Need improvement
-        dest_filename = 'empty_book.xlsx'
+        twb = load_workbook('TemplateContCalc.xlsx')
 
         ## Get data
         data = self.to_save()
 
-
-
         ## Insert data in project info
-        twb['Project Info']['B3'] = data['Project Info']['Job Title']
-        twb['Project Info']['B4'] = data['Project Info']['Job Number']
-        twb['Project Info']['B5'] = data['Project Info']['Designer']
-        twb['Project Info']['B6'] = data['Project Info']['Date']
-        twb['Project Info']['B7'] = data['Project Info']['Revision']
+        twb['Main Page']['D9'] = data['Project Info']['Job Title']
+        twb['Main Page']['D11'] = data['Project Info']['Job Number']
+        twb['Main Page']['H11'] = data['Project Info']['Designer']
+        twb['Main Page']['D13'] = data['Project Info']['Date']
+        twb['Main Page']['H13'] = data['Project Info']['Revision']
 
         ## Copy from Temp_Tab, and insert data
         for dict in data['Project Tabs']:
-            sheet = twb.copy_worksheet(twb['Temp_Tab'])
+            sheet = twb.copy_worksheet(twb['TrayTemplate'])
             sheet.title = dict['Tab_name']
-            sheet['B3'] = dict['Installation type']
-            sheet['B4'] = dict['Custom Spacing']
-            sheet['B5'] = dict['Containment Type']
-            sheet['B6'] = dict['Spare Capacity']
+            sheet['D5'] = dict['Installation type']
+            sheet['I5'] = dict['Custom Spacing']
+            sheet['D7'] = dict['Containment Type']
+            sheet['D9'] = dict['Spare Capacity']
 
-            my_row = 10
+            my_row = 12
             for cable_dict in dict['Cables']:
                 sheet.cell(row=my_row, column=2, value=cable_dict['Reference'])
+                sheet.cell(row=my_row, column=3, value=cable_dict['Type'])
+                sheet.cell(row=my_row, column=5, value=cable_dict['Number of cables'])
+                sheet.cell(row=my_row, column=6, value=cable_dict['CSA'])
+                sheet.cell(row=my_row, column=7, value=cable_dict['No Parallels'])
+                sheet.cell(row=my_row, column=9, value=cable_dict['CPC CSA'])
+                # sheet.cell(row=my_row, column=11, value=cable_dict['Diameter'])
                 my_row += 1
 
-
-
         ## Delete Temp_Tab
-        twb.remove_sheet(twb['Temp_Tab'])
+        twb.remove_sheet(twb['TrayTemplate'])
 
         ## Save Workbook to file
+        dest_filename =  tk.filedialog.asksaveasfilename(
+                                    initialdir = ".",
+                                    title = "Select file to export",
+                                    defaultextension = "*.xlsx",
+                                    filetypes = (("Excel files","*.xlsx"),("all files","*.*"))
+                                    )
         twb.save(dest_filename)
 
         ## Just to check structure
-        print(json.dumps(data, indent=4, separators=(',', ': ')))
+        # print(json.dumps(data, indent=4, separators=(',', ': ')))
 
     def to_save(self):
         to_save = self.parent.nb.get_notebook_dict(False)
