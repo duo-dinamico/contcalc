@@ -102,6 +102,8 @@ class Notebook(ttk.Notebook):
         self.dict = {tab_name: new_tab}
         self.tabs_list.update(self.dict)
         self.select(new_tab)
+        
+        return new_tab
 
     def get_notebook_dict(self, with_results):
         """ Method that return a dictionary with data of the notebook. """
