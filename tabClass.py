@@ -49,8 +49,8 @@ class MyTab(ttk.Frame):
         self.duplicate_var = tk.StringVar()
 
         ## Configure Decimal
-        print(getcontext())
         getcontext().prec = 4
+        print(f'Precisão no cable: {getcontext()}')
 
         # Start object
         parent.add(self, text=self.name)
@@ -243,7 +243,7 @@ class MyTab(ttk.Frame):
                     ini_list.append(self.common_trayref_var.get())
                 else:
                     ini_list.append(k)
-            
+
             self.parent.tabs_list = dict(zip(ini_list, list(self.parent.tabs_list.values())))
             self.parent.tab('current', text=self.common_trayref_var.get())
             self.name = self.common_trayref_var.get()
@@ -508,7 +508,11 @@ class MyCable:
         overall = db['cables'][self.cable_type][self.number_cables][self.csa]
         single = db['cables']['LSF Single']['1'][self.cpc_csa]
         result = Decimal(overall) * int(self.parallel) + Decimal(single)
-        print(f'{Decimal(overall)} * {int(self.parallel)} + {Decimal(single)}')
+
+        ## Try setting the precision
+        # getcontext().prec = 4
+        print(f'Precisão no cable: {getcontext()}')
+        print(f'Calculationin cable: {Decimal(overall)} * {int(self.parallel)} + {Decimal(single)}')
         return result
 
     def update_data(self, ref, typ, num, csa, par, cpc):
