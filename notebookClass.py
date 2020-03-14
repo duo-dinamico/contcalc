@@ -88,12 +88,14 @@ class Notebook(ttk.Notebook):
         pass
 
     def add_sec(self):
+        name = self.e_create_section.get().strip()
         for k in self.tabs_list:
-            if k == self.e_create_section.get():
+            if k == name:
                 messagebox.showwarning(title='Error', message='That section name already exist.')
                 return
-        if self.e_create_section.get() != '':
-            self.tab_create(self.e_create_section.get())
+        
+        if name != '':
+            self.tab_create(name)
             self.e_create_section.text.set('')
         else:
             messagebox.showwarning(title='Error', message='You must insert a section name.')
