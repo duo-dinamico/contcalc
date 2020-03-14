@@ -158,9 +158,9 @@ class MyTab(ttk.Frame):
         self.cable_clear_btn.grid(row=3, column=3, sticky='WE', padx=5, pady=5)
 
         # Cable_List - List of cables
-        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 12), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
+        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 10), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
         self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
-        self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.BROWSE, font=('TkFixedFont', 12))
+        self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.BROWSE, font=('TkFixedFont', 10))
         self.cable_list_listbox.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
         self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
 
