@@ -93,7 +93,9 @@ class MyTab(ttk.Frame):
         self.common_trayref_var.set(self.name)
         self.common_trayref_entry = tk.Entry(self.common_parameters, textvariable=self.common_trayref_var, state='disabled')
         self.common_trayref_entry.grid(row=2, column=3, sticky='W')
-
+        self.trayref_change_btn = tk.Button(self.common_parameters, text='Change Tray Ref', width=14, command=self.trayref_change)
+        self.trayref_change_btn.grid(row=2, column=4, sticky='WE', padx=5, pady=5)
+        self.trayref_confirm_btn = tk.Button(self.common_parameters, text='Confirm', width=14, command=self.trayref_confirm)
 
         # Cable - Entry for Cable ref
         self.cable_ref_label = tk.Label(self.cable_parameters, text='Ref', width='15')
@@ -124,14 +126,12 @@ class MyTab(ttk.Frame):
         self.cable_csa_combobox.current(0)
         self.cable_csa_combobox.grid(row=1, column=3, sticky='EW')
 
-
         # Cable - Select Cables in parallel (combobox)
         self.cable_parallel_label = tk.Label(self.cable_parameters, text='Parallel', width='15')
         self.cable_parallel_label.grid(row=0, column=4)
         self.cable_parallel_combobox = ttk.Combobox(self.cable_parameters, values=[1, 2, 3, 4, 5, 6, 7, 8], state='readonly')
         self.cable_parallel_combobox.current(0)
         self.cable_parallel_combobox.grid(row=1, column=4, sticky='EW')
-
 
         # Cable - Select CPC CSA
         self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA', width='15')
@@ -154,7 +154,6 @@ class MyTab(ttk.Frame):
         self.cable_clear_btn = tk.Button(self.cable_parameters, text='Clear', width=12, command=self.clear_cable)
         self.cable_clear_btn.grid(row=3, column=3, sticky='WE', padx=5, pady=5)
 
-
         # Cable_List - List of cables
         self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 12), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
         self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
@@ -168,7 +167,7 @@ class MyTab(ttk.Frame):
         self.cable_list_listbox.configure(yscrollcommand=self.cable_list_scrollbar.set)
         self.cable_list_scrollbar.configure(command=self.cable_list_listbox.yview)
 
-        # Result -
+        # Result
         self.result_label_1 = tk.Label(self.result_parameters, text='Cable diameter raw sum:')
         self.result_label_1.grid(row=0, column=0, sticky='E')
         self.result_entry_1 = tk.Entry(self.result_parameters, textvariable=self.result_var, state='disabled')
@@ -192,6 +191,31 @@ class MyTab(ttk.Frame):
 
         self.print_result()
 
+    def trayref_change(self):
+        self.trayref_change_btn.grid_remove()
+        self.trayref_confirm_btn.grid(row=2, column=4, sticky='WE', padx=5, pady=5)
+        self.common_trayref_entry.configure(state='normal')
+
+    def trayref_confirm(self):
+        if self.common_trayref_var.get() in self.parent.tabs_list and self.common_trayref_var.get() != self.name:
+            messagebox.showwarning(title='Error', message='That section name already exist.')
+            return
+        if self.common_trayref_var.get() != '':
+            ini_list = [] # doing this list to avoid the dictionary change in order
+            for k in self.parent.tabs_list.keys():
+                if k == self.name:
+                    ini_list.append(self.common_trayref_var.get())
+                else:
+                    ini_list.append(k)
+            
+            self.parent.tabs_list = dict(zip(ini_list, list(self.parent.tabs_list.values())))
+            self.parent.tab('current', text=self.common_trayref_var.get())
+            self.name = self.common_trayref_var.get()
+            self.common_trayref_entry.configure(state='disabled')
+            self.trayref_confirm_btn.grid_remove()
+            self.trayref_change_btn.grid(row=2, column=4, sticky='WE', padx=5, pady=5)
+        else:
+            messagebox.showwarning(title='Error', message='You must insert a section name.')
 
     def select_item(self, event):
         try:
@@ -209,7 +233,6 @@ class MyTab(ttk.Frame):
             self.cable_cpc_combobox.insert(tk.END, self.selected_item.cpc_csa)
         except IndexError:
             pass
-
 
     def delete_this_tab(self):
         """Method to destroy current tab"""
@@ -319,7 +342,6 @@ class MyTab(ttk.Frame):
             pass
         return True
 
-
     def check_cable_entries(self):
         """ Method that check if data inserted are valid."""
         result = True
@@ -341,12 +363,10 @@ class MyTab(ttk.Frame):
         self.cable_type_combobox['values'] = list(db['cables'])
         self.cable_type_combobox.current(newindex=0)
 
-
     def get_cores_list(self):
         """Method that returns the list of all cores abvailable"""
         self.cable_cores_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()])
         self.cable_cores_combobox.current(newindex=0)
-
 
     def get_csa_list(self):
         """Method that returns the list of all cores abvailable"""
@@ -358,7 +378,6 @@ class MyTab(ttk.Frame):
         #self.cable_parallel_combobox['values'] = list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()][self.cable_csa_combobox.get()])
         pass
 
-
     def cable_type_select(self, event):
         """Method that changes current values in combobox to default"""
         self.cable_cores_combobox.set(list(db['cables'][self.cable_type_combobox.get()])[0])
@@ -367,7 +386,6 @@ class MyTab(ttk.Frame):
     def cable_cores_select(self, event):
         """Method that changes current values in combobox to default"""
         self.cable_csa_combobox.set(list(db['cables'][self.cable_type_combobox.get()][self.cable_cores_combobox.get()])[0])
-
 
     def cable_csa_select(self, event):
         #print(self.cable_csa_var.get())
@@ -380,14 +398,12 @@ class MyTab(ttk.Frame):
     def common_cont_select(self, event):
         self.print_result()
 
-
     def common_install_select(self, event):
         if self.common_install_var.get() in ['Touching', 'Spaced'] :
             self.common_spacing_entry.config(state='disabled')
         if self.common_install_var.get() == 'Custom Spacing':
             self.common_spacing_entry.config(state='normal')
         self.print_result()
-
 
     def common_spacing_validate(self):
         """ Method that validate if spacing is a number. """
@@ -399,7 +415,6 @@ class MyTab(ttk.Frame):
             self.common_spacing_entry.focus_set()
             return False
 
-
     def common_spare_validate(self):
         """ Method that validate if spare is a number. """
         ## Check if is number
@@ -410,7 +425,6 @@ class MyTab(ttk.Frame):
             messagebox.showwarning(title='Error', message='Spare must be a number.')
             self.common_spare_entry.focus_set()
             return False
-
 
     def menu_select(self):
         """ Don't do anything"""

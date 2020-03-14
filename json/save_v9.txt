@@ -4,7 +4,8 @@
         "Job Number": "248094",
         "Date": "24/05/2018",
         "Designer": "OP",
-        "Revision": "A"
+        "Revision": "A",
+        "Software Version": "1.0"
     },
     "Project Tabs": [
         {
@@ -33,7 +34,7 @@
             ]
         },
         {
-            "Tab_name": "d",
+            "Tab_name": "20",
             "Installation type": "Touching",
             "Custom Spacing": "25",
             "Containment Type": "Ladder Rack",

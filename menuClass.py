@@ -41,7 +41,7 @@ class Menu(tk.Menu):
         self.filemenu.add_separator()
         self.filemenu.add_command(label='Export to Excel', command=self.export_excel)
         self.filemenu.add_separator()
-        self.filemenu.add_command(label='Exit', command=parent.quit)
+        self.filemenu.add_command(label='Exit', command=self.confirm_exit)
         self.editmenu.add_command(label='Add...', command=self.popupWindow)
         self.helpmenu.add_command(label='About', command=self.about_menu)
 
@@ -59,8 +59,7 @@ class Menu(tk.Menu):
             )
             if not self.filepath:
                 return
-        else: # otherwise pass. save only needs the filepath
-            return
+
         if '.txt' not in self.filepath and self.dialog == asksaveasfilename:
             self.filepath = self.filepath + '.txt'
         else:
@@ -82,33 +81,34 @@ class Menu(tk.Menu):
         """
         data = self.json_access('r', askopenfilename) # convert the data into a variable inside the open
         try:
-            for v in self.parent.nb.tabs_list.values(): # cycle through open tabs and destroy them
-                v.destroy()
-            self.parent.nb.create_general_tab('Main Page') # generate a clear main page
-            for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()): # cycle through the list of tk entries to fill them with the values from data
-                i.set(myline)
-            for d in data['Project Tabs']:
-                new_tab = MyTab(self.parent.nb, d['Tab_name'])
-                if d['Installation type'] == 'Custom Spacing':
-                    new_tab.common_spacing_entry.config(state='normal')
-                else:
-                    pass
-                new_tab.common_install_var.set(d['Installation type'])
-                new_tab.common_spacing_var.set(d['Custom Spacing'])
-                new_tab.common_cont_var.set(d['Containment Type'])
-                new_tab.common_spare_var.set(d['Spare Capacity'])
-                for z in d['Cables']:
-                    cable = MyCable(z['Reference'], z['Type'], z['Number of cables'], z['CSA'], z['No Parallels'], z['CPC CSA'])
-                    new_tab.cable_list.append(cable)
-                    new_tab.populate_list()
-                    new_tab.print_result()
-                    new_tab.clear_cable()
-                self.dict = {d['Tab_name']: new_tab}
-                self.parent.nb.tabs_list.update(self.dict)
+            if data['Project Info']['Software Version'] == self.parent.contcalc_version:
+                for v in self.parent.nb.tabs_list.values(): # cycle through open tabs and destroy them
+                    v.destroy()
+                self.parent.nb.create_general_tab('Main Page') # generate a clear main page
+                for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()): # cycle through the list of tk entries to fill them with the values from data
+                    i.set(myline)
+                for d in data['Project Tabs']:
+                    new_tab = MyTab(self.parent.nb, d['Tab_name'])
+                    if d['Installation type'] == 'Custom Spacing':
+                        new_tab.common_spacing_entry.config(state='normal')
+                    else:
+                        pass
+                    new_tab.common_install_var.set(d['Installation type'])
+                    new_tab.common_spacing_var.set(d['Custom Spacing'])
+                    new_tab.common_cont_var.set(d['Containment Type'])
+                    new_tab.common_spare_var.set(d['Spare Capacity'])
+                    for z in d['Cables']:
+                        cable = MyCable(z['Reference'], z['Type'], z['Number of cables'], z['CSA'], z['No Parallels'], z['CPC CSA'])
+                        new_tab.cable_list.append(cable)
+                        new_tab.populate_list()
+                        new_tab.print_result()
+                        new_tab.clear_cable()
+                    self.dict = {d['Tab_name']: new_tab}
+                    self.parent.nb.tabs_list.update(self.dict)
 
-            self.filename_state('normal') # function to set title and save menu to enabled
-        except TypeError:
-            return
+                self.filename_state('normal') # function to set title and save menu to enabled
+        except KeyError:
+            messagebox.showwarning(title='Error', message='Incorrect file. Please chose a correct save file.')
 
     def filename_state(self, state):
         self.filename = self.filepath.lower().split('/')[-1].replace('.txt', '') # clean filepath to get filename only
@@ -126,7 +126,7 @@ class Menu(tk.Menu):
                 self.json_access('w', '')
                 self.filename_state('disabled') # function to set title and save menu to enabled
         except AttributeError:
-            pass
+            print('failed')
 
     def saveas_file(self):
         """Method for saving files as.
@@ -196,8 +196,7 @@ class Menu(tk.Menu):
         """
         py_version_compact = platform.python_version()
         tkinter_version = tk.TkVersion
-        contcalc_version = 0.9
-        messagebox.showinfo(title='About', message=(f'This tools versions is: {contcalc_version}\nYour python version is: {py_version_compact}\nYour tkinter version is: {tkinter_version}'))
+        messagebox.showinfo(title='About', message=(f'This tools versions is: {self.parent.contcalc_version}\n\nYour python version is: {py_version_compact}\n\nYour tkinter version is: {tkinter_version}'))
 
     def confirm_exit(self):
         """Method to get warning box about exiting.

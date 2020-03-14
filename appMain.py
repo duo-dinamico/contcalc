@@ -22,8 +22,8 @@ class App(tk.Tk):
         self.menu = Menu(self)
         self.config(menu=self.menu)
         self.nb = Notebook(self)
+        self.contcalc_version = '1.0'
 
-contcalc_version = '1.0'
 
 if __name__ == '__main__':
     app=App()
