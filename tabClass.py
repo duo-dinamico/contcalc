@@ -346,11 +346,11 @@ class MyTab(ttk.Frame):
         else:
             result_with_install = result + (len(self.cable_list)-1) * Decimal(self.common_spacing_var.get())
             print(f'result_with_install = {result} + {len(self.cable_list)}-1 * {self.common_spacing_var.get()}')
-        self.result_with_install_var.set(result_with_install)
+        self.result_with_install_var.set(str(result_with_install))
 
         ## Result with spare
         if self.common_spare_var.get() != '':
-            self.result_with_spare_var.set(Decimal(self.result_with_install_var.get()) * Decimal(1 + int(self.common_spare_var.get())/100 ))
+            self.result_with_spare_var.set( str(Decimal(self.result_with_install_var.get()) * Decimal(1 + int(self.common_spare_var.get())/100 ) ) )
             print(f'With spare {Decimal(self.result_with_install_var.get())} * (1 + {int(self.common_spare_var.get())}   ->  {self.result_with_spare_var.get()})')
         else:
             self.result_with_spare_var.set(self.result_with_install_var.get())
@@ -435,10 +435,21 @@ class MyTab(ttk.Frame):
         self.print_result()
 
     def common_install_select(self, event):
+        """ Called when Instalation is selectd. """
         if self.common_install_var.get() in ['Touching', 'Spaced'] :
+
+            ## Enable spacing entry
             self.common_spacing_entry.config(state='disabled')
+
+            ## Put back spacing to zero
+            self.common_spacing_var.set('0')
+
         if self.common_install_var.get() == 'Custom Spacing':
+
+            ## Disable spacing entry
             self.common_spacing_entry.config(state='normal')
+
+        ## Refresh result table
         self.print_result()
 
     def common_spacing_validate(self):
@@ -488,7 +499,11 @@ class MyTab(ttk.Frame):
 
         ## Add results if with_results is True
         if with_results:
-            pass
+            result_dict.update({'Results': {
+                                    'Total diameter': self.result_with_install_var.get(),
+                                    'Total with spare': self.result_with_spare_var.get(),
+                                    'Containment size': self.result_with_cont_var.get()
+            }})
 
         return result_dict
 
@@ -537,6 +552,6 @@ class MyCable:
 
         ## Add diameter, if with_results is True
         if with_results:
-            result_dict.update({'Diameter': self.diam})
+            result_dict.update({'Diameter': str(self.diam)})
 
         return result_dict

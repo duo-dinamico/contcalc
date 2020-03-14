@@ -97,13 +97,13 @@ class Notebook(ttk.Notebook):
             self.e_create_section.text.set('')
         else:
             messagebox.showwarning(title='Error', message='You must insert a section name.')
-    
+
     def tab_create(self, tab_name):
         new_tab = MyTab(self, tab_name)
         self.dict = {tab_name: new_tab}
         self.tabs_list.update(self.dict)
         self.select(new_tab)
-        
+
         return new_tab
 
     def get_notebook_dict(self, with_results):
@@ -128,5 +128,5 @@ class Notebook(ttk.Notebook):
                 pass
             else:
                 result_dict['Project Tabs'].append(tab_obj.get_tab_dict(with_results))
-
+        print(f'NB: {result_dict}')
         return result_dict

@@ -45,6 +45,8 @@ class Menu(tk.Menu):
         self.editmenu.add_command(label='Add...', command=self.popupWindow)
         self.helpmenu.add_command(label='About', command=self.about_menu)
 
+        self.filename = ''
+
     def json_access(self, mode, dialog):
         """Method to load and dump data from a json.
         INPUT: JSON file with entries and tabs
@@ -143,7 +145,7 @@ class Menu(tk.Menu):
         twb = load_workbook('TemplateContCalc.xlsx')
 
         ## Get data
-        data = self.to_save()
+        data = self.parent.nb.get_notebook_dict(True)
 
         ## Insert data in project info
         twb['Main Page']['D9'] = data['Project Info']['Job Title']
@@ -160,7 +162,9 @@ class Menu(tk.Menu):
             sheet['I5'] = dict['Custom Spacing']
             sheet['D7'] = dict['Containment Type']
             sheet['D9'] = dict['Spare Capacity']
+            sheet['I9'] = dict['Tab_name']
 
+            ## Cables
             my_row = 12
             for cable_dict in dict['Cables']:
                 sheet.cell(row=my_row, column=2, value=cable_dict['Reference'])
@@ -169,8 +173,14 @@ class Menu(tk.Menu):
                 sheet.cell(row=my_row, column=6, value=cable_dict['CSA'])
                 sheet.cell(row=my_row, column=7, value=cable_dict['No Parallels'])
                 sheet.cell(row=my_row, column=9, value=cable_dict['CPC CSA'])
-                # sheet.cell(row=my_row, column=11, value=cable_dict['Diameter'])
+                sheet.cell(row=my_row, column=11, value=cable_dict['Diameter'])
                 my_row += 1
+
+            ## Results
+            sheet['I34'] = dict['Results']['Total diameter']
+            sheet['I36'] = dict['Results']['Total with spare']
+            sheet['I38'] = dict['Results']['Containment size']
+
 
         ## Delete Temp_Tab
         twb.remove_sheet(twb['TrayTemplate'])
@@ -178,11 +188,16 @@ class Menu(tk.Menu):
         ## Save Workbook to file
         dest_filename =  tk.filedialog.asksaveasfilename(
                                     initialdir = ".",
+                                    initialfile = self.filename,
                                     title = "Select file to export",
                                     defaultextension = "*.xlsx",
                                     filetypes = (("Excel files","*.xlsx"),("all files","*.*"))
                                     )
-        twb.save(dest_filename)
+        ## Check if not canceled
+        if dest_filename != '':
+            twb.save(dest_filename)
+        else:
+            print("Export canceled.")
 
         ## Just to check structure
         # print(json.dumps(data, indent=4, separators=(',', ': ')))
