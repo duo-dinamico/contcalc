@@ -34,9 +34,7 @@ class MyTab(ttk.Frame):
 
         # Object variables
         self.name = name
-        self.common_install_var = tk.StringVar()
         self.common_spacing_var = tk.StringVar()
-        self.common_cont_var = tk.StringVar()
         self.common_spare_var = tk.StringVar()
         self.common_trayref_var = tk.StringVar()
         self.cable_list = []
@@ -62,9 +60,10 @@ class MyTab(ttk.Frame):
         # Common - Installation type
         self.common_install_label = tk.Label(self.common_parameters, text='Installation type:')
         self.common_install_label.grid(row=0, column=0, sticky='W')
-        self.common_install_optionmenu = tk.OptionMenu(self.common_parameters, self.common_install_var, *['Spaced', 'Touching', 'Custom Spacing'], command=self.common_install_select)
-        self.common_install_var.set('Spaced')
-        self.common_install_optionmenu.grid(row=0, column=1, sticky='WE')
+        self.common_install_combobox = ttk.Combobox(self.common_parameters, values=['Spaced', 'Touching', 'Custom Spacing'], state='readonly')
+        self.common_install_combobox.current(0)
+        self.common_install_combobox.bind('<<ComboboxSelected>>', self.common_install_select)
+        self.common_install_combobox.grid(row=0, column=1, sticky='WE')
         self.common_parameters.grid_columnconfigure(1, minsize=150)
 
         # Common - Custom spacing
@@ -78,10 +77,10 @@ class MyTab(ttk.Frame):
         # Common - Countainment type
         self.common_cont_label = tk.Label(self.common_parameters, text='Containment type:')
         self.common_cont_label.grid(row=1, column=0, sticky='W')
-        self.common_cont_optionmenu = tk.OptionMenu(self.common_parameters, self.common_cont_var, *['Ladder Rack', 'Cable Tray'], command=self.common_cont_select)
-        self.common_cont_var.set('Ladder Rack')
-        # print(f'Draw: {self.get_cont_list()}')
-        self.common_cont_optionmenu.grid(row=1, column=1, sticky='WE')
+        self.common_cont_combobox = ttk.Combobox(self.common_parameters, values=['Ladder Rack', 'Cable Tray'], state='readonly')
+        self.common_cont_combobox.current(0)
+        self.common_cont_combobox.bind('<<ComboboxSelected>>', self.common_cont_select)
+        self.common_cont_combobox.grid(row=1, column=1, sticky='WE')
 
         # Common - Spare capacity
         self.common_spare_label = tk.Label(self.common_parameters, text='Spare capacity (%):')
@@ -210,13 +209,13 @@ class MyTab(ttk.Frame):
         if self.duplicate_entry.get() != '':
             new_tab = self.parent.tab_create(self.duplicate_entry.get())
             self.duplicate_var.set('')
-            if self.common_install_var.get() == 'Custom Spacing':
+            if self.common_install_combobox.get() == 'Custom Spacing':
                 new_tab.common_spacing_entry.config(state='normal')
             else:
                 pass
-            new_tab.common_install_var.set(self.common_install_var.get())
+            new_tab.common_install_combobox.set(self.common_install_combobox.get())
             new_tab.common_spacing_var.set(self.common_spacing_var.get())
-            new_tab.common_cont_var.set(self.common_cont_var.get())
+            new_tab.common_cont_combobox.set(self.common_cont_combobox.get())
             new_tab.common_spare_var.set(self.common_spare_var.get())
             for c in self.cable_list:
                 cable = MyCable(c.cable_ref, c.cable_type, c.number_cables, c.csa, c.parallel, c.cpc_csa)
@@ -340,9 +339,9 @@ class MyTab(ttk.Frame):
 
         ## Result with install
         result_with_install = 0
-        if self.common_install_var.get() == 'Spaced':
+        if self.common_install_combobox.get() == 'Spaced':
             result_with_install = result * 2
-        elif self.common_install_var.get() == 'Touching':
+        elif self.common_install_combobox.get() == 'Touching':
             result_with_install = result
         else:
             result_with_install = result + (len(self.cable_list)-1) * Decimal(self.common_spacing_var.get())
@@ -357,17 +356,20 @@ class MyTab(ttk.Frame):
             self.result_with_spare_var.set(self.result_with_install_var.get())
 
         ## Result containment
-        if self.common_cont_var.get() == 'Ladder Rack':
-            for n in list(db['ladder'])[::-1]:
-                if n > Decimal(self.result_with_spare_var.get()):
-                    self.result_with_cont_var.set(n)
-                    break
-        elif self.common_cont_var.get() == 'Cable Tray':
-            for n in list(db['tray'])[::-1]:
-                if n > Decimal(self.result_with_spare_var.get()):
-                    self.result_with_cont_var.set(n)
-                    break
-
+        ## Need to check exception because may not exist when this is called
+        try:
+            if self.common_cont_combobox.get() == 'Ladder Rack':
+                for n in list(db['ladder'])[::-1]:
+                    if n > Decimal(self.result_with_spare_var.get()):
+                        self.result_with_cont_var.set(n)
+                        break
+            elif self.common_cont_combobox.get() == 'Cable Tray':
+                for n in list(db['tray'])[::-1]:
+                    if n > Decimal(self.result_with_spare_var.get()):
+                        self.result_with_cont_var.set(n)
+                        break
+        except:
+            pass
         ## Warning if total diam is higher than maximum size of Tray/Ladder
         ## Need to pass if result_entry_4 does not already exist
         try:
@@ -377,6 +379,7 @@ class MyTab(ttk.Frame):
                 self.result_entry_4.configure(disabledbackground='SystemButtonFace')
         except:
             pass
+
         return True
 
     def check_cable_entries(self):
@@ -437,7 +440,7 @@ class MyTab(ttk.Frame):
 
     def common_install_select(self, event):
         """ Called when Instalation is selectd. """
-        if self.common_install_var.get() in ['Touching', 'Spaced'] :
+        if self.common_install_combobox.get() in ['Touching', 'Spaced'] :
 
             ## Enable spacing entry
             self.common_spacing_entry.config(state='disabled')
@@ -445,7 +448,7 @@ class MyTab(ttk.Frame):
             ## Put back spacing to zero
             self.common_spacing_var.set('0')
 
-        if self.common_install_var.get() == 'Custom Spacing':
+        if self.common_install_combobox.get() == 'Custom Spacing':
 
             ## Disable spacing entry
             self.common_spacing_entry.config(state='normal')
@@ -484,9 +487,9 @@ class MyTab(ttk.Frame):
         ## First values
         result_dict = {
             'Tab_name': self.name,
-            'Installation type': self.common_install_var.get(),
+            'Installation type': self.common_install_combobox.get(),
             'Custom Spacing': self.common_spacing_var.get(),
-            'Containment Type': self.common_cont_var.get(),
+            'Containment Type': self.common_cont_combobox.get(),
             'Spare Capacity': self.common_spare_var.get()
         }
 
