@@ -96,9 +96,9 @@ class Menu(tk.Menu):
                         new_tab.common_spacing_entry.config(state='normal')
                     else:
                         pass
-                    new_tab.common_install_var.set(d['Installation type'])
+                    new_tab.common_install_combobox.set(d['Installation type'])
                     new_tab.common_spacing_var.set(d['Custom Spacing'])
-                    new_tab.common_cont_var.set(d['Containment Type'])
+                    new_tab.common_cont_combobox.set(d['Containment Type'])
                     new_tab.common_spare_var.set(d['Spare Capacity'])
                     for z in d['Cables']:
                         cable = MyCable(z['Reference'], z['Type'], z['Number of cables'], z['CSA'], z['No Parallels'], z['CPC CSA'])
@@ -274,10 +274,10 @@ class Menu(tk.Menu):
 
     def del_tab(self):
         popup_value = self.pu_entry.get()
-        
+
         for k, v in self.parent.nb.tabs_list.items():
             if k == popup_value:
-                
+
                 self.top.destroy()
                 self.parent.nb.v.delete_this_tab()
                 # return
