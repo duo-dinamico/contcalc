@@ -24,13 +24,13 @@ class MyTab(ttk.Frame):
         self.common_parameters = ttk.Labelframe(self, text='Common')
         self.common_parameters.grid(row=0, column=0, sticky='WE', padx=10, pady=10)
         self.cable_parameters = ttk.Labelframe(self, text='Cables')
-        self.cable_parameters.grid(row=1, column=0, sticky='WE', padx=10, pady=10)
+        self.cable_parameters.grid(row=1, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.cable_list_parameters = ttk.Labelframe(self, text='Cables List')
-        self.cable_list_parameters.grid(row=2, column=0, sticky='WE', padx=10, pady=10)
+        self.cable_list_parameters.grid(row=2, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.result_parameters = ttk.Labelframe(self, text='Results')
-        self.result_parameters.grid(row=3, column=0, sticky='WE', padx=10, pady=10)
+        self.result_parameters.grid(row=3, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.commands_parameters = ttk.Labelframe(self, text='Tab Actions')
-        self.commands_parameters.grid(row=4, column=0, sticky='WE', padx=10, pady=10)
+        self.commands_parameters.grid(row=0, column=1, sticky='NSWE', padx=10, pady=10)
 
         # Object variables
         self.name = name
@@ -190,15 +190,15 @@ class MyTab(ttk.Frame):
 
         # Delete_tab button
         self.del_tab_btn = tk.Button(self.commands_parameters, text='Delete Section', width=12, command=self.delete_this_tab)
-        self.del_tab_btn.grid(row=0, column=0)
+        self.del_tab_btn.grid(row=0, column=1)
 
         # Duplicate tab section
         self.duplicate_label = tk.Label(self.commands_parameters, text='Duplicate Tab Name:')
-        self.duplicate_label.grid(row=0, column=1)
+        self.duplicate_label.grid(row=1, column=0)
         self.duplicate_entry = tk.Entry(self.commands_parameters, textvariable=self.duplicate_var)
-        self.duplicate_entry.grid(row=0, column=2)
+        self.duplicate_entry.grid(row=1, column=1)
         self.duplicate_button = tk.Button(self.commands_parameters, text='Duplicate Tab', width=12, command=self.duplicate_tab)
-        self.duplicate_button.grid(row=0, column=3)
+        self.duplicate_button.grid(row=1, column=2)
 
         self.print_result()
 
