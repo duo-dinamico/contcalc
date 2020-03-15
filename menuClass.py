@@ -260,13 +260,13 @@ class Menu(tk.Menu):
             self.pu_button.config(text='Delete', command=self.del_tab)
 
     def add_tab(self):
-        popup_value = self.pu_entry.get()
+        popup_value = self.pu_entry.get().strip()
 
         for k in self.parent.nb.tabs_list:
             if k == popup_value:
                 messagebox.showwarning(title='Error', message='That section name already exist.')
                 return
-        if popup_value.strip() != '':
+        if popup_value != '':
             self.parent.nb.tab_create(popup_value)
             self.top.destroy()
         else:
@@ -274,10 +274,10 @@ class Menu(tk.Menu):
 
     def del_tab(self):
         popup_value = self.pu_entry.get()
-        
+
         for k, v in self.parent.nb.tabs_list.items():
             if k == popup_value:
-                
+
                 self.top.destroy()
                 self.parent.nb.v.delete_this_tab()
                 # return
