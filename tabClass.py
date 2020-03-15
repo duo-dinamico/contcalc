@@ -188,7 +188,7 @@ class MyTab(ttk.Frame):
         self.result_entry_4.grid(row=3, column=1, sticky='E')
 
         # Delete_tab button
-        self.del_tab_btn = tk.Button(self.commands_parameters, text='Delete Section', width=12, command=self.delete_this_tab)
+        self.del_tab_btn = tk.Button(self.commands_parameters, text='Delete Section', width=12, command=lambda: self.delete_this_tab(True))
         self.del_tab_btn.grid(row=0, column=1)
 
         # Duplicate tab section
@@ -269,10 +269,11 @@ class MyTab(ttk.Frame):
         except IndexError:
             pass
 
-    def delete_this_tab(self):
+    def delete_this_tab(self, box):
         """Method to destroy current tab"""
-        msgbox = tk.messagebox.askyesno('Delete Tab', 'Are you sure you want to delete ' + self.name + '?')
-        if msgbox:
+        if box == True:
+            msgbox = tk.messagebox.askyesno('Delete Tab', 'Are you sure you want to delete ' + self.name + '?')
+        if box == True or box == False:
             self.parent.tabs_list.pop(self.name)
             self.destroy()
 

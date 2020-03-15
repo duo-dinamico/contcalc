@@ -42,8 +42,8 @@ class Menu(tk.Menu):
         self.filemenu.add_command(label='Export to Excel', command=self.export_excel)
         self.filemenu.add_separator()
         self.filemenu.add_command(label='Exit', command=self.confirm_exit)
-        self.editmenu.add_command(label='Add Tab...', command=lambda: self.popupWindow('add'))
-        self.editmenu.add_command(label='Delete Tab...', command=lambda: self.popupWindow('del'))
+        self.editmenu.add_command(label='Add Section...', command=lambda: self.popupWindow('add'))
+        self.editmenu.add_command(label='Delete Section...', command=lambda: self.popupWindow('del'))
         self.helpmenu.add_command(label='About', command=self.about_menu)
 
         self.filename = ''
@@ -243,36 +243,44 @@ class Menu(tk.Menu):
     def popupWindow(self, mode):
         self.top = tk.Toplevel(self.parent)
         self.top.focus()
-        self.top.title('Tab Name')
-        self.top.wm_geometry('225x125')
+        self.top.title('Section Name')
+        self.top.wm_geometry('225x125+300+300')
         self.top.transient(self.parent)
         self.top.resizable(False, False)
         self.pu_frame = ttk.Frame(self.top)
         self.pu_frame.pack()
         self.pu_label = CreateLabel(self.pu_frame, text='Please enter name of section', image='', background=None, height=2, width=25, row=0, column=0, colspan=1, sticky='EW')
-        self.pu_entry = CreateEntry(self.pu_frame, background='white', row=1, column=0, colspan=1, sticky='')
-        self.pu_entry.focus_set()
         self.empty = CreateLabel(self.pu_frame, text='', image='', background=None, height=2, width=25, row=2, column=0, colspan=1, sticky='EW')
         self.pu_button = CreateButton(self.pu_frame, text='', height=1, width=10, command=self.add_tab, row=3, column=0, colspan=1, sticky='')
         if mode == 'add':
+            self.pu_entry = CreateEntry(self.pu_frame, background='white', row=1, column=0, colspan=1, sticky='')
+            self.pu_entry.focus_set()
             self.pu_button.config(text='Add', command=self.add_tab)
         else:
-            self.pu_button.config(text='Delete', command=self.del_tab)
+            if len(self.parent.nb.tabs_list.keys()) > 1:
+                self.delete_tab_combobox = ttk.Combobox(self.pu_frame, values=list(self.parent.nb.tabs_list.keys())[1:], state='readonly')
+                self.delete_tab_combobox.grid(row=1, column=0)
+                self.pu_button.config(text='Delete', command=self.del_tab)
+            else:
+                self.top.destroy()
+                messagebox.showwarning(title='Error', message='No sections to remove.')
+
 
     def add_tab(self):
-        popup_value = self.pu_entry.get()
+        popup_value = self.pu_entry.get().strip()
 
         for k in self.parent.nb.tabs_list:
             if k == popup_value:
                 messagebox.showwarning(title='Error', message='That section name already exist.')
                 return
-        if popup_value.strip() != '':
+        if popup_value != '':
             self.parent.nb.tab_create(popup_value)
             self.top.destroy()
         else:
             self.empty.config(text='You must insert a section name.')
 
     def del_tab(self):
+<<<<<<< HEAD
         popup_value = self.pu_entry.get()
 
         for k, v in self.parent.nb.tabs_list.items():
@@ -283,3 +291,10 @@ class Menu(tk.Menu):
                 # return
             else:
                 return
+=======
+        for k, v in self.parent.nb.tabs_list.items():
+            if k == self.delete_tab_combobox.get():
+                self.top.destroy()
+                v.delete_this_tab(False)
+                return
+>>>>>>> b53dfdd3bec42d86707618f078af70dfa74d0387
