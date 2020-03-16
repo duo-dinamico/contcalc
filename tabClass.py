@@ -272,8 +272,8 @@ class MyTab(ttk.Frame):
     def delete_this_tab(self, box):
         """Method to destroy current tab"""
         if box == True:
-            tk.messagebox.askyesno('Delete Tab', 'Are you sure you want to delete ' + self.name + '?')
-        if box == True or box == False:
+            msg_box = tk.messagebox.askyesno('Delete Tab', 'Are you sure you want to delete ' + self.name + '?')
+        if box == True and msg_box or box == False:
             self.parent.tabs_list.pop(self.name)
             self.destroy()
 
