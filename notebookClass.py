@@ -75,7 +75,7 @@ class Notebook(ttk.Notebook):
         self.e_create_section.grid_columnconfigure(1, weight=1)
         # CreateButton(self.cSection, text='Test', height=1, width=0, command=self.parent.menu.test_dic, row=0, column=4, colspan=1, sticky='EW')
         """Label for bottom title"""
-        self.footer_label = tk.Label(frame, text=f'Submains Containment Calculation Sheet\n\nContainment sizing spreadsheet\n\nVersion {self.parent.contcalc_version} 2020', font=('TkFixedFont', 10), background='white', height=10)
+        self.footer_label = tk.Label(frame, text=f'Submains Containment Calculation Sheet\n\nContainment sizing spreadsheet\n\nVersion {self.parent.contcalc_version} 2020', font=('TkFixedFont', 12), background='white', height=10)
         self.footer_label.grid(row=3, column=0, columnspan=4, sticky='NSEW')
         # CreateLabel(frame, text=f'Submains Containment Calculation Sheet\n\nContainment sizing spreadsheet\n\nVersion {self.parent.contcalc_version} 2020', image='', background='white', height=10, width=0, row=3, column=0, colspan=4, sticky='NSEW')
 
