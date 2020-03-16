@@ -146,14 +146,16 @@ class MyTab(ttk.Frame):
         self.cable_clear_btn.grid(row=3, column=3, sticky='WE', padx=5, pady=5)
 
         # Cable_List - List of cables
-        self.cable_list_treeview = ttk.Treeview(self.cable_list_parameters)
+        self.cable_list_treeview = ttk.Treeview(self.cable_list_parameters, show='headings')
         self.cable_list_treeview.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
-        self.list_headers = ['Cable Ref.', 'Cable Type', 'No of Integral Cores', 'Cable CSA (mm)', 'No of cables in parallel', 'CPC CSA (mm)', 'Total diameter (mm)']
+        self.list_headers = ['Cable Ref.', 'Cable Type', 'No of Integral Cores', 'Cable CSA (mm)', 'No parallel cables', 'CPC CSA (mm)', 'Total diameter (mm)']
         self.cable_list_treeview['columns'] = (self.list_headers)
+        c = 0
         for h in self.list_headers:
-            self.cable_list_treeview.column(h, width=150, anchor='center')
+            self.cable_list_treeview.column(h, width=125, anchor='center')
             self.cable_list_treeview.heading(h, text=h)
-        self.cable_list_treeview['show'] = 'headings'
+            c += 1
+        self.cable_list_treeview.bind('<<TreeviewSelect>>', self.select_item)
 
         # Cable_List - Scrollbar
         self.cable_list_scrollbar = ttk.Scrollbar(self.cable_list_parameters)
@@ -252,7 +254,8 @@ class MyTab(ttk.Frame):
 
     def select_item(self, event):
         try:
-            self.selected_item = self.cable_list[self.cable_list_listbox.curselection()[0]]
+            self.curItem = self.cable_list_treeview.focus()
+            self.selected_item = self.cable_list[self.cable_list_treeview.item(self.curItem)['text']]
 
             self.cable_ref_entry.delete(0, tk.END)
             self.cable_ref_entry.insert(tk.END, self.selected_item.cable_ref)
@@ -261,9 +264,8 @@ class MyTab(ttk.Frame):
             self.cable_cores_combobox.set(self.selected_item.number_cables)
             self.cable_csa_combobox.set(self.selected_item.csa)
             self.cable_parallel_combobox.set(self.selected_item.parallel)
+            self.cable_cpc_combobox.set(self.selected_item.cpc_csa)
 
-            self.cable_cpc_combobox.delete(0, tk.END)
-            self.cable_cpc_combobox.insert(tk.END, self.selected_item.cpc_csa)
         except IndexError:
             pass
 
@@ -295,6 +297,7 @@ class MyTab(ttk.Frame):
         """Method to remove a cable in this tab"""
         self.cable_list.remove(self.selected_item)
         self.populate_list()
+        self.clear_cable()
         self.print_result()
 
     def update_cable(self):
@@ -318,9 +321,9 @@ class MyTab(ttk.Frame):
         self.cable_list_treeview.delete(*self.cable_list_treeview.get_children())
         c = 0
         for obj in self.cable_list:
-            c += 1
             line = [obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam]
-            self.cable_list_treeview.insert('', 'end', text='', values=(line))
+            self.cable_list_treeview.insert('', 'end', text=c, values=(line))
+            c += 1
 
     def list_cables(self):
         """Method to list all cables in this tab"""
