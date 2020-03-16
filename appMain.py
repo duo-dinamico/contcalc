@@ -19,10 +19,10 @@ class App(tk.Tk):
         self.iconbitmap('images/calc.ico')
         self.resizable(False, False)
         self.lst_entries = []
+        self.contcalc_version = '1.0'
         self.menu = Menu(self)
         self.config(menu=self.menu)
         self.nb = Notebook(self)
-        self.contcalc_version = '1.0'
 
 
 if __name__ == '__main__':
