@@ -285,7 +285,7 @@ class MyTab(ttk.Frame):
     def add_cable(self):
         """Method to add a cable to this tab"""
         if self.check_cable_entries():
-            cable = MyCable(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_combobox.get())
+            cable = MyCable(self.cable_ref_var.get().strip(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_combobox.get())
             self.cable_list.append(cable)
             self.populate_list()
             self.print_result()
@@ -302,7 +302,7 @@ class MyTab(ttk.Frame):
 
     def update_cable(self):
         """Method to update data of a cable in this tab"""
-        self.selected_item.update_data(self.cable_ref_var.get(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_combobox.get())
+        self.selected_item.update_data(self.cable_ref_var.get().strip(), self.cable_type_combobox.get(), self.cable_cores_combobox.get(), self.cable_csa_combobox.get(), self.cable_parallel_combobox.get(), self.cable_cpc_combobox.get())
         self.populate_list()
         self.print_result()
         self.clear_cable()
@@ -386,19 +386,14 @@ class MyTab(ttk.Frame):
 
     def check_cable_entries(self):
         """ Method that check if data inserted are valid."""
-        result = True
+        if self.cable_ref_var.get().strip() == '':
+            messagebox.showwarning(title='Error', message='Cable must have a reference.')
+            return False
         for cable in self.cable_list:
-            if self.cable_ref_var.get()==cable.cable_ref:
-                messagebox.showwarning(title='Error', message='That cable name already exist.')
-                result = False
-        # self.cable_type_combobox.get()
-        # self.cable_cores_combobox.get()
-        # self.cable_csa_combobox.get()
-        # self.cable_parallel_combobox.get()
-        # if not self.cable_cpc_var.get().isdigit():
-        #     print('CPC')
-        #     result = False
-        return result
+            if self.cable_ref_var.get().strip() == cable.cable_ref:
+                messagebox.showwarning(title='Error', message='That cable reference already exist.')
+                return False
+        return True
 
     def get_type_list(self):
         """Method that returns the list of all cables available"""
