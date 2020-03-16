@@ -24,19 +24,17 @@ class MyTab(ttk.Frame):
         self.common_parameters = ttk.Labelframe(self, text='Common')
         self.common_parameters.grid(row=0, column=0, sticky='WE', padx=10, pady=10)
         self.cable_parameters = ttk.Labelframe(self, text='Cables')
-        self.cable_parameters.grid(row=1, column=0, sticky='WE', padx=10, pady=10)
+        self.cable_parameters.grid(row=1, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.cable_list_parameters = ttk.Labelframe(self, text='Cables List')
-        self.cable_list_parameters.grid(row=2, column=0, sticky='WE', padx=10, pady=10)
+        self.cable_list_parameters.grid(row=2, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.result_parameters = ttk.Labelframe(self, text='Results')
-        self.result_parameters.grid(row=3, column=0, sticky='WE', padx=10, pady=10)
-        self.commands_parameters = ttk.Labelframe(self, text='Tab Actions')
-        self.commands_parameters.grid(row=4, column=0, sticky='WE', padx=10, pady=10)
+        self.result_parameters.grid(row=3, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
+        self.commands_parameters = ttk.Labelframe(self, text='Section Actions')
+        self.commands_parameters.grid(row=0, column=1, sticky='NSWE', padx=10, pady=10)
 
         # Object variables
         self.name = name
-        self.common_install_var = tk.StringVar()
         self.common_spacing_var = tk.StringVar()
-        self.common_cont_var = tk.StringVar()
         self.common_spare_var = tk.StringVar()
         self.common_trayref_var = tk.StringVar()
         self.cable_list = []
@@ -61,104 +59,94 @@ class MyTab(ttk.Frame):
 
         # Common - Installation type
         self.common_install_label = tk.Label(self.common_parameters, text='Installation type:')
-        self.common_install_label.grid(row=0, column=0, sticky='W')
-        self.common_install_optionmenu = tk.OptionMenu(self.common_parameters, self.common_install_var, *['Spaced', 'Touching', 'Custom Spacing'], command=self.common_install_select)
-        self.common_install_var.set('Spaced')
-        self.common_install_optionmenu.grid(row=0, column=1, sticky='WE')
+        self.common_install_label.grid(row=0, column=0, sticky='W', pady=5)
+        self.common_install_combobox = ttk.Combobox(self.common_parameters, values=['Spaced', 'Touching', 'Custom Spacing'], state='readonly')
+        self.common_install_combobox.current(0)
+        self.common_install_combobox.bind('<<ComboboxSelected>>', self.common_install_select)
+        self.common_install_combobox.grid(row=0, column=1, sticky='WE', pady=5, padx=5)
         self.common_parameters.grid_columnconfigure(1, minsize=150)
 
         # Common - Custom spacing
         self.common_spacing_label = tk.Label(self.common_parameters, text='Custom spacing (mm):')
-        self.common_spacing_label.grid(row=0, column=2, sticky='W')
+        self.common_spacing_label.grid(row=1, column=0, sticky='W', pady=5)
         self.common_spacing_entry = tk.Entry(self.common_parameters, textvariable=self.common_spacing_var, validate='focusout', validatecommand=self.common_spacing_validate, state='disabled')
         self.common_spacing_var.set('0')
-        #self.common_spacing_var.trace('w', self.print_result())
-        self.common_spacing_entry.grid(row=0, column=3, sticky='W')
+        self.common_spacing_entry.grid(row=1, column=1, sticky='WE', pady=5, padx=5)
 
         # Common - Countainment type
         self.common_cont_label = tk.Label(self.common_parameters, text='Containment type:')
-        self.common_cont_label.grid(row=1, column=0, sticky='W')
-        self.common_cont_optionmenu = tk.OptionMenu(self.common_parameters, self.common_cont_var, *['Ladder Rack', 'Cable Tray'], command=self.common_cont_select)
-        self.common_cont_var.set('Ladder Rack')
-        # print(f'Draw: {self.get_cont_list()}')
-        self.common_cont_optionmenu.grid(row=1, column=1, sticky='WE')
+        self.common_cont_label.grid(row=2, column=0, sticky='W', pady=5)
+        self.common_cont_combobox = ttk.Combobox(self.common_parameters, values=['Ladder Rack', 'Cable Tray'], state='readonly')
+        self.common_cont_combobox.current(0)
+        self.common_cont_combobox.bind('<<ComboboxSelected>>', self.common_cont_select)
+        self.common_cont_combobox.grid(row=2, column=1, sticky='WE', pady=5, padx=5)
 
         # Common - Spare capacity
         self.common_spare_label = tk.Label(self.common_parameters, text='Spare capacity (%):')
-        self.common_spare_label.grid(row=2, column=0, sticky='W')
+        self.common_spare_label.grid(row=3, column=0, sticky='W', pady=5)
         self.common_spare_entry = tk.Entry(self.common_parameters, textvariable=self.common_spare_var, validate='focusout', validatecommand=self.common_spare_validate)
         self.common_spare_var.set('25')
-        self.common_spare_entry.grid(row=2, column=1, sticky='WE')
-
-        # Common - Cable Tray Ref
-        self.common_trayref_label = tk.Label(self.common_parameters, text='Cable Tray Ref:')
-        self.common_trayref_label.grid(row=2, column=2, sticky='W')
-        self.common_trayref_var.set(self.name)
-        self.common_trayref_entry = tk.Entry(self.common_parameters, textvariable=self.common_trayref_var, state='disabled')
-        self.common_trayref_entry.grid(row=2, column=3, sticky='W')
-        self.trayref_change_btn = tk.Button(self.common_parameters, text='Change Tray Ref', width=14, command=self.trayref_change)
-        self.trayref_change_btn.grid(row=2, column=4, sticky='WE', padx=5, pady=5)
-        self.trayref_confirm_btn = tk.Button(self.common_parameters, text='Confirm', width=14, command=self.trayref_confirm)
+        self.common_spare_entry.grid(row=3, column=1, sticky='WE', pady=5, padx=5)
 
         # Cable - Entry for Cable ref
-        self.cable_ref_label = tk.Label(self.cable_parameters, text='Ref', width='15')
+        self.cable_ref_label = tk.Label(self.cable_parameters, text='Cable Reference', width='13')
         self.cable_ref_label.grid(row=0, column=0)
         self.cable_ref_entry = tk.Entry(self.cable_parameters, textvariable=self.cable_ref_var)
-        self.cable_ref_entry.grid(row=1, column=0, sticky='EW')
+        self.cable_ref_entry.grid(row=1, column=0, sticky='EW', padx=5)
 
         # Cable - Select cable type
-        self.cable_type_label = tk.Label(self.cable_parameters, text='Type', width='15')
+        self.cable_type_label = tk.Label(self.cable_parameters, text='Cable Type', width='13')
         self.cable_type_label.grid(row=0, column=1)
         self.cable_type_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']), postcommand=self.get_type_list, state='readonly')
         self.cable_type_combobox.current(0)
         self.cable_type_combobox.bind('<<ComboboxSelected>>', self.cable_type_select)
-        self.cable_type_combobox.grid(row=1, column=1, sticky='EW')
+        self.cable_type_combobox.grid(row=1, column=1, sticky='EW', padx=5)
 
         # Cable - Select Core Number
-        self.cable_cores_label = tk.Label(self.cable_parameters, text='Cores', width='15')
+        self.cable_cores_label = tk.Label(self.cable_parameters, text='No Integral Cores', width='13')
         self.cable_cores_label.grid(row=0, column=2)
         self.cable_cores_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']['XLPE/SWA/PVC']), postcommand=self.get_cores_list, state='readonly')
         self.cable_cores_combobox.current(0)
         self.cable_cores_combobox.bind('<<ComboboxSelected>>', self.cable_cores_select)
-        self.cable_cores_combobox.grid(row=1, column=2, sticky='EW')
+        self.cable_cores_combobox.grid(row=1, column=2, sticky='EW', padx=5)
 
         # Cable - Select CSA (combobox)
-        self.cable_csa_label = tk.Label(self.cable_parameters, text='CSA', width='15')
+        self.cable_csa_label = tk.Label(self.cable_parameters, text='Cable CSA (mm)', width='13')
         self.cable_csa_label.grid(row=0, column=3)
         self.cable_csa_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']['XLPE/SWA/PVC']['1']), postcommand=self.get_csa_list, state='readonly')
         self.cable_csa_combobox.current(0)
-        self.cable_csa_combobox.grid(row=1, column=3, sticky='EW')
+        self.cable_csa_combobox.grid(row=1, column=3, sticky='EW', padx=5)
 
         # Cable - Select Cables in parallel (combobox)
-        self.cable_parallel_label = tk.Label(self.cable_parameters, text='Parallel', width='15')
+        self.cable_parallel_label = tk.Label(self.cable_parameters, text='Cables in Parallel', width='13')
         self.cable_parallel_label.grid(row=0, column=4)
         self.cable_parallel_combobox = ttk.Combobox(self.cable_parameters, values=[1, 2, 3, 4, 5, 6, 7, 8], state='readonly')
         self.cable_parallel_combobox.current(0)
-        self.cable_parallel_combobox.grid(row=1, column=4, sticky='EW')
+        self.cable_parallel_combobox.grid(row=1, column=4, sticky='EW', padx=5)
 
         # Cable - Select CPC CSA
-        self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA', width='15')
+        self.cable_cpc_label = tk.Label(self.cable_parameters, text='CPC CSA (mm)', width='13')
         self.cable_cpc_label.grid(row=0, column=5)
         #self.cable_cpc_entry = tk.Entry(self.cable_parameters, textvariable=self.cable_cpc_var)
         self.cable_cpc_combobox = ttk.Combobox(self.cable_parameters, values=list(db['cables']['LSF Single']['1']), state='readonly')
         self.cable_cpc_combobox.current(0)
-        self.cable_cpc_combobox.grid(row=1, column=5, sticky='EW')
+        self.cable_cpc_combobox.grid(row=1, column=5, sticky='EW', padx=5)
 
         # Cable - Buttons
-        self.cable_add_btn = tk.Button(self.cable_parameters, text='Add', width=12, command=self.add_cable)
+        self.cable_add_btn = tk.Button(self.cable_parameters, text='Add Cable', width=13, command=self.add_cable)
         self.cable_add_btn.grid(row=3, column=0, sticky='WE', padx=5, pady=5)
 
-        self.cable_remove_btn = tk.Button(self.cable_parameters, text='Remove', width=12, command=self.remove_cable)
+        self.cable_remove_btn = tk.Button(self.cable_parameters, text='Remove Cable', width=13, command=self.remove_cable)
         self.cable_remove_btn.grid(row=3, column=1, sticky='WE', padx=5, pady=5)
 
-        self.cable_update_btn = tk.Button(self.cable_parameters, text='Update', width=12, command=self.update_cable)
+        self.cable_update_btn = tk.Button(self.cable_parameters, text='Update Cable', width=13, command=self.update_cable)
         self.cable_update_btn.grid(row=3, column=2, sticky='WE', padx=5, pady=5)
 
-        self.cable_clear_btn = tk.Button(self.cable_parameters, text='Clear', width=12, command=self.clear_cable)
+        self.cable_clear_btn = tk.Button(self.cable_parameters, text='Clear Entries', width=13, command=self.clear_cable)
         self.cable_clear_btn.grid(row=3, column=3, sticky='WE', padx=5, pady=5)
 
         # Cable_List - List of cables
-        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 10), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
+        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 10), text='{:_^20s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
         self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
         self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.BROWSE, font=('TkFixedFont', 10))
         self.cable_list_listbox.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
@@ -171,34 +159,44 @@ class MyTab(ttk.Frame):
         self.cable_list_scrollbar.configure(command=self.cable_list_listbox.yview)
 
         # Result
-        self.result_label_1 = tk.Label(self.result_parameters, text='Cable diameter raw sum:')
-        self.result_label_1.grid(row=0, column=0, sticky='E')
-        self.result_entry_1 = tk.Entry(self.result_parameters, textvariable=self.result_var, state='disabled')
-        self.result_entry_1.grid(row=0, column=1, sticky='E')
+        # self.result_label_1 = tk.Label(self.result_parameters, text='Cable diameter raw sum:')
+        # self.result_label_1.grid(row=0, column=0, sticky='E')
+        # self.result_entry_1 = tk.Entry(self.result_parameters, textvariable=self.result_var, state='disabled')
+        # self.result_entry_1.grid(row=0, column=1, sticky='E')
         self.result_label_2 = tk.Label(self.result_parameters, text=f'Total diameter required for all cables:')
         self.result_label_2.grid(row=1, column=0, sticky='E')
         self.result_entry_2 = tk.Entry(self.result_parameters, textvariable=self.result_with_install_var, state='disabled')
-        self.result_entry_2.grid(row=1, column=1, sticky='E')
+        self.result_entry_2.grid(row=1, column=1, sticky='E', padx=5, pady=5)
         self.result_label_3 = tk.Label(self.result_parameters, text=f'Total diameter required for all cables, with spare capacity:')
         self.result_label_3.grid(row=2, column=0, sticky='E')
         self.result_entry_3 = tk.Entry(self.result_parameters, textvariable=self.result_with_spare_var, state='disabled')
-        self.result_entry_3.grid(row=2, column=1, sticky='E')
+        self.result_entry_3.grid(row=2, column=1, sticky='E', padx=5, pady=5)
         self.result_label_4 = tk.Label(self.result_parameters, text=f'Standard containment size required (Ladder Rack):')
         self.result_label_4.grid(row=3, column=0, sticky='E')
         self.result_entry_4 = tk.Entry(self.result_parameters, textvariable=self.result_with_cont_var, state='disabled')
-        self.result_entry_4.grid(row=3, column=1, sticky='E')
+        self.result_entry_4.grid(row=3, column=1, sticky='E', padx=5, pady=5)
 
-        # Delete_tab button
-        self.del_tab_btn = tk.Button(self.commands_parameters, text='Delete Section', width=12, command=self.delete_this_tab)
-        self.del_tab_btn.grid(row=0, column=0)
+        # Tab Actions - Cable Tray Ref
+        self.common_trayref_label = tk.Label(self.commands_parameters, text='Section/Tray Ref:')
+        self.common_trayref_label.grid(row=0, column=0, sticky='W', pady=5)
+        self.common_trayref_var.set(self.name)
+        self.common_trayref_entry = tk.Entry(self.commands_parameters, textvariable=self.common_trayref_var, state='disabled')
+        self.common_trayref_entry.grid(row=0, column=1, sticky='W', pady=5, padx=5)
+        self.trayref_change_btn = tk.Button(self.commands_parameters, text='Update Section Ref', width=14, command=self.trayref_change)
+        self.trayref_change_btn.grid(row=0, column=2, sticky='WE', pady=5)
+        self.trayref_confirm_btn = tk.Button(self.commands_parameters, text='Confirm', width=16, command=self.trayref_confirm)
 
-        # Duplicate tab section
-        self.duplicate_label = tk.Label(self.commands_parameters, text='Duplicate Tab Name:')
-        self.duplicate_label.grid(row=0, column=1)
+        # Tab Actions - Duplicate tab section
+        self.duplicate_label = tk.Label(self.commands_parameters, text='Duplicate Ref:')
+        self.duplicate_label.grid(row=1, column=0, pady=5, sticky='W')
         self.duplicate_entry = tk.Entry(self.commands_parameters, textvariable=self.duplicate_var)
-        self.duplicate_entry.grid(row=0, column=2)
-        self.duplicate_button = tk.Button(self.commands_parameters, text='Duplicate Tab', width=12, command=self.duplicate_tab)
-        self.duplicate_button.grid(row=0, column=3)
+        self.duplicate_entry.grid(row=1, column=1, pady=5, padx=5)
+        self.duplicate_button = tk.Button(self.commands_parameters, text='Duplicate Section', width=16, command=self.duplicate_tab)
+        self.duplicate_button.grid(row=1, column=2, pady=5)
+
+        # Tab Actions - Delete_tab button
+        self.del_tab_btn = tk.Button(self.commands_parameters, text='Delete Section', width=16, command=lambda: self.delete_this_tab(True))
+        self.del_tab_btn.grid(row=2, column=2, pady=5)
 
         self.print_result()
 
@@ -210,13 +208,13 @@ class MyTab(ttk.Frame):
         if self.duplicate_entry.get() != '':
             new_tab = self.parent.tab_create(self.duplicate_entry.get())
             self.duplicate_var.set('')
-            if self.common_install_var.get() == 'Custom Spacing':
+            if self.common_install_combobox.get() == 'Custom Spacing':
                 new_tab.common_spacing_entry.config(state='normal')
             else:
                 pass
-            new_tab.common_install_var.set(self.common_install_var.get())
+            new_tab.common_install_combobox.set(self.common_install_combobox.get())
             new_tab.common_spacing_var.set(self.common_spacing_var.get())
-            new_tab.common_cont_var.set(self.common_cont_var.get())
+            new_tab.common_cont_combobox.set(self.common_cont_combobox.get())
             new_tab.common_spare_var.set(self.common_spare_var.get())
             for c in self.cable_list:
                 cable = MyCable(c.cable_ref, c.cable_type, c.number_cables, c.csa, c.parallel, c.cpc_csa)
@@ -270,10 +268,11 @@ class MyTab(ttk.Frame):
         except IndexError:
             pass
 
-    def delete_this_tab(self):
+    def delete_this_tab(self, box):
         """Method to destroy current tab"""
-        msgbox = tk.messagebox.askyesno('Delete Tab', 'Are you sure you want to delete ' + self.name + '?')
-        if msgbox:
+        if box == True:
+            tk.messagebox.askyesno('Delete Tab', 'Are you sure you want to delete ' + self.name + '?')
+        if box == True or box == False:
             self.parent.tabs_list.pop(self.name)
             self.destroy()
 
@@ -319,7 +318,7 @@ class MyTab(ttk.Frame):
         """ Method that update the data in the listbox."""
         self.cable_list_listbox.delete(0, tk.END)
         for obj in self.cable_list:
-            line = '{:_^30s}|{:_^30s}|{:_^15d}|{:_^15s}|{:_^15d}|{:_^15s}|{:_^15.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam)
+            line = '{:_^20s}|{:_^30s}|{:_^15d}|{:_^15s}|{:_^15d}|{:_^15s}|{:_^15.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam)
             self.cable_list_listbox.insert(tk.END, line)
 
     def list_cables(self):
@@ -339,9 +338,9 @@ class MyTab(ttk.Frame):
 
         ## Result with install
         result_with_install = 0
-        if self.common_install_var.get() == 'Spaced':
+        if self.common_install_combobox.get() == 'Spaced':
             result_with_install = result * 2
-        elif self.common_install_var.get() == 'Touching':
+        elif self.common_install_combobox.get() == 'Touching':
             result_with_install = result
         else:
             result_with_install = result + (len(self.cable_list)-1) * Decimal(self.common_spacing_var.get())
@@ -356,17 +355,20 @@ class MyTab(ttk.Frame):
             self.result_with_spare_var.set(self.result_with_install_var.get())
 
         ## Result containment
-        if self.common_cont_var.get() == 'Ladder Rack':
-            for n in list(db['ladder'])[::-1]:
-                if n > Decimal(self.result_with_spare_var.get()):
-                    self.result_with_cont_var.set(n)
-                    break
-        elif self.common_cont_var.get() == 'Cable Tray':
-            for n in list(db['tray'])[::-1]:
-                if n > Decimal(self.result_with_spare_var.get()):
-                    self.result_with_cont_var.set(n)
-                    break
-
+        ## Need to check exception because may not exist when this is called
+        try:
+            if self.common_cont_combobox.get() == 'Ladder Rack':
+                for n in list(db['ladder'])[::-1]:
+                    if n > Decimal(self.result_with_spare_var.get()):
+                        self.result_with_cont_var.set(n)
+                        break
+            elif self.common_cont_combobox.get() == 'Cable Tray':
+                for n in list(db['tray'])[::-1]:
+                    if n > Decimal(self.result_with_spare_var.get()):
+                        self.result_with_cont_var.set(n)
+                        break
+        except:
+            pass
         ## Warning if total diam is higher than maximum size of Tray/Ladder
         ## Need to pass if result_entry_4 does not already exist
         try:
@@ -376,6 +378,7 @@ class MyTab(ttk.Frame):
                 self.result_entry_4.configure(disabledbackground='SystemButtonFace')
         except:
             pass
+
         return True
 
     def check_cable_entries(self):
@@ -436,7 +439,7 @@ class MyTab(ttk.Frame):
 
     def common_install_select(self, event):
         """ Called when Instalation is selectd. """
-        if self.common_install_var.get() in ['Touching', 'Spaced'] :
+        if self.common_install_combobox.get() in ['Touching', 'Spaced'] :
 
             ## Enable spacing entry
             self.common_spacing_entry.config(state='disabled')
@@ -444,7 +447,7 @@ class MyTab(ttk.Frame):
             ## Put back spacing to zero
             self.common_spacing_var.set('0')
 
-        if self.common_install_var.get() == 'Custom Spacing':
+        if self.common_install_combobox.get() == 'Custom Spacing':
 
             ## Disable spacing entry
             self.common_spacing_entry.config(state='normal')
@@ -483,9 +486,9 @@ class MyTab(ttk.Frame):
         ## First values
         result_dict = {
             'Tab_name': self.name,
-            'Installation type': self.common_install_var.get(),
+            'Installation type': self.common_install_combobox.get(),
             'Custom Spacing': self.common_spacing_var.get(),
-            'Containment Type': self.common_cont_var.get(),
+            'Containment Type': self.common_cont_combobox.get(),
             'Spare Capacity': self.common_spare_var.get()
         }
 
