@@ -228,7 +228,7 @@ class MyTab(ttk.Frame):
 
     def trayref_change(self):
         self.trayref_change_btn.grid_remove()
-        self.trayref_confirm_btn.grid(row=2, column=4, sticky='WE', padx=5, pady=5)
+        self.trayref_confirm_btn.grid(row=0, column=2, sticky='WE', padx=5, pady=5)
         self.common_trayref_entry.configure(state='normal')
 
     def trayref_confirm(self):
@@ -346,7 +346,7 @@ class MyTab(ttk.Frame):
             result_with_install = result * 2
         elif self.common_install_combobox.get() == 'Touching':
             result_with_install = result
-        else:
+        elif len(self.cable_list) != 0:
             result_with_install = result + (len(self.cable_list)-1) * Decimal(self.common_spacing_var.get())
             print(f'result_with_install = {result} + {len(self.cable_list)}-1 * {self.common_spacing_var.get()}')
         self.result_with_install_var.set(str(result_with_install))
@@ -366,11 +366,15 @@ class MyTab(ttk.Frame):
                     if n > Decimal(self.result_with_spare_var.get()):
                         self.result_with_cont_var.set(n)
                         break
+                if Decimal(self.result_with_spare_var.get()) > max(db['ladder']):
+                    self.result_with_cont_var.set(max(db['ladder']))
             elif self.common_cont_combobox.get() == 'Cable Tray':
                 for n in list(db['tray'])[::-1]:
                     if n > Decimal(self.result_with_spare_var.get()):
                         self.result_with_cont_var.set(n)
                         break
+                if Decimal(self.result_with_spare_var.get()) > max(db['tray']):
+                    self.result_with_cont_var.set(max(db['tray']))
         except:
             pass
         ## Warning if total diam is higher than maximum size of Tray/Ladder
