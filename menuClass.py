@@ -74,7 +74,6 @@ class Menu(tk.Menu):
             else:
                 json.dump(self.to_save(), json_file, ensure_ascii=False, indent=4, separators=(',', ': ')) # otherwise just do a dump into the file
                 data = '' # set data to empty just for error handling
-                self.filemenu.entryconfigure(1, state='disabled') # disable the save menu
         return data # return the data to be used when opening a file
 
     def open_file(self):
@@ -127,7 +126,6 @@ class Menu(tk.Menu):
         try:
             if self.filename: # if the software has a name, should be able to save it to the filepath. if not, silently pass
                 self.json_access('w', '')
-                self.filename_state('disabled') # function to set title and save menu to enabled
         except AttributeError:
             print('failed')
 
