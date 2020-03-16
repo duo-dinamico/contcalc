@@ -157,17 +157,24 @@ class MyTab(ttk.Frame):
         self.cable_clear_btn.grid(row=3, column=3, sticky='WE', padx=5, pady=5)
 
         # Cable_List - List of cables
-        self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 10), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
-        self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
-        self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.BROWSE, font=('TkFixedFont', 10))
-        self.cable_list_listbox.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
-        self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
-
+        # self.cable_list_listbox_header = tk.Label(self.cable_list_parameters, font=('TkFixedFont', 10), text='{:_^30s}|{:_^30s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}|{:_^15s}'.format('Ref', 'Type', 'Num_cab', 'CSA', 'Parallel', 'CPC CSA', 'Diam'))
+        # self.cable_list_listbox_header.grid(row=0, column=0, sticky='W')
+        # self.cable_list_listbox = tk.Listbox(self.cable_list_parameters, height=10, width=130, border=0, selectmode=tk.BROWSE, font=('TkFixedFont', 10))
+        self.cable_list_treeview = ttk.Treeview(self.cable_list_parameters)
+        # self.cable_list_listbox.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
+        # self.cable_list_listbox.bind('<<ListboxSelect>>', self.select_item)
+        self.cable_list_treeview.grid(row=1, column=0, padx=0, pady=20, sticky='EW')
+        self.list_headers = ['Cable Ref.', 'Cable Type', 'No of Integral Cores', 'Cable CSA (mm)', 'No of cables in parallel', 'CPC CSA (mm)', 'Total diameter (mm)']
+        self.cable_list_treeview['columns'] = (self.list_headers)
+        for h in self.list_headers:
+            self.cable_list_treeview.column(h, width=150, anchor='center')
+            self.cable_list_treeview.heading(h, text=h)
+        self.cable_list_treeview['show'] = 'headings'
         # Cable_List - Scrollbar
         self.cable_list_scrollbar = ttk.Scrollbar(self.cable_list_parameters)
         self.cable_list_scrollbar.grid(row=1, column=1, sticky='NS', padx=0, pady=20)
-        self.cable_list_listbox.configure(yscrollcommand=self.cable_list_scrollbar.set)
-        self.cable_list_scrollbar.configure(command=self.cable_list_listbox.yview)
+        self.cable_list_treeview.configure(yscrollcommand=self.cable_list_scrollbar.set)
+        self.cable_list_scrollbar.configure(command=self.cable_list_treeview.yview)
 
         # Result
         self.result_label_1 = tk.Label(self.result_parameters, text='Cable diameter raw sum:')
@@ -317,10 +324,16 @@ class MyTab(ttk.Frame):
 
     def populate_list(self):
         """ Method that update the data in the listbox."""
-        self.cable_list_listbox.delete(0, tk.END)
+        # self.cable_list_listbox.delete(0, tk.END)
+        # for obj in self.cable_list:
+        #     line = '{:_^30s}|{:_^30s}|{:_^15d}|{:_^15s}|{:_^15d}|{:_^15s}|{:_^15.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam)
+        #     self.cable_list_listbox.insert(tk.END, line)
+        self.cable_list_treeview.delete(*self.cable_list_treeview.get_children())
+        c = 0
         for obj in self.cable_list:
-            line = '{:_^30s}|{:_^30s}|{:_^15d}|{:_^15s}|{:_^15d}|{:_^15s}|{:_^15.2f}'.format(obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam)
-            self.cable_list_listbox.insert(tk.END, line)
+            c += 1
+            line = [obj.cable_ref, obj.cable_type, int(obj.number_cables), obj.csa, int(obj.parallel), obj.cpc_csa, obj.diam]
+            self.cable_list_treeview.insert('', 'end', text='', values=(line))
 
     def list_cables(self):
         """Method to list all cables in this tab"""
