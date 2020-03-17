@@ -225,6 +225,9 @@ class Menu(tk.Menu):
             if self.confirm_exit_dialog and self.filename:
                 self.save_file()
                 self.parent.quit()
+            elif self.confirm_exit_dialog:
+                self.saveas_file()
+                self.parent.quit()
             elif self.confirm_exit_dialog is None:
                 return
             else:
