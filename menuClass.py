@@ -143,7 +143,7 @@ class Menu(tk.Menu):
         """ Method to export data to Excel. """
 
         # Load template file
-        twb = load_workbook('TemplateContCalc.xlsx')
+        twb = load_workbook('TemplateContCalc.xlsx', read_only=True)
 
         # Get data
         data = self.parent.nb.get_notebook_dict(True)
@@ -157,7 +157,7 @@ class Menu(tk.Menu):
             return
 
         # Insert image in Workbook
-        twb['Main Page'].add_image(img, 'A1')
+        twb['Main Page'].add_image(img, 'B2')
 
         # Insert data in project info
         twb['Main Page']['D9'] = data['Project Info']['Job Title']
