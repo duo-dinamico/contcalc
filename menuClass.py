@@ -15,7 +15,9 @@ from tabClass import MyTab, MyCable
 from widgetsClass import CreateLabel, CreateEntry, CreateButton
 import platform
 import json
-from openpyxl import Workbook, load_workbook
+from openpyxl import load_workbook
+from openpyxl.drawing.image import Image
+
 
 class Menu(tk.Menu):
     """Class that create the menu.
@@ -54,9 +56,9 @@ class Menu(tk.Menu):
         OUTPUT: no output
         """
         self.mode = mode # the mode will determine if we're doing Write or Read
-        self.dialog = dialog # the dialog will determine if we're doing Save as Filename or Open Filename
+        self.dialog = dialog  # the dialog will determine if we're doing Save as Filename or Open Filename
 
-        if self.dialog == asksaveasfilename or self.dialog == askopenfilename: # if dialog asks for dialog box, give it to the user
+        if self.dialog == asksaveasfilename or self.dialog == askopenfilename:  # if dialog asks for dialog box, give it to the user
             self.filepath = self.dialog(
                 filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
             )
@@ -67,27 +69,27 @@ class Menu(tk.Menu):
             self.filepath = self.filepath + '.txt'
         else:
             pass
-        with open(self.filepath, self.mode, encoding='utf-8') as json_file: # access the json file as Write or Read mode
-            if self.dialog == askopenfilename: # if open file, access the file and save it on a variable
+        with open(self.filepath, self.mode, encoding='utf-8') as json_file:  # access the json file as Write or Read mode
+            if self.dialog == askopenfilename:  # if open file, access the file and save it on a variable
                 data = json.load(json_file)
-                self.filemenu.entryconfigure(1, state='normal') # set menu save to normal
+                self.filemenu.entryconfigure(1, state='normal')  # set menu save to normal
             else:
                 json.dump(self.to_save(), json_file, ensure_ascii=False, indent=4, separators=(',', ': ')) # otherwise just do a dump into the file
-                data = '' # set data to empty just for error handling
-        return data # return the data to be used when opening a file
+                data = ''  # set data to empty just for error handling
+        return data  # return the data to be used when opening a file
 
     def open_file(self):
         """Method for opening files.
         INPUT: JSON file with entries and tabs
         OUTPUT: no output
         """
-        data = self.json_access('r', askopenfilename) # convert the data into a variable inside the open
+        data = self.json_access('r', askopenfilename)  # convert the data into a variable inside the open
         try:
             if data['Project Info']['Software Version'] == self.parent.contcalc_version:
-                for v in self.parent.nb.tabs_list.values(): # cycle through open tabs and destroy them
+                for v in self.parent.nb.tabs_list.values():  # cycle through open tabs and destroy them
                     v.destroy()
-                self.parent.nb.create_general_tab('Main Page') # generate a clear main page
-                for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()): # cycle through the list of tk entries to fill them with the values from data
+                self.parent.nb.create_general_tab('Main Page')  # generate a clear main page
+                for i, myline in zip(self.parent.nb.lst_entries, data['Project Info'].values()):  # cycle through the list of tk entries to fill them with the values from data
                     i.set(myline)
                 for d in data['Project Tabs']:
                     new_tab = MyTab(self.parent.nb, d['Tab_name'])
@@ -108,15 +110,15 @@ class Menu(tk.Menu):
                     self.dict = {d['Tab_name']: new_tab}
                     self.parent.nb.tabs_list.update(self.dict)
 
-                self.filename_state('normal') # function to set title and save menu to enabled
+                self.filename_state('normal')  # function to set title and save menu to enabled
         except KeyError:
             messagebox.showwarning(title='Error', message='Incorrect file. Please chose a correct save file.')
 
     def filename_state(self, state):
-        self.filename = self.filepath.lower().split('/')[-1].replace('.txt', '') # clean filepath to get filename only
+        self.filename = self.filepath.lower().split('/')[-1].replace('.txt', '')  # clean filepath to get filename only
         self.filename = self.filename.title()
-        self.parent.title(f'Containment Calculation Sheet - {self.filename}') # set the title of the window to the filename
-        self.filemenu.entryconfigure(1, state=state) # set save menu to enabled
+        self.parent.title(f'Containment Calculation Sheet - {self.filename}')  # set the title of the window to the filename
+        self.filemenu.entryconfigure(1, state=state)  # set save menu to enabled
 
     def save_file(self):
         """Method for saving files.
@@ -135,25 +137,36 @@ class Menu(tk.Menu):
         OUTPUT: JSON file with entries and tabs
         """
         self.json_access('w', asksaveasfilename)
-        self.filename_state('normal') # function to set title and save menu to enabled
+        self.filename_state('normal')  # function to set title and save menu to enabled
 
     def export_excel(self):
         """ Method to export data to Excel. """
 
-        ## Load template file
+        # Load template file
         twb = load_workbook('TemplateContCalc.xlsx')
 
-        ## Get data
+        # Get data
         data = self.parent.nb.get_notebook_dict(True)
 
-        ## Insert data in project info
+        # Get image file
+        try:
+            img = Image('images/ArupLogo.gif')
+        except FileNotFoundError:
+            messagebox.showwarning(title='Error', message='Image not found.')
+            print(f'Image not found.')
+            return
+
+        # Insert image in Workbook
+        twb['Main Page'].add_image(img, 'A1')
+
+        # Insert data in project info
         twb['Main Page']['D9'] = data['Project Info']['Job Title']
         twb['Main Page']['D11'] = data['Project Info']['Job Number']
         twb['Main Page']['H11'] = data['Project Info']['Designer']
         twb['Main Page']['D13'] = data['Project Info']['Date']
         twb['Main Page']['H13'] = data['Project Info']['Revision']
 
-        ## Copy from Temp_Tab, and insert data
+        # Copy from Temp_Tab, and insert data
         for dict in data['Project Tabs']:
             sheet = twb.copy_worksheet(twb['TrayTemplate'])
             sheet.title = dict['Tab_name']
@@ -163,7 +176,7 @@ class Menu(tk.Menu):
             sheet['D9'] = dict['Spare Capacity']
             sheet['I9'] = dict['Tab_name']
 
-            ## Cables
+            # Cables
             my_row = 12
             for cable_dict in dict['Cables']:
                 sheet.cell(row=my_row, column=2, value=cable_dict['Reference'])
@@ -175,30 +188,30 @@ class Menu(tk.Menu):
                 sheet.cell(row=my_row, column=11, value=cable_dict['Diameter'])
                 my_row += 1
 
-            ## Results
+            # Results
             sheet['I34'] = dict['Results']['Total diameter']
             sheet['I36'] = dict['Results']['Total with spare']
             sheet['I38'] = dict['Results']['Containment size']
 
-
-        ## Delete Temp_Tab
+        # Delete Temp_Tab
         twb.remove_sheet(twb['TrayTemplate'])
 
-        ## Save Workbook to file
-        dest_filename =  tk.filedialog.asksaveasfilename(
-                                    initialdir = ".",
-                                    initialfile = self.filename,
-                                    title = "Select file to export",
-                                    defaultextension = "*.xlsx",
-                                    filetypes = (("Excel files","*.xlsx"),("all files","*.*"))
-                                    )
-        ## Check if not canceled
+        # Save Workbook to file
+        dest_filename = tk.filedialog.asksaveasfilename(
+            initialdir=".",
+            initialfile=self.filename,
+            title="Select file to export",
+            defaultextension="*.xlsx",
+            filetypes=(("Excel files", "*.xlsx"), ("all files", "*.*"))
+            )
+
+        # Check if not canceled
         if dest_filename != '':
             twb.save(dest_filename)
         else:
             print("Export canceled.")
 
-        ## Just to check structure
+        # Just to check structure
         # print(json.dumps(data, indent=4, separators=(',', ': ')))
 
     def to_save(self):
@@ -265,7 +278,6 @@ class Menu(tk.Menu):
             else:
                 self.top.destroy()
                 messagebox.showwarning(title='Error', message='No sections to remove.')
-
 
     def add_tab(self):
         popup_value = self.pu_entry.get().strip()
