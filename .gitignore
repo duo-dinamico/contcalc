@@ -1,11 +1,13 @@
-teste.py
 __pycache__/
-test_ignore
-main_ccs.spec
+Releases/
 build/
 dist/
 .vscode/
 .idea/
+json/
 database.db
 appMain.spec
 Contcalc.zip
+appMain.exe
+test_ignore
+main_ccs.spec

@@ -30,6 +30,14 @@
                     "CSA": "50",
                     "No Parallels": "1",
                     "CPC CSA": "N/A"
+                },
+                {
+                    "Reference": "ert",
+                    "Type": "MICC (Heavy Duty)",
+                    "Number of cables": "1",
+                    "CSA": "10",
+                    "No Parallels": "1",
+                    "CPC CSA": "N/A"
                 }
             ]
         },
