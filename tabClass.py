@@ -26,7 +26,8 @@ class MyTab(ttk.Frame):
         self.cable_parameters = ttk.Labelframe(self, text='Cables')
         self.cable_parameters.grid(row=1, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.cable_list_parameters = ttk.Labelframe(self, text='Cables List')
-        self.cable_list_parameters.grid(row=2, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
+        self.cable_list_parameters.grid(
+                                    row=2, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.result_parameters = ttk.Labelframe(self, text='Results')
         self.result_parameters.grid(row=3, column=0, columnspan=2, sticky='WE', padx=10, pady=10)
         self.commands_parameters = ttk.Labelframe(self, text='Section Actions')
@@ -46,7 +47,7 @@ class MyTab(ttk.Frame):
         self.result_with_cont_var.set('0')
         self.duplicate_var = tk.StringVar()
 
-        ## Configure Decimal
+        # Configure Decimal
         getcontext().prec = 4
         print(f'Precisão no cable: {getcontext()}')
 
@@ -248,7 +249,7 @@ class MyTab(ttk.Frame):
             self.name = self.common_trayref_var.get()
             self.common_trayref_entry.configure(state='disabled')
             self.trayref_confirm_btn.grid_remove()
-            self.trayref_change_btn.grid(row=2, column=4, sticky='WE', padx=5, pady=5)
+            self.trayref_change_btn.grid(row=0, column=2, sticky='WE', padx=5, pady=5)
         else:
             messagebox.showwarning(title='Error', message='You must insert a section name.')
 
