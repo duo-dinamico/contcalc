@@ -143,7 +143,7 @@ class Menu(tk.Menu):
         """ Method to export data to Excel. """
 
         # Load template file
-        twb = load_workbook('TemplateContCalc.xlsx', read_only=True)
+        twb = load_workbook('TemplateContCalc.xlsx')
 
         # Get data
         data = self.parent.nb.get_notebook_dict(True)
