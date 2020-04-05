@@ -29,7 +29,7 @@ class Menu(tk.Menu):
         super().__init__(parent)
         self.parent = parent
 
-        # The following 14 lines of code create our menu and associate commands to the options
+        # The following lines of code create our menu and associate commands to the options
         self.filemenu = tk.Menu(self, tearoff=0)
         self.editmenu = tk.Menu(self, tearoff=0)
         self.helpmenu = tk.Menu(self, tearoff=0)
@@ -76,6 +76,7 @@ class Menu(tk.Menu):
             else:
                 json.dump(self.to_save(), json_file, ensure_ascii=False, indent=4, separators=(',', ': ')) # otherwise just do a dump into the file
                 data = ''  # set data to empty just for error handling
+                self.filename_state('normal')  # function to set title and save menu to enabled
         return data  # return the data to be used when opening a file
 
     def open_file(self):
@@ -109,10 +110,11 @@ class Menu(tk.Menu):
                         new_tab.clear_cable()
                     self.dict = {d['Tab_name']: new_tab}
                     self.parent.nb.tabs_list.update(self.dict)
-
                 self.filename_state('normal')  # function to set title and save menu to enabled
         except KeyError:
             messagebox.showwarning(title='Error', message='Incorrect file. Please chose a correct save file.')
+        except TypeError:
+            pass
 
     def filename_state(self, state):
         self.filename = self.filepath.lower().split('/')[-1].replace('.txt', '')  # clean filepath to get filename only
@@ -137,7 +139,6 @@ class Menu(tk.Menu):
         OUTPUT: JSON file with entries and tabs
         """
         self.json_access('w', asksaveasfilename)
-        self.filename_state('normal')  # function to set title and save menu to enabled
 
     def export_excel(self):
         """ Method to export data to Excel. """
