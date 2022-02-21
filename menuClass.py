@@ -60,13 +60,13 @@ class Menu(tk.Menu):
 
         if self.dialog == asksaveasfilename or self.dialog == askopenfilename:  # if dialog asks for dialog box, give it to the user
             self.filepath = self.dialog(
-                filetypes=[('JSON File', '*.txt'), ('All files', '*.*')]
+                filetypes=[('JSON File', '*.json'), ('All files', '*.*')]
             )
             if not self.filepath:
                 return
 
-        if '.txt' not in self.filepath and self.dialog == asksaveasfilename:
-            self.filepath = self.filepath + '.txt'
+        if '.json' not in self.filepath and self.dialog == asksaveasfilename:
+            self.filepath = self.filepath + '.json'
         else:
             pass
         with open(self.filepath, self.mode, encoding='utf-8') as json_file:  # access the json file as Write or Read mode
@@ -117,7 +117,7 @@ class Menu(tk.Menu):
             pass
 
     def filename_state(self, state):
-        self.filename = self.filepath.lower().split('/')[-1].replace('.txt', '')  # clean filepath to get filename only
+        self.filename = self.filepath.lower().split('/')[-1].replace('.json', '')  # clean filepath to get filename only
         self.filename = self.filename.title()
         self.parent.title(f'Containment Calculation Sheet - {self.filename}')  # set the title of the window to the filename
         self.filemenu.entryconfigure(1, state=state)  # set save menu to enabled
